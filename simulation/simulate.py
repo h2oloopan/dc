@@ -1,7 +1,7 @@
 import matplotlib.pyplot as pyplot
 import scipy.stats as stats
 
-import Worker from worker
+from worker import Worker
 
 def createWorker(n, r, c):
 	#create n workers
@@ -17,9 +17,11 @@ def createWorker(n, r, c):
 	ps = (samples * r) / (1 - samples)
 	#ps are initial qualities
 
+	availabilities = X.rvs(n) + 0.5
+
 	workers = []
 	for i in range(0, len(ps)):
-		w = Worker(0, ps[i], r, c)
+		w = Worker(0, ps[i], r, c, availabilities[i])
 		workers.append(w)
 
 	return workers
