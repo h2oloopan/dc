@@ -33,7 +33,7 @@ def pickRandomly(tasks, workers, limit):
 	return answers
 
 def pickTopK(tasks, workers, k, tutorials):
-	observedQualities = []
+	observedCorrectness = []
 	for i in range(0, len(workers)):
 		worker = workers[i]
 		count = 0
@@ -42,7 +42,7 @@ def pickTopK(tasks, workers, k, tutorials):
 			answer = worker.doTask(task)
 			if answer == task:
 				count += 1
-		observedQualities.append(float(count) / float(tutorials)) #initialize observed quality
+		observedQualities.append(count) #initialize observed quality
 
 	for i in range(0, len(tasks)):
 		task = tasks[i]

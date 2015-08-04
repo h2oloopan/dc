@@ -50,3 +50,6 @@ if __name__ == '__main__':
 	plot.plot(x, cumulatedAccuracies)
 	plot.plot(x, smoothedAccuracies)
 	plot.show()
+
+	#recreate some workers
+	workers = simulate.createHyperbolicWorker(1000, 10, 1)
