@@ -1,7 +1,18 @@
 import matplotlib.pyplot as pyplot
 import scipy.stats as stats
+import random
 
 from worker import Worker
+
+def createBinaryTasks(n):
+	tasks = []
+	for i in range(0, n):
+		sample = random.random()
+		if sample >= 0.5:
+			tasks.append(True)
+		else:
+			tasks.append(False)
+	return tasks
 
 def createWorker(n, r, c):
 	#create n workers
