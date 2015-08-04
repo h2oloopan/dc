@@ -14,7 +14,7 @@ def createBinaryTasks(n):
 			tasks.append(False)
 	return tasks
 
-def createWorker(n, r, c):
+def createHyperbolicWorker(n, r, c):
 	#create n workers
 	#r is the number of runs to reach 0.5 quality
 	lower = -0.5
