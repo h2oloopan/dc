@@ -2,6 +2,7 @@ import random
 
 
 class Worker:
+	uuid = ''
 	#learning curve
 	x = 0 #tasks has completed
 	p = 0 #prior quality
@@ -9,7 +10,8 @@ class Worker:
 	c = 0 #cost to hire
 	a = 0 #availability
 	m = 0 #money a worker has made
-	def __init__(self, x, p, r, c, a):
+	def __init__(self, uuid, x, p, r, c, a):
+		self.uuid = uuid
 		self.x = x
 		self.p = p
 		self.r = r

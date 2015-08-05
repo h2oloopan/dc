@@ -1,6 +1,7 @@
 import matplotlib.pyplot as pyplot
 import scipy.stats as stats
 import random
+import uuid
 
 from worker import Worker
 
@@ -32,19 +33,8 @@ def createHyperbolicWorker(n, r, c):
 
 	workers = []
 	for i in range(0, len(ps)):
-		w = Worker(0, ps[i], r, c, availabilities[i])
+		w = Worker(str(uuid.uuid1()), 0, ps[i], r, c, availabilities[i])
 		workers.append(w)
 
 	return workers
-
-	#print ps
-	#fig, ax = pyplot.subplots(1, 1)
-	#ax.hist(ps)
-	#pyplot.show()
-
-
-	#fig, ax = pyplot.subplots(1, 1)
-	#ax.hist(X.rvs(10000) + 0.5)
-	#pyplot.show()
-
 

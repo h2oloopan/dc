@@ -5,6 +5,7 @@ import learn
 import simulate
 import algorithm
 
+
 if __name__ == '__main__':
 	print 'Simulation Test'
 	workers = simulate.createHyperbolicWorker(1000, 10, 1)
@@ -52,4 +53,6 @@ if __name__ == '__main__':
 	plot.show()
 
 	#recreate some workers
-	workers = simulate.createHyperbolicWorker(1000, 10, 1)
+	#workers = simulate.createHyperbolicWorker(1000, 10, 1)
+
+
