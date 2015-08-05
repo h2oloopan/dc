@@ -19,10 +19,24 @@ def findTopKAvailableWorkers(workers, observedCorrectness, k):
 		if worker.isAvailable():
 			for j in range(k - 1, -1):
 				if len(top) <= j || predictedQuality > qualities[j]:
-
-
-
-
+					continue
+				else:
+					break
+			nextWorker = worker
+			nextQuality = predictedQuality
+			for n in range(j, k):
+				if n < len(top):
+					lastWorker = top[n]
+					lastQuality = qualities[n]
+					top[n] = nextWorker
+					qualities[n] = nextQuality
+					nextWorker = lastWorker
+					nextQuality = lastQuality
+				else:
+					top.append nextWorker
+					qualities.append nextQuality
+	print qualities
+	return top
 
 
 def pickRandomly(tasks, workers, limit):
