@@ -28,11 +28,15 @@ class Worker:
 		else:
 			return True
 		return
-	def doTask(self, task):
+	def doTask(self, task, payment=0):
 		self.x = self.x + 1
+		self.m += payment
 		rand = random.random()
 		if rand >= self.getQuality():
 			return not task
 		else:
 			return task
+	def reset(self):
+		self.x = 0
+
 

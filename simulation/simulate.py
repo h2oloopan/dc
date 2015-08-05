@@ -18,22 +18,36 @@ def createBinaryTasks(n):
 def createHyperbolicWorker(n, r, c):
 	#create n workers
 	#r is the number of runs to reach 0.5 quality
+
+	#create RS
+	lower = 0
+	upper = float('inf')
+	mu = r
+	sigma = 2
+	RS = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+	rs = RS.rvs(n)
+	#create XS in between 0 and 1
 	lower = -0.5
 	upper = 0.5
 	mu = 0
 	sigma = 0.1
-	
-	X = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+	XS = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+	xs = XS.rvs(n) + 0.5
 
-	samples = X.rvs(n) + 0.5
-	ps = (samples * r) / (1 - samples)
-	#ps are initial qualities
+	ps = [(xs[i] * rs[i]) / (1 - xs[i]) for i in range(0, n)]
+	#print rs
 
-	availabilities = X.rvs(n) + 0.5
+	#create availability
+	lower = -0.5
+	upper = 0.5
+	mu = -0.2
+	sigma = 1
+	AS = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+	availabilities = AS.rvs(n) + 0.5
 
 	workers = []
 	for i in range(0, len(ps)):
-		w = Worker(str(uuid.uuid1()), 0, ps[i], r, c, availabilities[i])
+		w = Worker(str(uuid.uuid1()), 0, ps[i], rs[i], c, availabilities[i])
 		workers.append(w)
 
 	return workers

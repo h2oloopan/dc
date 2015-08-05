@@ -6,18 +6,9 @@ import simulate
 import algorithm
 
 
-if __name__ == '__main__':
-	print 'Simulation Test'
-	workers = simulate.createHyperbolicWorker(100, 10, 1)
-	tasks = simulate.createBinaryTasks(200)
-	
-	print 'Pick 5 workers randomly'
-	answers = algorithm.pickRandomly(tasks, workers, 5)
-
+def analyze(tasks, answers, costs, step, smooth, graph):
 	#analyze answers
 	total = len(tasks)
-	step = 10
-	smooth = 3
 	stepCorrect = 0
 	totalCorrect = 0
 	counter = 0
@@ -46,15 +37,47 @@ if __name__ == '__main__':
 		avg = float(avg) / float(num)
 		smoothedAccuracies.append(avg)
 
-	x = np.arange(0, total, step)
-	plot.plot(x, stepAccuracies)
-	plot.plot(x, cumulatedAccuracies)
-	plot.plot(x, smoothedAccuracies)
-	plot.show()
+	x1 = np.arange(0, total, step)
+	graph[0].plot(x1, stepAccuracies)
+	graph[0].plot(x1, cumulatedAccuracies)
+	graph[0].plot(x1, smoothedAccuracies)
 
-	#recreate some workers
+	x2 = np.arange(0, total, 1)
+	graph[1].plot(x2, costs)
+def resetWorkers(workers):
+	for i in range(0, len(workers)):
+		workers[i].reset()
+
+if __name__ == '__main__':
+	print 'Simulation Test'
+	workers = simulate.createHyperbolicWorker(1000, 10, 1)
+	tasks = simulate.createBinaryTasks(1000)
+
+	#initialize plots
+	f, ax = plot.subplots(3, 2, sharex=True)
+	
+	#analyze answers
+	step = 10
+	smooth = 3
+	
+	print 'Pick 5 workers randomly'
+	answers = algorithm.pickRandomly(tasks, workers, 5)
+	costs = [5 for i in range(0, len(tasks))]
+	analyze(tasks, answers, costs, step, smooth, ax[0])
+
+	#reset workers
 	#workers = simulate.createHyperbolicWorker(1000, 10, 1)
-	workers = simulate.createHyperbolicWorker(100, 10, 1)
+	resetWorkers(workers)
 	print 'Pick top 5 workers with 10 tutorials'
 	answers = algorithm.pickTopK(tasks, workers, 5, 10)
+	costs = [5 for i in range(0, len(tasks))]
+	analyze(tasks, answers, costs, step, smooth, ax[1])
 
+	resetWorkers(workers)
+	print 'Pick top 3 workers with 10 tutorials'
+	answers = algorithm.pickTopK(tasks, workers, 3, 10)
+	costs = [3 for i in range(0, len(tasks))]
+	analyze(tasks, answers, costs, step, smooth, ax[2])
+
+
+	plot.show()
