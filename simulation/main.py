@@ -8,16 +8,16 @@ import algorithm
 
 if __name__ == '__main__':
 	print 'Simulation Test'
-	workers = simulate.createHyperbolicWorker(1000, 10, 1)
-	tasks = simulate.createBinaryTasks(2000)
+	workers = simulate.createHyperbolicWorker(100, 10, 1)
+	tasks = simulate.createBinaryTasks(200)
 	
 	print 'Pick 5 workers randomly'
-	answers = algorithm.pickRandomly(tasks, workers, 10)
+	answers = algorithm.pickRandomly(tasks, workers, 5)
 
 	#analyze answers
 	total = len(tasks)
 	step = 10
-	smooth = 5
+	smooth = 3
 	stepCorrect = 0
 	totalCorrect = 0
 	counter = 0

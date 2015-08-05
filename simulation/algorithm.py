@@ -9,6 +9,19 @@ def findAvailableWorkers(workers):
 	return availables
 
 def findTopKAvailableWorkers(workers, observedCorrectness, k):
+	top = []
+	qualities = []
+	amount = 0
+	last = 0
+	for i in range(0, len(workers)):
+		worker = workers[i]
+		predictedQuality = float(observedCorrectness[worker.uuid]) / float(worker.x)
+		if worker.isAvailable():
+			for j in range(k - 1, -1):
+				if len(top) <= j || predictedQuality > qualities[j]:
+
+
+
 
 
 
