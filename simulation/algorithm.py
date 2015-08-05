@@ -62,6 +62,15 @@ def pickRandomly(tasks, workers, limit):
 			answers.append(False)
 	return answers
 
+def pickRandomlyWithTutorials(tasks, workers, limit, tutorials):
+	#train
+	for i in range(0, len(workers)):
+		for j in range(0, tutorials):
+			task = tasks[j]
+			workers[i].doTask(task)
+	#now do the same thing
+	return pickRandomly(tasks, workers, limit)
+
 def pickTopK(tasks, workers, k, tutorials):
 	answers = []
 	observedCorrectness = {} #note here observed correctness may not be the actual correctness

@@ -23,7 +23,7 @@ def createHyperbolicWorker(n, r, c):
 	lower = 0
 	upper = float('inf')
 	mu = r
-	sigma = 2
+	sigma = 1
 	RS = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
 	rs = RS.rvs(n)
 	#create XS in between 0 and 1
@@ -40,7 +40,7 @@ def createHyperbolicWorker(n, r, c):
 	#create availability
 	lower = -0.5
 	upper = 0.5
-	mu = -0.2
+	mu = -0.3
 	sigma = 1
 	AS = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
 	availabilities = AS.rvs(n) + 0.5

@@ -50,11 +50,11 @@ def resetWorkers(workers):
 
 if __name__ == '__main__':
 	print 'Simulation Test'
-	workers = simulate.createHyperbolicWorker(1000, 10, 1)
+	workers = simulate.createHyperbolicWorker(1000, 20, 1)
 	tasks = simulate.createBinaryTasks(1000)
 
 	#initialize plots
-	f, ax = plot.subplots(3, 2, sharex=True)
+	f, ax = plot.subplots(4, 2, sharex=True)
 	
 	#analyze answers
 	step = 10
@@ -65,19 +65,25 @@ if __name__ == '__main__':
 	costs = [5 for i in range(0, len(tasks))]
 	analyze(tasks, answers, costs, step, smooth, ax[0])
 
-	#reset workers
-	#workers = simulate.createHyperbolicWorker(1000, 10, 1)
 	resetWorkers(workers)
-	print 'Pick top 5 workers with 10 tutorials'
-	answers = algorithm.pickTopK(tasks, workers, 5, 10)
+	print 'Pick 5 workers randomly with 5 tutorials'
+	answers = algorithm.pickRandomlyWithTutorials(tasks, workers, 5, 5)
 	costs = [5 for i in range(0, len(tasks))]
 	analyze(tasks, answers, costs, step, smooth, ax[1])
 
+	#reset workers
+	#workers = simulate.createHyperbolicWorker(1000, 10, 1)
 	resetWorkers(workers)
-	print 'Pick top 3 workers with 10 tutorials'
-	answers = algorithm.pickTopK(tasks, workers, 3, 10)
-	costs = [3 for i in range(0, len(tasks))]
+	print 'Pick top 5 workers with 5 tutorials'
+	answers = algorithm.pickTopK(tasks, workers, 5, 5)
+	costs = [5 for i in range(0, len(tasks))]
 	analyze(tasks, answers, costs, step, smooth, ax[2])
+
+	resetWorkers(workers)
+	print 'Pick top 3 workers with 5 tutorials'
+	answers = algorithm.pickTopK(tasks, workers, 3, 5)
+	costs = [3 for i in range(0, len(tasks))]
+	analyze(tasks, answers, costs, step, smooth, ax[3])
 
 
 	plot.show()
