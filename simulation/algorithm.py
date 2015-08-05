@@ -17,11 +17,13 @@ def findTopKAvailableWorkers(workers, observedCorrectness, k):
 		worker = workers[i]
 		predictedQuality = float(observedCorrectness[worker.uuid]) / float(worker.x)
 		if worker.isAvailable():
-			for j in range(k - 1, -1):
-				if len(top) <= j || predictedQuality > qualities[j]:
-					continue
+			j = k - 1
+			while j >= 0:
+				if len(top) <= j or predictedQuality > qualities[j]:
+					j -= 1
 				else:
 					break
+			j += 1
 			nextWorker = worker
 			nextQuality = predictedQuality
 			for n in range(j, k):
@@ -33,9 +35,9 @@ def findTopKAvailableWorkers(workers, observedCorrectness, k):
 					nextWorker = lastWorker
 					nextQuality = lastQuality
 				else:
-					top.append nextWorker
-					qualities.append nextQuality
-	print qualities
+					top.append(nextWorker)
+					qualities.append(nextQuality)
+	#print qualities
 	return top
 
 

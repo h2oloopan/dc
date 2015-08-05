@@ -55,5 +55,6 @@ if __name__ == '__main__':
 	#recreate some workers
 	#workers = simulate.createHyperbolicWorker(1000, 10, 1)
 	workers = simulate.createHyperbolicWorker(100, 10, 1)
-	
+	print 'Pick top 5 workers with 10 tutorials'
+	answers = algorithm.pickTopK(tasks, workers, 5, 10)
 
