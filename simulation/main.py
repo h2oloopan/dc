@@ -50,7 +50,7 @@ def resetWorkers(workers):
 
 if __name__ == '__main__':
 	print 'Simulation Test'
-	workers = simulate.createHyperbolicWorker(1000, 20, 1)
+	workers = simulate.createHyperbolicWorker(1000, 30, 1)
 	tasks = simulate.createBinaryTasks(1000)
 
 	#initialize plots
