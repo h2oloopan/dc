@@ -6,6 +6,7 @@ def findAvailableWorkers(workers):
 	for i in range(0, len(workers)):
 		if workers[i].isAvailable():
 			availables.append(workers[i])
+	#print len(availables)
 	return availables
 
 def findTopKAvailableWorkers(workers, observedCorrectness, k):
