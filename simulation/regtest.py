@@ -10,10 +10,10 @@ from worker import Worker
 if __name__ == '__main__':
 	print 'Regression Test'
 	worker = Worker(str(uuid.uuid1()), 0, 5, 20, 1, 1)
-	tasks = simulate.createBinaryTasks(10)
+	tasks = simulate.createBinaryTasks(300)
 
 	#initialize plots
-	f, ax = plot.subplots(1, 5, sharex=True, sharey=True)
+	f, ax = plot.subplots(5, sharex=True, sharey=True)
 
 	cqs = [] #cumulative quality
 	qs = [] #quality
@@ -41,12 +41,14 @@ if __name__ == '__main__':
 		eqs.append(fake.getQuality())
 
 
-	x = np.arange(1, len(tasks), 1)
-	ax[0][0].plot(x, cqs)
-	ax[0][1].plot(x, qs)
-	ax[0][2].plot(x, aqs)
-	ax[0][3].plot(x, ecqs)
-	ax[0][4].plot(x, eqs)
+	x = np.arange(1, len(tasks) + 1, 1)
+	ax[0].plot(x, cqs)
+	ax[1].plot(x, qs)
+	ax[1].plot(x, aqs)
+	ax[1].plot(x, eqs)
+	ax[2].plot(x, aqs)
+	ax[3].plot(x, ecqs)
+	ax[4].plot(x, eqs)
 	plot.show()
 
 	
