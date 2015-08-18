@@ -9,6 +9,9 @@ def learnCurve(cs, ts):
 
 	slope, intercept, r_value, p_value, std_err = stats.linregress(ts, zs)
 
-	result = {}
+	r = 1 / slope
+	p = (intercept - 1) * r
+
+	result = {'r': r, 'p': p, 'e': std_err, 'rv': r_value, 'pv': p_value}
 
 	return result
