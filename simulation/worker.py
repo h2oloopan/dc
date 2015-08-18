@@ -19,10 +19,10 @@ class Worker:
 		self.a = a
 		#print x, p, r, c, a
 	def getCumulativeQuality(self, x):
-		return (x + self.p) / (x + self.p + self.r)
+		return (float(x) + float(self.p)) / (float(x) + float(self.p) + float(self.r))
 	def getQuality(self):
 		#get current quality
-		return self.x * self.getCumulativeQuality(self.x) - (self.x - 1) * self.getCumulativeQuality(self.x - 1)
+		return float(self.x) * self.getCumulativeQuality(self.x) - (float(self.x) - 1.0) * self.getCumulativeQuality(float(self.x) - 1.0)
 	def isAvailable(self):
 		rand = random.random()
 		if rand >= self.a:
