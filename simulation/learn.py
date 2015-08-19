@@ -1,4 +1,5 @@
 from scipy import stats
+from worker import Worker
 
 #learning module
 def learnCurve(cs, ts):
@@ -17,9 +18,14 @@ def learnCurve(cs, ts):
 
 	slope, intercept, r_value, p_value, std_err = stats.linregress(ts, zs)
 
+	#print slope
+	#print intercept
+
 	r = 1 / slope
 	p = (intercept - 1) * r
 
 	result = {'r': r, 'p': p, 'e': std_err, 'rv': r_value, 'pv': p_value}
 
 	return result
+
+#def getCumulativeQuality(x, p, r):
