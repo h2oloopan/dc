@@ -40,5 +40,6 @@ class Worker:
 			return task
 	def reset(self):
 		self.x = 0
+		self.m = 0
 
 
