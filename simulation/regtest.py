@@ -92,11 +92,11 @@ if __name__ == '__main__':
 	laq, = ax1.plot(x, qs, '-', label='actual quality')
 	leq, = ax1.plot(x, eqs, '--', label='estimated quality')
 	lavq, = ax1.plot(x, aqs, ':', label='averaged quality')
-	ax1.legend(handles=[laq, leq, lavq], bbox_to_anchor=(1,0.6))
+	ax1.legend([laq, leq, lavq], bbox_to_anchor=(1,0.6))
 
 	ax2.set_title('Linear Regression Error')
 	lre, = ax2.plot(x, errs, label='error')
-	ax2.legend(handles=[lre], bbox_to_anchor=(1, 0.6))
+	ax2.legend([lre], bbox_to_anchor=(1, 0.6))
 	plot.show()
 
 	#print eqs
