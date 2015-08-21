@@ -49,7 +49,7 @@ def getCurve(worker, tasks, runs, prob):
 		else:
 			fqs.append(float(i+1)*aqs[i] - float(i)*aqs[i-1])
 
-	for j in range(0, total - 1):
+	for j in range(0, runs - 1):
 		worker.reset()
 		count = 0
 		cs = []
@@ -73,11 +73,11 @@ def getCurve(worker, tasks, runs, prob):
 				fqs[i] += (float(i+1)*aqs[i] - float(i)*aqs[i-1])
 
 	for i in range(0, len(tasks)):
-		aqs[i] = aqs[i] / float(total)
-		ecqs[i] = ecqs[i] / float(total)
-		eqs[i] = eqs[i] / float(total)
-		errs[i] = errs[i] / float(total)
-		fqs[i] = fqs[i] / float(total)
+		aqs[i] = aqs[i] / float(runs)
+		ecqs[i] = ecqs[i] / float(runs)
+		eqs[i] = eqs[i] / float(runs)
+		errs[i] = errs[i] / float(runs)
+		fqs[i] = fqs[i] / float(runs)
 
 
 	result = {'cqs': cqs, 'qs': qs, 'aqs': aqs, 'ecqs': ecqs, 'eqs': eqs}
