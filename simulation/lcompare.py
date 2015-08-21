@@ -15,7 +15,7 @@ def getAnswer(task, p):
 	else:
 		return task
 
-def getCurve(worker, tasks, runs, prob):
+def getCurves(worker, tasks, runs, prob):
 	#the following two are always fixed
 	cqs = [] #cumulative quality
 	qs = [] #quality
@@ -86,9 +86,13 @@ def getCurve(worker, tasks, runs, prob):
 if __name__ == '__main__':
 	print 'Regression Test'
 	worker = Worker(str(uuid.uuid1()), 0, 5, 20, 1, 1)
-	tasks = simulate.createBinaryTasks(3000)
-	total = 3
-	prob = 0.7
+	tasks = simulate.createBinaryTasks(800)
+	
+
+	c1 = getCurves(worker, tasks, 3, 1)
+	c2 = getCurves(worker, tasks, 3, 0.9)
+	c3 = getCurves(worker, tasks, 3, 0.8)
+	c4 = getCurves(worker, tasks, 3, 0.7)
 
 	#initialize plots
 	#f, ax = plot.subplots(2, sharex=True)
@@ -98,19 +102,17 @@ if __name__ == '__main__':
 
 	x = np.arange(1, len(tasks) + 1, 1)
 
-	f, (ax1, ax2) = plot.subplots(1, 2)
+	f, ax = plot.subplots(1)
 	#ax1.xlabel('Number of Tasks')
 	#ax1.ylabel('Quality')
-	ax1.set_title('Quality Comparison')
-	ax1.grid(True)
-	laq, = ax1.plot(x, qs, '-', label='actual quality')
-	leq, = ax1.plot(x, eqs, '--', label='estimated quality')
-	lavq, = ax1.plot(x, aqs, ':', label='averaged quality')
-	ax1.legend([laq, leq, lavq], bbox_to_anchor=(1,0.6))
-
-	ax2.set_title('Linear Regression Error')
-	lre, = ax2.plot(x, errs, label='error')
-	ax2.legend([lre], bbox_to_anchor=(1, 0.6))
+	ax.set_title('Different Accuracy')
+	ax.grid(True)
+	pa, = ax.plot(x, c1['qs'], '-', label='actual quality')
+	p1, = ax.plot(x, c1['eqs'], '--', label='100% aggregate accuracy')
+	p09, = ax.plot(x, c2['eqs'], '--', label='90% aggregate accuracy')
+	p08, = ax.plot(x, c3['eqs'], '--', label='80% aggregate accuracy')
+	p07, = ax.plot(x, c4['eqs'], '--', label='70% aggregate accuracy')
+	ax.legend([pa, p1, p09, p08, p07], bbox_to_anchor=(1,0.6))
 	plot.show()
 
 	#print eqs
