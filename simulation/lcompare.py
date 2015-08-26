@@ -89,10 +89,10 @@ if __name__ == '__main__':
 	tasks = simulate.createBinaryTasks(800)
 	
 
-	c1 = getCurves(worker, tasks, 3, 1)
-	c2 = getCurves(worker, tasks, 3, 0.9)
-	c3 = getCurves(worker, tasks, 3, 0.8)
-	c4 = getCurves(worker, tasks, 3, 0.7)
+	c1 = getCurves(worker, tasks, 5, 1)
+	c2 = getCurves(worker, tasks, 5, 0.9)
+	c3 = getCurves(worker, tasks, 5, 0.8)
+	c4 = getCurves(worker, tasks, 5, 0.7)
 
 	#initialize plots
 	#f, ax = plot.subplots(2, sharex=True)
@@ -102,17 +102,26 @@ if __name__ == '__main__':
 
 	x = np.arange(1, len(tasks) + 1, 1)
 
-	f, ax = plot.subplots(1)
+	f, (bx, ax) = plot.subplots(1, 2)
+
+	bx.set_title('Estimated vs. Averaged Quality, 80% Aggregate Accuracy')
+	bx.grid(True)
+	ba = bx.plot(x, c1['qs'], '-', label='actual quality')
+	b8e = bx.plot(x, c3['eqs'], '--', label='estimated quality')
+	b8a = bx.plot(x, c3['aqs'], '--', label='averaged quality')
+	bx.legend(bbox_to_anchor=(1, 0.6))
+
+
 	#ax1.xlabel('Number of Tasks')
 	#ax1.ylabel('Quality')
-	ax.set_title('Different Accuracy')
+	ax.set_title('Different Aggregate Accuracy')
 	ax.grid(True)
 	pa, = ax.plot(x, c1['qs'], '-', label='actual quality')
 	p1, = ax.plot(x, c1['eqs'], '--', label='100% aggregate accuracy')
 	p09, = ax.plot(x, c2['eqs'], '--', label='90% aggregate accuracy')
 	p08, = ax.plot(x, c3['eqs'], '--', label='80% aggregate accuracy')
 	p07, = ax.plot(x, c4['eqs'], '--', label='70% aggregate accuracy')
-	ax.legend([pa, p1, p09, p08, p07], bbox_to_anchor=(1,0.6))
+	ax.legend(bbox_to_anchor=(1,0.6))
 	plot.show()
 
 	#print eqs
