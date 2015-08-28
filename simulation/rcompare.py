@@ -20,6 +20,7 @@ if __name__ == '__main__':
 
 	ys1 = []
 	ys2 = []
+	tally = []
 	for r in range(r_start, r_end + 1):
 		total = 0
 		maximum = 0
@@ -43,6 +44,7 @@ if __name__ == '__main__':
 					continue
 				if err < threshold:
 					total += j + 1
+					tally.append(j+1)
 					if j + 1 > maximum:
 						maximum = j + 1
 					break
@@ -51,7 +53,7 @@ if __name__ == '__main__':
 
 	xs = np.arange(r_start, r_end + 1, 1)
 
-	f, (ax, bx) = plot.subplots(1, 2)
+	f, (ax, bx, cx) = plot.subplots(1, 3)
 	ax.set_title('Averaged across 100 runs')
 	ax.set_xlabel('r')
 	ax.set_ylabel('tasks')
@@ -60,6 +62,24 @@ if __name__ == '__main__':
 	bx.set_xlabel('r')
 	bx.set_ylabel('tasks')
 	bx.plot(xs, ys2)
+
+	#for cx and cumulative tasks
+	y2s = []
+	tally.sort()
+	itr = 0
+	for i in range(1, 51):
+		while itr < len(tally) and tally[itr] < i:
+			itr += 1
+		percent = float(itr) / float(len(tally))
+		y2s.append(percent)
+
+	x2s = np.arange(1, 51, 1)
+	cx.set_title('Percentage of well trained curves')
+	cx.set_xlabel('tasks')
+	cx.set_ylabel('percent')
+	cx.plot(x2s, y2s)
+
+
 	plot.show()
 
 
