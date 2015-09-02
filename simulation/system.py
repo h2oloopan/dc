@@ -70,11 +70,14 @@ class System:
 				pick = self.pickOutcome(outcomes, probabilities)
 
 				nextState = State(cursor, 0, None)
-				
-
-
-
-
+				nextState.visitation += 1
+				nextState.worker = worker
+				nextState.answers = list(cursor.answers)
+				nextState.answers.append(worker.doTask(task))
+				nextState.hirings = list(cursor.hirings)
+				nextState.hirings.append(worker)
+				cursor.children.append(nextState)
+				cursor = nextState
 				hired += 1
 
 	def evaluate(self):
