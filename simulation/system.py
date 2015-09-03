@@ -86,6 +86,14 @@ class System:
 					cursor = nextState
 					hired += 1
 
-	def evaluate(self):
+	def evaluateState(self, state):
 
+
+	def evaluate(self):
+		self.evaluateState(self.root)
 	def hire(self):
+		workers = []
+		return workers
+
+
+		
