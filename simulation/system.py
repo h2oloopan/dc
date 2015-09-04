@@ -17,11 +17,12 @@ class State:
 class System:
 	counts: {}
 	total = 0
-	start = 0
 	root: State()
-	def __init__(self, start):
-		self.start = start
+	def __init__(self, outcomes, start):
 		self.root.visitation = 1
+		for outcome in outcomes:
+			counts[str(outcome)] = start
+			total += start
 	def pickOutcome(self, outcomes, probabilities):
 		levels = []
 		total = 0
@@ -64,7 +65,7 @@ class System:
 									p2 = p2 * hire.getQuality()
 								else:
 									p2 = p2 * (1 - hire.getQuality())
-							p3 = float(counts[truth]) / float(total)
+							p3 = float(counts[str(truth)]) / float(total)
 						probabilities.append(p1 * p2 * p3)
 						sum_prob += p1 * p2 * p3
 					#need to normalize probability
@@ -77,7 +78,7 @@ class System:
 					nextState = cursor.children[key]
 					if nextState == None:
 						nextState = State(cursor, 0, None)
-						nextState.worker = worker
+						nextState.hired = worker
 						nextState.answers = list(cursor.answers)
 						nextState.answers.append(worker.testTask(task))
 						nextState.hirings = list(cursor.hirings)
@@ -96,13 +97,14 @@ class System:
 			workers = {}
 			for key, child in cl:
 				self.evaluateState(child)
-				if group[child.worker.uuid] is None:
-					group[child.worker.uuid] = [child]
-					workers[child.worker.uuid] = child.worker
+				if group[child.hired.uuid] is None:
+					group[child.hired.uuid] = [child]
+					workers[child.hired.uuid] = child.hired
 				else:
-					group[child.worker.uuid].append(child)
+					group[child.hired.uuid].append(child)
 			#now all children are done
 			for uuid, worker in group.items():
+				
 
 
 
@@ -118,6 +120,8 @@ class System:
 	def hire(self):
 		workers = []
 		return workers
+	def aggregate(self, workers, answers):
+
 
 
 
