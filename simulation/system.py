@@ -103,8 +103,12 @@ class System:
 					#something already existing
 
 
+	def getWorkerUtility(self, state, worker, states):
 
 	def getAnswerUtility(self, hirings, answers):
+	
+	def getVOI(self, state, worker):
+
 	def evaluate(self):
 		self.evaluateState(self.root)
 	def hire(self):
