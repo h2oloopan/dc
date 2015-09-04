@@ -3,7 +3,8 @@ import random
 class State:
 	utility = 0
 	visitation = 0
-	worker = None
+	hired = None
+	to_hire = None
 	parent = None
 	children = {}
 	answers = []
@@ -36,9 +37,9 @@ class System:
 	def sample(self, samples, horizon, task, outcomes, workers):
 		for i in range(0, samples):
 			cursor = root
-			hired = 0
+			number = 0
 			#rank = 0
-			while hired < horizon:
+			while number < horizon:
 				#worker = workers[rank] #next worker to hire
 				#ank += 1
 				for w in range(0, len(workers)):
@@ -84,20 +85,26 @@ class System:
 						cursor.children[key] = nextState
 					nextState.visitation += 1
 					cursor = nextState
-					hired += 1
+					number += 1
 
 	def evaluateState(self, state):
 		cl = state.children.items()
 		if len(cl) == 0:
 			state.utility = self.getAnswerUtility(state.hirings, state.answers)
 		else:
-			groups = {}
+			group = {}
+			workers = {}
 			for key, child in cl:
 				self.evaluateState(child)
 				if group[child.worker.uuid] is None:
 					group[child.worker.uuid] = [child]
+					workers[child.worker.uuid] = child.worker
 				else:
 					group[child.worker.uuid].append(child)
+			#now all children are done
+			for uuid, worker in group.items():
+
+
 
 
 	def getWorkerUtility(self, state, worker, states):
