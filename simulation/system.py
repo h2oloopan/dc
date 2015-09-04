@@ -1,7 +1,7 @@
 import random
 
 class State:
-	utility = 0
+	utility = 0.0
 	visitation = 0
 	hired = None
 	to_hire = None
@@ -20,14 +20,17 @@ class System:
 	root: State()
 	hire_pointer: None
 	w_belief: 1.0
+	w_quality: 1.0
 	def __init__(self, outcomes, start, weights):
 		self.root.visitation = 1
 		self.hire_pointer = self.root
 		for outcome in outcomes:
 			self.counts[str(outcome)] = start
 			self.total += start
-		if weights['belief'] is not None:
+		if weights is not None and weights['belief'] is not None:
 			self.w_belief = weights['belief']
+		if weights is not None and weights['quality'] is not None:
+			self.w_quality = weights['quality']
 	def pickOutcome(self, outcomes, probabilities):
 		levels = []
 		total = 0
@@ -129,6 +132,14 @@ class System:
 
 
 	def getWorkerUtility(self, state, worker, states):
+		delta = worker.getQualityAtX(worker.x + 1) - worker.getQuality()
+		utility = self.w_quality * delta - float(worker.c)
+		visitation = 0
+		for state in states:
+			visitation += state.visitation
+		for state in states:
+			utility += (float(state.visitation) / float(visitation)) * state.utility
+		return utility
 
 	def getAnswerUtility(self, hirings, answers):
 		answer, count = self.aggregate(hirings, answers)

@@ -22,7 +22,9 @@ class Worker:
 		return (float(x) + float(self.p)) / (float(x) + float(self.p) + float(self.r))
 	def getQuality(self):
 		#get current quality
-		return float(self.x) * self.getCumulativeQuality(self.x) - (float(self.x) - 1.0) * self.getCumulativeQuality(float(self.x) - 1.0)
+		return float(self.x) * self.getCumulativeQuality(self.x) - (float(self.x) - 1.0) * self.getCumulativeQuality(self.x - 1)
+	def getQualityAtX(self, x):
+		return float(x) * self.getCumulativeQuality(x) - (float(x) - 1.0) * self.getCumulativeQuality(x - 1)
 	def isAvailable(self):
 		rand = random.random()
 		if rand >= self.a:
