@@ -92,6 +92,7 @@ class System:
 		cl = state.children.items()
 		if len(cl) == 0:
 			state.utility = self.getAnswerUtility(state.hirings, state.answers)
+			state.to_hire = None
 		else:
 			group = {}
 			workers = {}
@@ -103,9 +104,22 @@ class System:
 				else:
 					group[child.hired.uuid].append(child)
 			#now all children are done
-			for uuid, worker in group.items():
-				
-
+			to_hire = None
+			max_voi = None
+			max_utility = None
+			for uuid, worker in workers.items():
+				children = group[uuid]
+				utility = self.getWorkerUtility(state, worker, children)
+				voi = utility - self.getAnswerUtility(state.hirings, state.answers)
+				if max_voi < voi or max_voi is None:
+					max_voi = voi
+					to_hire = worker
+					max_utility = utility
+			if max_voi < 0:
+				to_hire = None
+				max_utility = self.getAnswerUtility(state.hirings, state.answers)
+			state.utility = max_utility
+			state.to_hire = to_hire
 
 
 
