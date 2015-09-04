@@ -87,8 +87,24 @@ class System:
 					hired += 1
 
 	def evaluateState(self, state):
+		cl = state.children.items()
+		if len(cl) == 0:
+			state.utility = self.getAnswerUtility(state.hirings, state.answers)
+		else:
+			for key, child in cl:
+				self.evaluateState(child)
+			#now all children are done
+			vois = {}
+			for key, child in cl:
+				if vois[child.worker.uuid] == None:
+					#something new
+					
+				else:
+					#something already existing
 
 
+
+	def getAnswerUtility(self, hirings, answers):
 	def evaluate(self):
 		self.evaluateState(self.root)
 	def hire(self):
@@ -96,4 +112,4 @@ class System:
 		return workers
 
 
-		
+
