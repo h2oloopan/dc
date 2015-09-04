@@ -18,12 +18,14 @@ class System:
 	counts: {}
 	total = 0
 	root: State()
+	hire_pointer: None
 	w_belief: 1.0
 	def __init__(self, outcomes, start, weights):
 		self.root.visitation = 1
+		self.hire_pointer = self.root
 		for outcome in outcomes:
-			counts[str(outcome)] = start
-			total += start
+			self.counts[str(outcome)] = start
+			self.total += start
 		if weights['belief'] is not None:
 			self.w_belief = weights['belief']
 	def pickOutcome(self, outcomes, probabilities):
@@ -68,7 +70,7 @@ class System:
 									p2 = p2 * hire.getQuality()
 								else:
 									p2 = p2 * (1 - hire.getQuality())
-							p3 = float(counts[str(truth)]) / float(total)
+							p3 = float(self.counts[str(truth)]) / float(self.total)
 						probabilities.append(p1 * p2 * p3)
 						sum_prob += p1 * p2 * p3
 					#need to normalize probability
@@ -136,14 +138,19 @@ class System:
 
 	def evaluate(self):
 		self.evaluateState(self.root)
-	def hire(self):
-		workers = []
-		return workers
+	def hireNext(self, lastHire, lastAnswer):
+		if lastHire is None or lastAnswer is None:
+			#this is at root
+			return self.hire_pointer.to_hire
+		else:
+			#update hire_pointer
+			key = str(lastHire.uuid) + '.' + str(lastAnswer)
+			self.hire_pointer = self.children[key]
+			return self.hire_pointer.to_hire
 	def aggregate(self, workers, answers):
 		max_vote_count = 0
 		max_vote_answer = None
 		votes = {}
-
 		for answer in answers:
 			if votes[str(answer)] is None:
 				votes[str(answer)] = 1
@@ -153,6 +160,12 @@ class System:
 				max_vote_count = votes[str(answer)]
 				max_vote_answer = answer
 		return (max_vote_answer, max_vote_count)
+	def update(self, outcome):
+		if self.counts[str(outcome)] is None:
+			self.counts[str(outcome)] = 1
+		else:
+			self.counts[str(outcome)] += 1
+		self.total += 1
 
 
 
