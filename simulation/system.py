@@ -18,11 +18,14 @@ class System:
 	counts: {}
 	total = 0
 	root: State()
-	def __init__(self, outcomes, start):
+	w_belief: 1.0
+	def __init__(self, outcomes, start, weights):
 		self.root.visitation = 1
 		for outcome in outcomes:
 			counts[str(outcome)] = start
 			total += start
+		if weights['belief'] is not None:
+			self.w_belief = weights['belief']
 	def pickOutcome(self, outcomes, probabilities):
 		levels = []
 		total = 0
@@ -126,6 +129,8 @@ class System:
 	def getWorkerUtility(self, state, worker, states):
 
 	def getAnswerUtility(self, hirings, answers):
+		answer, count = self.aggregate(hirings, answers)
+		return self.w_belief * (float(count) / float(len(answers)))
 	
 	def getVOI(self, state, worker):
 
@@ -135,6 +140,19 @@ class System:
 		workers = []
 		return workers
 	def aggregate(self, workers, answers):
+		max_vote_count = 0
+		max_vote_answer = None
+		votes = {}
+
+		for answer in answers:
+			if votes[str(answer)] is None:
+				votes[str(answer)] = 1
+			else:
+				votes[str(answer)] += 1
+			if votes[str(answer)] > max_vote_count:
+				max_vote_count = votes[str(answer)]
+				max_vote_answer = answer
+		return (max_vote_answer, max_vote_count)
 
 
 
