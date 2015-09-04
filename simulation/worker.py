@@ -38,6 +38,12 @@ class Worker:
 			return not task
 		else:
 			return task
+	def testTask(self, task):
+		rand = random.random()
+		if rand >= self.getQuality():
+			return not task
+		else:
+			return task
 	def reset(self):
 		self.x = 0
 		self.m = 0

@@ -79,7 +79,7 @@ class System:
 						nextState = State(cursor, 0, None)
 						nextState.worker = worker
 						nextState.answers = list(cursor.answers)
-						nextState.answers.append(worker.doTask(task))
+						nextState.answers.append(worker.testTask(task))
 						nextState.hirings = list(cursor.hirings)
 						nextState.hirings.append(worker)
 						cursor.children[key] = nextState
