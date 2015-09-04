@@ -91,16 +91,13 @@ class System:
 		if len(cl) == 0:
 			state.utility = self.getAnswerUtility(state.hirings, state.answers)
 		else:
+			groups = {}
 			for key, child in cl:
 				self.evaluateState(child)
-			#now all children are done
-			vois = {}
-			for key, child in cl:
-				if vois[child.worker.uuid] == None:
-					#something new
-					
+				if group[child.worker.uuid] is None:
+					group[child.worker.uuid] = [child]
 				else:
-					#something already existing
+					group[child.worker.uuid].append(child)
 
 
 	def getWorkerUtility(self, state, worker, states):
