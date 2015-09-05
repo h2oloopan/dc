@@ -1,5 +1,5 @@
 import random
-
+import learn
 
 class Worker:
 	uuid = ''
@@ -12,6 +12,8 @@ class Worker:
 	m = 0 #money a worker has made
 	er = 0
 	ep = 0
+	ts = []
+	cs = []
 	def __init__(self, uuid, x, p, r, c, a):
 		self.uuid = uuid
 		self.x = x
@@ -20,9 +22,26 @@ class Worker:
 		self.c = c
 		self.a = a
 		#print x, p, r, c, a
-	def estimate(self, p, r):
-		self.ep = p
-		self.er = r
+	def updateLearning(self, c):
+		#if c is True worker made a correct prediction, incorrect otherwise
+		if len(self.ts) == 0:
+			self.ts.append(1)
+			if c:
+				self.cs.append(1)
+			else:
+				self.cs.append(0)
+		else:
+			lastT = self.ts[-1]
+			lastC = self.cs[-1]
+			self.ts.append(lastT + 1)
+			if c:
+				self.cs.append(lastC + 1)
+			else:
+				self.cs.append(lastT + 1)
+	def learn(self):
+		learning = learn.learnCurve(self.cs, self.ts)
+		self.er = learning['r']
+		self.ep = learning['p']
 	def getEstimatedCumulativeQuality(self, x):
 		return (float(x) + float(self.ep)) / (float(x) + float(self.ep) + float(self.er))
 	def getEstimatedQualityAtX(self, x):

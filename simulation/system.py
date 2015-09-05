@@ -17,7 +17,6 @@ class State:
 
 class System:
 	counts: {}
-	learning: {}
 	total = 0
 	root: State()
 	hire_pointer: None
@@ -181,23 +180,11 @@ class System:
 		for i in range(0, len(workers)):
 			worker = workers[i]
 			answer = answers[i]
-			uuid = worker.uuid
-			if self.learning[uuid] is None:
-				self.learning[uuid] = {}
-				self.learning[uuid]['cs'] = []
-				self.learning[uuid]['ts'] = [1]
-				if answer == outcome:
-					self.learning[uuid]['cs'].append 1
-				else:
-					self.learning[uuid]['cs'].append 0
+			if answer == outcome:
+				worker.updateLearning(True)
 			else:
-				lastT = self.learning[uuid]['ts'][-1]
-				lastC = self.learning[uuid]['cs'][-1]
-				self.learning[uuid]['ts'].append(lastT + 1)
-				if answer == outcome:
-					self.learning[uuid]['cs'].append(lastC + 1)
-				else:
-					self.learning[uuid]['cs'].append(lastC)
+				worker.updateLearning(False)
+			worker.learn()
 
 
 
