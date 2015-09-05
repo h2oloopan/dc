@@ -1,4 +1,5 @@
 import random
+import learn
 
 class State:
 	utility = 0.0
@@ -16,6 +17,7 @@ class State:
 
 class System:
 	counts: {}
+	learning: {}
 	total = 0
 	root: State()
 	hire_pointer: None
@@ -144,8 +146,6 @@ class System:
 	def getAnswerUtility(self, hirings, answers):
 		answer, count = self.aggregate(hirings, answers)
 		return self.w_belief * (float(count) / float(len(answers)))
-	
-	def getVOI(self, state, worker):
 
 	def evaluate(self):
 		self.evaluateState(self.root)
@@ -158,7 +158,7 @@ class System:
 			key = str(lastHire.uuid) + '.' + str(lastAnswer)
 			self.hire_pointer = self.children[key]
 			return self.hire_pointer.to_hire
-	def aggregate(self, workers, answers):
+	def aggregate(self, answers):
 		max_vote_count = 0
 		max_vote_answer = None
 		votes = {}
@@ -170,13 +170,22 @@ class System:
 			if votes[str(answer)] > max_vote_count:
 				max_vote_count = votes[str(answer)]
 				max_vote_answer = answer
-		return (max_vote_answer, max_vote_count)
-	def update(self, outcome):
+		return max_vote_answer, max_vote_count
+	def update(self, workers, answers, outcome):
 		if self.counts[str(outcome)] is None:
 			self.counts[str(outcome)] = 1
 		else:
 			self.counts[str(outcome)] += 1
 		self.total += 1
+		#update workers
+		for i in range(0, len(workers)):
+			worker = workers[i]
+			answer = answers[i]
+			uuid = worker.uuid
+			if self.learning[uuid] is None:
+				
+			else:
+
 
 
 
