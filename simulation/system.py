@@ -183,8 +183,21 @@ class System:
 			answer = answers[i]
 			uuid = worker.uuid
 			if self.learning[uuid] is None:
-				
+				self.learning[uuid] = {}
+				self.learning[uuid]['cs'] = []
+				self.learning[uuid]['ts'] = [1]
+				if answer == outcome:
+					self.learning[uuid]['cs'].append 1
+				else:
+					self.learning[uuid]['cs'].append 0
 			else:
+				lastT = self.learning[uuid]['ts'][-1]
+				lastC = self.learning[uuid]['cs'][-1]
+				self.learning[uuid]['ts'].append(lastT + 1)
+				if answer == outcome:
+					self.learning[uuid]['cs'].append(lastC + 1)
+				else:
+					self.learning[uuid]['cs'].append(lastC)
 
 
 

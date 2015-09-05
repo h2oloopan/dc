@@ -10,6 +10,8 @@ class Worker:
 	c = 0 #cost to hire
 	a = 0 #availability
 	m = 0 #money a worker has made
+	er = 0
+	ep = 0
 	def __init__(self, uuid, x, p, r, c, a):
 		self.uuid = uuid
 		self.x = x
@@ -18,6 +20,13 @@ class Worker:
 		self.c = c
 		self.a = a
 		#print x, p, r, c, a
+	def estimate(self, p, r):
+		self.ep = p
+		self.er = r
+	def getEstimatedCumulativeQuality(self, x):
+		return (float(x) + float(self.ep)) / (float(x) + float(self.ep) + float(self.er))
+	def getEstimatedQualityAtX(self, x):
+		return float(x) * self.getEstimatedCumulativeQuality(x) - (float(x) - 1.0) * self.getEstimatedCumulativeQuality(x - 1)
 	def getCumulativeQuality(self, x):
 		return (float(x) + float(self.p)) / (float(x) + float(self.p) + float(self.r))
 	def getQuality(self):
