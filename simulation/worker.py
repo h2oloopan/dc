@@ -60,18 +60,24 @@ class Worker:
 		else:
 			return True
 		return
-	def doTask(self, task, payment=0):
+	def doTask(self, task, outcomes, payment=0):
 		self.x = self.x + 1
 		self.m += payment
 		rand = random.random()
 		if rand >= self.getQuality():
-			return not task
+			others = list(outcomes)
+			others.pop(others.index(task))
+			pick = random.randint(0, len(others) - 1)
+			return pick
 		else:
 			return task
-	def testTask(self, task):
+	def testTask(self, task, outcomes):
 		rand = random.random()
 		if rand >= self.getQuality():
-			return not task
+			others = list(outcomes)
+			others.pop(others.index(task))
+			pick = random.randint(0, len(others) - 1)
+			return pick
 		else:
 			return task
 	def reset(self):

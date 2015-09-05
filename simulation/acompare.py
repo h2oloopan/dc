@@ -20,3 +20,13 @@ if __name__ == '__main__':
 
 	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
 	tasks = simulate.createBinaryTasks(1000)
+	outcomes = [True, False]
+
+	runs = 5
+
+
+	f, ax = plot.subplots(2, 2)
+
+	print 'Random K'
+	for i in range(0, runs):
+		

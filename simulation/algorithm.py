@@ -42,6 +42,26 @@ def findTopKAvailableWorkers(workers, observedCorrectness, k):
 	return top
 
 
+def randomK(tasks, outcomes, workers, k):
+	answers = []
+	for task in tasks:
+		availables = findAvailableWorkers(workers)
+		votes = {}
+		vote = None
+		max_vote = 0
+		for j in range(0, k):
+			worker = availables[random.randint(0, len(availables) - 1)]
+			answer = worker.doTask(task, outcomes)
+			if votes[str(answer)] is None:
+				votes[str(answer)] = 1
+			else:
+				votes[str(answer)] += 1
+			if votes[str(answer)] > max_vote:
+				max_vote = votes[str(answer)]
+				vote = answer
+		answers.append(vote)
+	return answers
+
 def pickRandomly(tasks, workers, limit):
 	#pick workers randomly from all available ones
 	answers = []
