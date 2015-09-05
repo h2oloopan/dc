@@ -5,14 +5,14 @@ import uuid
 
 from worker import Worker
 
-def createBinaryTasks(n):
+def createBinaryTasks(n, p=0.5):
 	tasks = []
 	for i in range(0, n):
 		sample = random.random()
-		if sample >= 0.5:
-			tasks.append(True)
-		else:
+		if sample >= p:
 			tasks.append(False)
+		else:
+			tasks.append(True)
 	return tasks
 
 def createHyperbolicWorker(n, r, p, v, c):
@@ -35,12 +35,17 @@ def createHyperbolicWorker(n, r, p, v, c):
 	ps = PS.rvs(n)
 
 	#create availability
-	lower = 0
-	upper = 1
-	mu = v['mu']
-	sigma = v['sigma']
-	VS = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
-	vs = VS.rvs(n)
+	vs = []
+	if v is None:
+		for i in range(0, len(ps)):
+			vs.append(1)
+	else:
+		lower = 0
+		upper = 1
+		mu = v['mu']
+		sigma = v['sigma']
+		VS = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+		vs = VS.rvs(n)
 
 	workers = []
 	for i in range(0, len(ps)):
