@@ -82,6 +82,9 @@ if __name__ == '__main__':
 	plot.show()
 
 
+	print 'Dynamic Hiring'
+	system = System(outcomes, 10, {'belief' : 1, 'quality': 1})
+	
 
 
 

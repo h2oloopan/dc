@@ -184,6 +184,10 @@ class System:
 			else:
 				worker.updateLearning(False)
 			worker.learn()
+	def rankWorkers(self, workers):
+		result = []
+		
+		return result
 
 
 
