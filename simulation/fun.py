@@ -1,23 +1,32 @@
+import sys
+sys.setrecursionlimit(10000)
+
 class ModModMod:
 	def f(self, m, r, p):
-		if p >= len(m):
+		if r == 0:
+			return 0
+		elif p >= len(m):
 			return (1 + r) * r / 2
 		elif m[p] > r:
 			return self.f(m, r, p + 1)
 		elif m[p] == r:
 			return self.f(m, r - 1, p + 1)
 		else:
-			cur = m[p]
-			num_circles = r / cur
-			remainder = r % cur
-			result = num_circles * self.f(m, cur - 1, p + 1)
-			#print '(%r %r %r) left %r' % (m, r, p, result) 
-			if remainder > 0:
-				result += self.f(m, remainder, p + 1)
-				#print 'total', result
-			return result
+			return (r / m[p]) * self.f(m, m[p] - 1, p + 1) + self.f(m, r % m[p], p + 1)
+#	def findSum(self, m, r):
+#		return self.f(m, r, 0)
+	def g(self, m, r):
+		multiplier = 1
+		remainder = 0
+		for x in m:
+			multiplier = multiplier * (r / x)
+			remainder = r % x
+			if r >= x:
+				r = x - 1
+		return multiplier * ((1 + r) * r / 2 + remainder)
 	def findSum(self, m, r):
-		return self.f(m, r, 0)
+		#return self.f(m, r, 0)
+		return self.g(m, r)
 
 
 if __name__ == '__main__':

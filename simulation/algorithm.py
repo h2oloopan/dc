@@ -65,6 +65,13 @@ def randomK(tasks, outcomes, workers, k):
 		answers.append(vote)
 	return answers
 
+def topKAverage(tasks, outcomes, workers, k):
+
+
+
+def topKEstimate(tasks, outcomes, workers, k):
+	return None
+
 def pickRandomly(tasks, workers, limit):
 	#pick workers randomly from all available ones
 	answers = []
