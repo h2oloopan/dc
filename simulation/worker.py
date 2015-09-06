@@ -68,7 +68,7 @@ class Worker:
 			others = list(outcomes)
 			others.pop(others.index(task))
 			pick = random.randint(0, len(others) - 1)
-			return pick
+			return others[pick]
 		else:
 			return task
 	def testTask(self, task, outcomes):
@@ -77,7 +77,7 @@ class Worker:
 			others = list(outcomes)
 			others.pop(others.index(task))
 			pick = random.randint(0, len(others) - 1)
-			return pick
+			return others[pick]
 		else:
 			return task
 	def reset(self):

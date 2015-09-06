@@ -10,21 +10,20 @@ class State:
 	children = {}
 	answers = []
 	hirings = []
-	def __init__(self, parent, V, W):
+	def __init__(self, parent):
 		self.parent = parent
-		self.V = V
-		self.W = W
 
 class System:
-	counts: {}
+	counts = None
 	total = 0
-	root: State()
-	hire_pointer: None
-	w_belief: 1.0
-	w_quality: 1.0
+	root = State(None, )
+	hire_pointer = None
+	w_belief = 1.0
+	w_quality = 1.0
 	def __init__(self, outcomes, start, weights):
 		self.root.visitation = 1
 		self.hire_pointer = self.root
+		self.counts = {}
 		for outcome in outcomes:
 			self.counts[str(outcome)] = start
 			self.total += start
@@ -86,7 +85,7 @@ class System:
 					key = str(worker.uuid) + '.' + str(pick)
 					nextState = cursor.children[key]
 					if nextState == None:
-						nextState = State(cursor, 0, None)
+						nextState = State(cursor)
 						nextState.hired = worker
 						nextState.answers = list(cursor.answers)
 						nextState.answers.append(worker.testTask(task))

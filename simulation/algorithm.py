@@ -52,12 +52,11 @@ def randomK(tasks, outcomes, workers, k):
 		for j in range(0, k):
 			worker = availables[random.randint(0, len(availables) - 1)]
 			answer = worker.doTask(task, outcomes)
-			if votes[str(answer)] is None:
-				votes[str(answer)] = 1
-			else:
-				votes[str(answer)] += 1
-			if votes[str(answer)] > max_vote:
-				max_vote = votes[str(answer)]
+			key = str(answer)
+			votes.setdefault(key, 1)
+			votes[key] += 1
+			if votes[key] > max_vote:
+				max_vote = votes[key]
 				vote = answer
 		answers.append(vote)
 	return answers

@@ -1,5 +1,4 @@
 from scipy import stats
-from worker import Worker
 
 #learning module
 def learnCurve(cs, ts):
@@ -27,5 +26,3 @@ def learnCurve(cs, ts):
 	result = {'r': r, 'p': p, 'e': std_err, 'rv': r_value, 'pv': p_value}
 
 	return result
-
-#def getCumulativeQuality(x, p, r):
