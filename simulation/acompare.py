@@ -22,14 +22,19 @@ if __name__ == '__main__':
 	outcomes = [True, False]
 
 	runs = 5
-	steps = 2
+	steps = 3
 
 
 	f, ax = plot.subplots(2, 2)
 
 
 	print 'Random K'
-	k = 10
+	k = 5
+
+
+	total_ws = []
+	total_cs = []
+
 	cs = []
 	qs = []
 	for i in range(0, runs):
@@ -60,15 +65,20 @@ if __name__ == '__main__':
 				avg += cs[i + j]
 				count += 1
 		qs.append(float(avg) / (float(runs) * float(count)))
-
-
+	for i in range(0, len(cs)):		
 		cs[i] = cs[i] + cumulative
+		total_cs.append(cs[i] / runs)
+		total_ws.append(k * (i + 1))
 		cumulative = cs[i]
 		cs[i] = float(cs[i]) / (float(runs) * float(i + 1))
+
+	#print cs
+	#print qs
 
 	xs = np.arange(1, len(tasks) + 1, 1)
 	ax[0][0].plot(xs, cs)
 	ax[0][0].plot(xs, qs)
+	ax[0][1].plot(total_ws, total_cs)
 	plot.show()
 
 
