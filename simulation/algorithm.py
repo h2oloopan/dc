@@ -1,4 +1,5 @@
 import random
+import simulate
 
 
 def findAvailableWorkers(workers):
@@ -65,7 +66,45 @@ def randomK(tasks, outcomes, workers, k):
 		answers.append(vote)
 	return answers
 
-def topKAverage(tasks, outcomes, workers, k):
+def topKAverageWithTutorials(tasks, outcomes, workers, k, t):
+	answers = []
+	correct = {}
+	mapping = {}
+	#do tutorials
+	tutorials = simulate.createBinaryTasks(t)
+	for worker in workers:
+		correct.setdefault(worker.uuid, 0)
+		mapping.setdefault(worker.uuid, worker)
+		for tutorial in tutorials:
+			answer = worker.doTask(tutorial, outcomes)
+			if answer == tutorial:
+				correct[worker.uuid] += 1
+			else:
+				correct[worer.uuid] += 0
+
+	ranked = sorted(correct.items(), key=operator.itemgetter(1), reverse=True)
+	#do tasks
+	for task in tasks:
+		availables = findAvailableWorkers(workers)
+		votes = {}
+		vote = None
+		max_vote = 0
+		hired = []
+		current = 0
+		while len(hired) < k:
+			pick = mapping[ranked[current][0]]
+			if pick is in availables:
+				hired.append(pick)
+				answer = pick.doTask(task, outcomes)
+				key = str(answer)
+				votes.setdefault(key, 0)
+				votes[key] += 1
+				if votes[key] > max_vote:
+					max_vote = votes[key]
+					vote = answer
+			current += 1
+		answers.append(vote)
+	return answers
 
 
 
