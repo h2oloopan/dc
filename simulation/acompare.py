@@ -66,7 +66,7 @@ if __name__ == '__main__':
 	p = {'mu': 20, 'sigma': 5}
 
 	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
-	tasks = simulate.createBinaryTasks(100)
+	tasks = simulate.createBinaryTasks(500)
 	outcomes = [True, False]
 
 	runs = 5
@@ -83,8 +83,8 @@ if __name__ == '__main__':
 
 
 	print 'Top K'
-	k = 3
-	t = 5
+	k = 5
+	t = 10
 	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
