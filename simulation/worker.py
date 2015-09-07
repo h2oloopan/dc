@@ -14,6 +14,8 @@ class Worker:
 	ep = 0
 	ts = []
 	cs = []
+	noise_mu = None
+	noise_sigma = None
 	def __init__(self, uuid, x, p, r, c, a):
 		self.uuid = uuid
 		self.x = x
@@ -22,6 +24,9 @@ class Worker:
 		self.c = c
 		self.a = a
 		#print x, p, r, c, a
+	def addNoise(self, noise_mu, noise_sigma):
+		self.noise_mu = noise_mu
+		self.noise_sigma = noise_sigma
 	def updateLearning(self, c):
 		#if c is True worker made a correct prediction, incorrect otherwise
 		if len(self.ts) == 0:
@@ -64,6 +69,13 @@ class Worker:
 		self.x = self.x + 1
 		self.m += payment
 		rand = random.random()
+
+		#add noise if needed
+		if self.noise_mu is not None:
+			print rand
+			rand += random.gauss(self.noise_mu, self.noise_sigma)
+			print rand
+
 		if rand >= self.getQuality():
 			others = list(outcomes)
 			others.pop(others.index(task))
@@ -71,15 +83,7 @@ class Worker:
 			return others[pick]
 		else:
 			return task
-	def testTask(self, task, outcomes):
-		rand = random.random()
-		if rand >= self.getQuality():
-			others = list(outcomes)
-			others.pop(others.index(task))
-			pick = random.randint(0, len(others) - 1)
-			return others[pick]
-		else:
-			return task
+
 	def reset(self):
 		self.x = 0
 		self.m = 0

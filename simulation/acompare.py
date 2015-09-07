@@ -13,36 +13,16 @@ def resetWorkers(workers):
 	for worker in workers:
 		worker.reset()
 
-if __name__ == '__main__':
-	r = {'mu': 10, 'sigma': 2.5}
-	p = {'mu': 5, 'sigma': 1}
-
-	workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
-	tasks = simulate.createBinaryTasks(1000)
-	outcomes = [True, False]
-
-	runs = 5
-	steps = 3
-
-
-	f, ax = plot.subplots(2, 2)
-
-
-	print 'Random K'
-	k = 5
-
-
+def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters):
 	total_ws = []
 	total_cs = []
-
 	cs = []
 	qs = []
 	for i in range(0, runs):
-		answers = algorithm.randomK(tasks, outcomes, workers, k)
+		answers = algorithm(tasks, outcomes, workers, parameters)
 		resetWorkers(workers)
 		#print tasks
 		#print answers
-
 		for i in range(0, len(tasks)):
 			if answers[i] == tasks[i]:
 				if i >= len(cs):
@@ -76,16 +56,42 @@ if __name__ == '__main__':
 	#print qs
 
 	xs = np.arange(1, len(tasks) + 1, 1)
-	ax[0][0].plot(xs, cs)
-	ax[0][0].plot(xs, qs)
-	ax[0][1].plot(total_ws, total_cs)
-	plot.show()
+	graph[0].plot(xs, cs)
+	graph[0].plot(xs, qs)
+	graph[1].plot(total_ws, total_cs)
+
+
+if __name__ == '__main__':
+	r = {'mu': 50, 'sigma': 10}
+	p = {'mu': 20, 'sigma': 5}
+
+	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
+	tasks = simulate.createBinaryTasks(100)
+	outcomes = [True, False]
+
+	runs = 5
+	steps = 3
+
+
+	f, ax = plot.subplots(2, 2)
+
+
+	print 'Random K'
+	k = 5
+	analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
+
+
+
+	print 'Top K'
+	k = 3
+	t = 5
+	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
 	print 'Dynamic Hiring'
 	system = System(outcomes, 10, {'belief' : 1, 'quality': 1})
-	
 
+	plot.show()
 
 
 

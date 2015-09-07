@@ -1,5 +1,6 @@
 import random
 import simulate
+import operator
 
 
 def findAvailableWorkers(workers):
@@ -66,7 +67,9 @@ def randomK(tasks, outcomes, workers, k):
 		answers.append(vote)
 	return answers
 
-def topKAverageWithTutorials(tasks, outcomes, workers, k, t):
+def topKAverageWithTutorials(tasks, outcomes, workers, ps):
+	k = ps[0]
+	t = ps[1]
 	answers = []
 	correct = {}
 	mapping = {}
@@ -80,7 +83,7 @@ def topKAverageWithTutorials(tasks, outcomes, workers, k, t):
 			if answer == tutorial:
 				correct[worker.uuid] += 1
 			else:
-				correct[worer.uuid] += 0
+				correct[worker.uuid] += 0
 
 	ranked = sorted(correct.items(), key=operator.itemgetter(1), reverse=True)
 	#do tasks
@@ -93,7 +96,7 @@ def topKAverageWithTutorials(tasks, outcomes, workers, k, t):
 		current = 0
 		while len(hired) < k:
 			pick = mapping[ranked[current][0]]
-			if pick is in availables:
+			if pick in availables:
 				hired.append(pick)
 				answer = pick.doTask(task, outcomes)
 				key = str(answer)
