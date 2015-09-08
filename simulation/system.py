@@ -36,7 +36,7 @@ class System:
 		self.hire_pointer = self.root
 
 	def rankWorkers(self, workers):
-		sorted(workers, key=lambda worker: )
+		return sorted(workers, key=lambda worker: worker.calculate())
 
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
