@@ -36,8 +36,7 @@ class System:
 		self.hire_pointer = self.root
 
 	def rankWorkers(self, workers):
-		ranked = []
-		return ranked
+		sorted(workers, key=lambda worker: )
 
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
@@ -167,7 +166,7 @@ class System:
 
 
 	def getWorkerUtility(self, state, worker, states):
-		delta = worker.getQualityAtX(worker.x + 1) - worker.getQuality()
+		delta = worker.getEstimatedQualityAtX(worker.x + 1) - worker.getEstimatedQualityAtX(worker.x)
 		utility = self.w_quality * delta - float(worker.c)
 		visitation = 0
 		for state in states:
