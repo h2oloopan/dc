@@ -16,13 +16,11 @@ class State:
 class System:
 	counts = None
 	total = 0
-	root = State(None, )
+	root = State(None)
 	hire_pointer = None
 	w_belief = 1.0
 	w_quality = 1.0
 	def __init__(self, outcomes, start, weights):
-		self.root.visitation = 1
-		self.hire_pointer = self.root
 		self.counts = {}
 		for outcome in outcomes:
 			self.counts[str(outcome)] = start
@@ -31,6 +29,44 @@ class System:
 			self.w_belief = weights['belief']
 		if weights is not None and weights['quality'] is not None:
 			self.w_quality = weights['quality']
+		self.reset()
+	def reset(self):
+		self.root = State(None)
+		self.root.visitation = 1
+		self.hire_pointer = self.root
+
+	def rankWorkers(self, workers):
+		ranked = []
+		return ranked
+
+	def dh(self, tasks, outcomes, workers, ps):
+		#l is the horizon -> maximum number of workers to hire
+		#s is the number of samples
+		l = ps[0]
+		s = ps[1]
+		t = ps[2] #number of tutorials
+		result = []
+		for task in tasks:
+			self.reset()
+			self.sample(s, l, task, outcomes, self.rankWorkers(workers))
+			self.evaluate()
+			last_hire = None
+			last_answer = None
+			hired = []
+			answers = []
+			while True:
+				next_worker = self.hireNext(last_hire, last_answer)
+				if next_worker is None:
+					break
+				else:
+					answer = next_worker.doTask(task, outcomes, worker.c)
+					hired.append(worker)
+					answers.append(answer)
+			#hiring is done
+			prediction = self.aggregate(hired, answers)
+			result.append(prediction)
+		return result
+
 	def pickOutcome(self, outcomes, probabilities):
 		levels = []
 		total = 0
@@ -156,7 +192,7 @@ class System:
 			key = str(lastHire.uuid) + '.' + str(lastAnswer)
 			self.hire_pointer = self.children[key]
 			return self.hire_pointer.to_hire
-	def aggregate(self, answers):
+	def aggregate(self, workers, answers):
 		max_vote_count = 0
 		max_vote_answer = None
 		votes = {}
@@ -184,10 +220,6 @@ class System:
 			else:
 				worker.updateLearning(False)
 			worker.learn()
-	def rankWorkers(self, workers):
-		result = []
-		
-		return result
 
 
 
