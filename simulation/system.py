@@ -87,50 +87,49 @@ class System:
 			while number < horizon:
 				#worker = workers[rank] #next worker to hire
 				#ank += 1
-				for w in range(0, len(workers)):
-					worker = workers[w]
-					probabilities = []
-					sum_prob = 0
-					for o in range(0, len(outcomes)):
-						outcome = outcomes[o]
-						p1 = 1.0
-						p2 = 1.0
-						p3 = 1.0
-						for t in range(0, len(outcomes)):
-							truth = outcomes[t]
-							if outcome == truth:
-								p1 = worker.getQuality()
-							else:
-								p1 = 1 - worker.getQuality()
-							for a in range(0, len(cursor.answers)):
-								answer = cursor.answers[a]
-								hire = cursor.hirings[a]
-								if answer == truth:
-									p2 = p2 * hire.getQuality()
-								else:
-									p2 = p2 * (1 - hire.getQuality())
-							p3 = float(self.counts[str(truth)]) / float(self.total)
-						probabilities.append(p1 * p2 * p3)
-						sum_prob += p1 * p2 * p3
-					#need to normalize probability
-					for o in range(0, len(outcomes)):
-						outcome = outcomes[o]
-						probabilities[0] = probabilities[o] / sum_prob
-					pick = self.pickOutcome(outcomes, probabilities)
+				worker = workers[rank]
+				rank += 1
 
-					key = str(worker.uuid) + '.' + str(pick)
-					nextState = cursor.children[key]
-					if nextState == None:
-						nextState = State(cursor)
-						nextState.hired = worker
-						nextState.answers = list(cursor.answers)
-						nextState.answers.append(pick)
-						nextState.hirings = list(cursor.hirings)
-						nextState.hirings.append(worker)
-						cursor.children[key] = nextState
-					nextState.visitation += 1
-					cursor = nextState
-					number += 1
+				probabilities = [] #probability for each outcome
+				sum_prob = 0
+				for outcome in outcomes:
+					p1 = 1.0
+					p2 = 1.0
+					p3 = 1.0
+					for truth in outcomes:
+						if outcomes == truth:
+							p1 = worker.getEstimatedQualityAtX(worker.x)
+						else:
+							p1 = 1 - worker.getEstimatedQualityAtX(worker.x)
+						for j in range(0, len(cursor.answers)):
+							answer = cursor.answers[j]
+							hire = cursor.hirings[j]
+							if answer == truth:
+								p2 = p2 * hire.getEstimatedQualityAtX(hire.x)
+							else:
+								p2 = p2 * (1 - hire.getEstimatedQualityAtX(hire.x))
+						p3 = float(self.counts[str(truth)]) / float(self.total)
+					probabilities.append(p1 * p2 * p3)
+					sum_prob += p1 * p2 * p3
+
+				#need to normalize probability
+				for o in range(0, len(outcomes)):
+					outcome = outcomes[o]
+					probabilities[o] = probabilities[o] / sum_prob
+				pick = self.pickOutcome(outcomes, probabilities)
+
+				key = str(worker.uuid) + '.' + str(pick)
+				if key not in cursor.children:
+					nextState = State(cursor)
+					nextState.hired = worker
+					nextState.answers = list(cursor.answers)
+					nextState.answers.append(pick)
+					nextState.hirings = list(cursor.hirings)
+					nextState.hirings.append(worker)
+					cursor.children[key] = nextState
+				cursor.children[key].visitation += 1
+				cursor = cursor.children[key]
+				number += 1
 
 	def evaluateState(self, state):
 		cl = state.children.items()
