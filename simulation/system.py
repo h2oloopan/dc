@@ -63,6 +63,8 @@ class System:
 					answers.append(answer)
 			#hiring is done
 			prediction = self.aggregate(hired, answers)
+			#update all hired workers
+			self.update(hired, answers, prediction)
 			result.append(prediction)
 		return result
 
@@ -82,7 +84,7 @@ class System:
 		for i in range(0, samples):
 			cursor = root
 			number = 0
-			#rank = 0
+			rank = 0
 			while number < horizon:
 				#worker = workers[rank] #next worker to hire
 				#ank += 1

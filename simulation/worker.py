@@ -1,5 +1,6 @@
 import random
 import learn
+import math
 
 class Worker:
 	uuid = ''
@@ -48,11 +49,23 @@ class Worker:
 				self.cs.append(lastT + 1)
 	def learn(self):
 		learning = learn.learnCurve(self.cs, self.ts)
-		self.er = learning['r']
-		self.ep = learning['p']
+		if not math.isnan(learning['r']):
+			self.er = learning['r']
+		if not math.isnan(learning['p']):
+			self.ep = learning['p']
 	def getEstimatedCumulativeQuality(self, x):
+		if self.er == 0:
+			#hasn't even be able to learn the quality
+			if len(self.ts) == 0:
+				return 0.5
+			elif x - 1 < len(self.ts):
+				return float(cs[x-1]) / float(ts[x-1])
+			else:
+				return float(cs[-1]) / float(ts[-1])
 		return (float(x) + float(self.ep)) / (float(x) + float(self.ep) + float(self.er))
 	def getEstimatedQualityAtX(self, x):
+		if self.er == 0:
+			return self.getEstimatedCumulativeQuality(x)
 		return float(x) * self.getEstimatedCumulativeQuality(x) - (float(x) - 1.0) * self.getEstimatedCumulativeQuality(x - 1)
 	def getCumulativeQuality(self, x):
 		return (float(x) + float(self.p)) / (float(x) + float(self.p) + float(self.r))
