@@ -66,7 +66,7 @@ if __name__ == '__main__':
 	p = {'mu': 20, 'sigma': 5}
 
 	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
-	tasks = simulate.createBinaryTasks(500)
+	tasks = simulate.createBinaryTasks(1)
 	outcomes = [True, False]
 
 	runs = 5
@@ -76,24 +76,25 @@ if __name__ == '__main__':
 	f, ax = plot.subplots(3, 2)
 
 
-	print 'Random K'
-	k = 5
-	analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
+	#print 'Random K'
+	#k = 5
+	#analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
 
 
 
-	print 'Top K'
-	k = 5
-	t = 10
-	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
+	#print 'Top K'
+	#k = 5
+	#t = 10
+	#analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
 	print 'Dynamic Hiring'
 	system = System(outcomes, 10, {'belief' : 1, 'quality': 1})
-	horizon = 5
-	samples = 1000
+	horizon = 2
+	samples = 4
 	tutorials = 10
-	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
+	system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
+	#analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 
 	plot.show()
 

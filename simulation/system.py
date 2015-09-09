@@ -9,11 +9,23 @@ class State:
 	hired = None
 	to_hire = None
 	parent = None
-	children = {}
-	answers = []
-	hirings = []
+	children = None
+	answers = None
+	hirings = None
 	def __init__(self, parent):
 		self.parent = parent
+		self.children = {}
+		self.answers = []
+		self.hirings = []
+	def __str__(self):
+		s = ''
+		#s += 'hired: ' + str(self.hired) + '\n'
+		#s += 'to hire: ' + str(self.to_hire) + '\n'
+		s += 'answers: ' + str(self.answers) + '\n'
+		#s += 'hirings: ' + str(self.hirings) + '\n'
+		#s += 'utility: ' + str(self.utility) + '\n'
+		s += 'visitation: ' + str(self.visitation) + '\n'
+		return s
 
 class System:
 	counts = None
@@ -34,11 +46,16 @@ class System:
 		self.reset()
 	def reset(self):
 		self.root = State(None)
-		self.root.visitation = 1
+		self.root.visitation = 0
 		self.hire_pointer = self.root
 
 	def rankWorkers(self, workers):
-		return sorted(workers, key=lambda worker: worker.calculate())
+		available = []
+		for worker in workers:
+			if worker.isAvailable():
+				available.append(worker)
+
+		return sorted(available, key=lambda worker: worker.calculate())
 
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
@@ -64,6 +81,7 @@ class System:
 		for task in tasks:
 			self.reset()
 			self.sample(s, l, task, outcomes, self.rankWorkers(workers))
+			#continue
 			self.evaluate()
 			last_hire = None
 			last_answer = None
@@ -87,6 +105,7 @@ class System:
 	def pickOutcome(self, outcomes, probabilities):
 		levels = []
 		total = 0
+		#print probabilities
 		for o in range(0, len(outcomes)):
 			total += probabilities[o]
 			levels.append(total)
@@ -94,14 +113,19 @@ class System:
 		for l in range(0, len(levels)):
 			level = levels[l]
 			if r < level:
+				#print r, level
 				return outcomes[l]
 		return None
 	def sample(self, samples, horizon, task, outcomes, workers):
 		for i in range(0, samples):
-			cursor = root
+			cursor = self.root
 			number = 0
 			rank = 0
+
+			cursor.visitation += 1
+			#print str(cursor)
 			while number < horizon:
+				#print 'at', str(cursor)
 				#worker = workers[rank] #next worker to hire
 				#ank += 1
 				worker = workers[rank]
@@ -136,7 +160,9 @@ class System:
 				pick = self.pickOutcome(outcomes, probabilities)
 
 				key = str(worker.uuid) + '.' + str(pick)
-				if key not in cursor.children:
+				#print 'children', cursor.children.keys()
+				if key not in cursor.children.keys():
+					#print key
 					nextState = State(cursor)
 					nextState.hired = worker
 					nextState.answers = list(cursor.answers)
@@ -144,12 +170,21 @@ class System:
 					nextState.hirings = list(cursor.hirings)
 					nextState.hirings.append(worker)
 					cursor.children[key] = nextState
+					#print 'added', nextState
 				cursor.children[key].visitation += 1
 				cursor = cursor.children[key]
 				number += 1
 
+				#print str(cursor)
+
+
 	def evaluateState(self, state):
 		cl = state.children.items()
+		print state
+		print cl
+		return
+
+
 		if len(cl) == 0:
 			state.utility = self.getAnswerUtility(state.hirings, state.answers)
 			state.to_hire = None
