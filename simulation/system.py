@@ -1,5 +1,7 @@
 import random
 import learn
+import simulate
+
 
 class State:
 	utility = 0.0
@@ -45,6 +47,20 @@ class System:
 		s = ps[1]
 		t = ps[2] #number of tutorials
 		result = []
+
+
+		#running tutorials
+		tutorials = simulate.createBinaryTasks(t)
+		for worker in workers:
+			for tutorial in tutorials:
+				answer = worker.doTask(tutorial, outcomes)
+				if answer == tutorial:
+					worker.updateLearning(True)
+				else:
+					worker.updateLearning(False)
+			worker.learn()
+
+
 		for task in tasks:
 			self.reset()
 			self.sample(s, l, task, outcomes, self.rankWorkers(workers))

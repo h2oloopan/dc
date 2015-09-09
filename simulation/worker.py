@@ -46,7 +46,7 @@ class Worker:
 			if c:
 				self.cs.append(lastC + 1)
 			else:
-				self.cs.append(lastT + 1)
+				self.cs.append(lastC)
 	def learn(self):
 		learning = learn.learnCurve(self.cs, self.ts)
 		if not math.isnan(learning['r']):

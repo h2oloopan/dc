@@ -73,7 +73,7 @@ if __name__ == '__main__':
 	steps = 3
 
 
-	f, ax = plot.subplots(2, 2)
+	f, ax = plot.subplots(3, 2)
 
 
 	print 'Random K'
@@ -90,6 +90,10 @@ if __name__ == '__main__':
 
 	print 'Dynamic Hiring'
 	system = System(outcomes, 10, {'belief' : 1, 'quality': 1})
+	horizon = 5
+	samples = 1000
+	tutorials = 10
+	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 
 	plot.show()
 
