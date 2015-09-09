@@ -180,12 +180,12 @@ class System:
 
 	def evaluateState(self, state):
 		cl = state.children.items()
+		print 'evaluate'
 		print state
 		print cl
-		return
-
 
 		if len(cl) == 0:
+			#this is a leaf node
 			state.utility = self.getAnswerUtility(state.hirings, state.answers)
 			state.to_hire = None
 		else:
@@ -193,7 +193,7 @@ class System:
 			workers = {}
 			for key, child in cl:
 				self.evaluateState(child)
-				if group[child.hired.uuid] is None:
+				if child.hired.uuid not in group.keys():
 					group[child.hired.uuid] = [child]
 					workers[child.hired.uuid] = child.hired
 				else:
@@ -229,6 +229,8 @@ class System:
 		return utility
 
 	def getAnswerUtility(self, hirings, answers):
+		if len(answers) == 0:
+			return 0
 		answer, count = self.aggregate(hirings, answers)
 		return self.w_belief * (float(count) / float(len(answers)))
 
@@ -248,7 +250,7 @@ class System:
 		max_vote_answer = None
 		votes = {}
 		for answer in answers:
-			if votes[str(answer)] is None:
+			if str(answer) not in votes.keys():
 				votes[str(answer)] = 1
 			else:
 				votes[str(answer)] += 1
