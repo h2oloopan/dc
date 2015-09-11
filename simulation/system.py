@@ -20,10 +20,10 @@ class State:
 	def __str__(self):
 		s = ''
 		#s += 'hired: ' + str(self.hired) + '\n'
-		#s += 'to hire: ' + str(self.to_hire) + '\n'
+		s += 'to hire: ' + str(self.to_hire) + '\n'
 		s += 'answers: ' + str(self.answers) + '\n'
 		#s += 'hirings: ' + str(self.hirings) + '\n'
-		#s += 'utility: ' + str(self.utility) + '\n'
+		s += 'utility: ' + str(self.utility) + '\n'
 		s += 'visitation: ' + str(self.visitation) + '\n'
 		return s
 
@@ -65,7 +65,6 @@ class System:
 		t = ps[2] #number of tutorials
 		result = []
 
-
 		#running tutorials
 		tutorials = simulate.createBinaryTasks(t)
 		for worker in workers:
@@ -77,12 +76,12 @@ class System:
 					worker.updateLearning(False)
 			worker.learn()
 
-
 		for task in tasks:
 			self.reset()
 			self.sample(s, l, task, outcomes, self.rankWorkers(workers))
 			#continue
 			self.evaluate()
+			#print 'Evaluation done'
 			last_hire = None
 			last_answer = None
 			hired = []
@@ -95,8 +94,11 @@ class System:
 					answer = next_worker.doTask(task, outcomes, worker.c)
 					hired.append(worker)
 					answers.append(answer)
+					last_hire = next_worker
+					last_answer = answer
 			#hiring is done
 			prediction = self.aggregate(hired, answers)
+			#print answers, prediction
 			#update all hired workers
 			self.update(hired, answers, prediction)
 			result.append(prediction)
@@ -180,9 +182,9 @@ class System:
 
 	def evaluateState(self, state):
 		cl = state.children.items()
-		print 'evaluate'
-		print state
-		print cl
+		#print 'evaluate'
+		#print state
+		#print cl
 
 		if len(cl) == 0:
 			#this is a leaf node
@@ -216,6 +218,9 @@ class System:
 			state.utility = max_utility
 			state.to_hire = to_hire
 
+		#print 'evaluate state'
+		#print state
+
 
 
 	def getWorkerUtility(self, state, worker, states):
@@ -243,7 +248,7 @@ class System:
 		else:
 			#update hire_pointer
 			key = str(lastHire.uuid) + '.' + str(lastAnswer)
-			self.hire_pointer = self.children[key]
+			self.hire_pointer = self.hire_pointer.children[key]
 			return self.hire_pointer.to_hire
 	def aggregate(self, workers, answers):
 		max_vote_count = 0
@@ -259,7 +264,13 @@ class System:
 				max_vote_answer = answer
 		return max_vote_answer, max_vote_count
 	def update(self, workers, answers, outcome):
-		if self.counts[str(outcome)] is None:
+		#print 'update system'
+		#print workers, answers, outcome
+		outcome = outcome[0]
+		if outcome is None:
+			pass
+			return #nothing to update
+		if str(outcome) not in self.counts.keys():
 			self.counts[str(outcome)] = 1
 		else:
 			self.counts[str(outcome)] += 1
