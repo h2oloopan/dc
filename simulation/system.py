@@ -20,7 +20,8 @@ class State:
 	def __str__(self):
 		s = ''
 		#s += 'hired: ' + str(self.hired) + '\n'
-		s += 'to hire: ' + str(self.to_hire.uuid) + '\n'
+		if self.to_hire is not None:
+			s += 'to hire: ' + str(self.to_hire.uuid) + '\n'
 		s += 'answers: ' + str(self.answers) + '\n'
 		#s += 'hirings: ' + str(self.hirings) + '\n'
 		s += 'utility: ' + str(self.utility) + '\n'
@@ -49,13 +50,13 @@ class System:
 		self.root.visitation = 0
 		self.hire_pointer = self.root
 
-	def rankWorkers(self, workers):
+	def rankWorkers(self, workers, projection=100):
 		available = []
 		for worker in workers:
 			if worker.isAvailable():
 				available.append(worker)
 
-		return sorted(available, key=lambda worker: worker.calculate())
+		return sorted(available, key=lambda worker: worker.calculate(projection))
 
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
@@ -64,6 +65,9 @@ class System:
 		s = ps[1]
 		t = ps[2] #number of tutorials
 		result = []
+
+		total_tasks = len(tasks)
+		completed_tasks = 0
 
 		#running tutorials
 		tutorials = simulate.createBinaryTasks(t)
@@ -78,7 +82,7 @@ class System:
 
 		for task in tasks:
 			self.reset()
-			self.sample(s, l, task, outcomes, self.rankWorkers(workers))
+			self.sample(s, l, task, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
 			#continue
 			self.evaluate()
 			#print 'Evaluation done'
@@ -101,7 +105,8 @@ class System:
 			#print answers, prediction
 			#update all hired workers
 			self.update(hired, answers, prediction)
-			result.append(prediction[0])
+			result.append((prediction[0], len(hired)))
+			completed_tasks += 1
 		return result
 
 	def pickOutcome(self, outcomes, probabilities):
@@ -111,7 +116,7 @@ class System:
 		for o in range(0, len(outcomes)):
 			total += probabilities[o]
 			levels.append(total)
-		r = random.random()
+		r = random.uniform(0, total)
 		for l in range(0, len(levels)):
 			level = levels[l]
 			if r < level:
@@ -134,7 +139,7 @@ class System:
 				rank += 1
 
 				probabilities = [] #probability for each outcome
-				sum_prob = 0
+				#sum_prob = 0
 				for outcome in outcomes:
 					p1 = 1.0
 					p2 = 1.0
@@ -153,12 +158,12 @@ class System:
 								p2 = p2 * (1 - hire.getEstimatedQualityAtX(hire.x))
 						p3 = float(self.counts[str(truth)]) / float(self.total)
 					probabilities.append(p1 * p2 * p3)
-					sum_prob += p1 * p2 * p3
+					#sum_prob += p1 * p2 * p3
 
 				#need to normalize probability
-				for o in range(0, len(outcomes)):
-					outcome = outcomes[o]
-					probabilities[o] = probabilities[o] / sum_prob
+				#for o in range(0, len(outcomes)):
+				#	outcome = outcomes[o]
+				#	probabilities[o] = probabilities[o] / sum_prob
 				pick = self.pickOutcome(outcomes, probabilities)
 
 				key = str(worker.uuid) + '.' + str(pick)
@@ -185,53 +190,42 @@ class System:
 		#print 'evaluate'
 		#print state
 		#print cl
-
 		if len(cl) == 0:
 			#this is a leaf node
 			state.utility = self.getAnswerUtility(state.hirings, state.answers)
 			state.to_hire = None
 		else:
-			group = {}
-			workers = {}
+			total_visitation = 0
+			#first loop
 			for key, child in cl:
 				self.evaluateState(child)
-				if child.hired.uuid not in group.keys():
-					group[child.hired.uuid] = [child]
-					workers[child.hired.uuid] = child.hired
-				else:
-					group[child.hired.uuid].append(child)
-			#now all children are done
-			to_hire = None
-			max_voi = None
-			max_utility = None
-			for uuid, worker in workers.items():
-				children = group[uuid]
-				utility = self.getWorkerUtility(state, worker, children)
-				voi = utility - self.getAnswerUtility(state.hirings, state.answers)
-				if max_voi < voi or max_voi is None:
-					max_voi = voi
-					to_hire = worker
-					max_utility = utility
-			if max_voi < 0:
-				to_hire = None
-				max_utility = self.getAnswerUtility(state.hirings, state.answers)
-			state.utility = max_utility
-			state.to_hire = to_hire
+				total_visitation += child.visitation
+			#second loop
+			worker = cl[0][1].hired
+			voi = self.getWorkerUtility(worker)
+			for key, child in cl:
+				voi += (float(child.visitation) / float(total_visitation)) * child.utility
+			utility = voi
+			voi -= self.getAnswerUtility(state.hirings, state.answers)
+			if voi <= 0:
+				state.to_hire = None
+				state.utility = utility - voi
+			else:
+				state.to_hire = worker
+				state.utility = utility
+
+
+		print 'evaluated'
+		print state
 
 		#print 'evaluate state'
 		#print state
 
 
 
-	def getWorkerUtility(self, state, worker, states):
+	def getWorkerUtility(self, worker):
 		delta = worker.getEstimatedQualityAtX(worker.x + 1) - worker.getEstimatedQualityAtX(worker.x)
-		utility = self.w_quality * delta - float(worker.c)
-		visitation = 0
-		for state in states:
-			visitation += state.visitation
-		for state in states:
-			utility += (float(state.visitation) / float(visitation)) * state.utility
-		return utility
+		return self.w_quality * delta - float(worker.c)
 
 	def getAnswerUtility(self, hirings, answers):
 		if len(answers) == 0:

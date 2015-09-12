@@ -25,9 +25,11 @@ class Worker:
 		self.c = c
 		self.a = a
 		#print x, p, r, c, a
-	def calculate(self):
+	def calculate(self, projection):
 		#calculate the weights for ranking
-		return 1.0 * self.getEstimatedQualityAtX(self.x) + 1.0 * (1 / self.er)
+		return (self.getEstimatedCumulativeQuality(self.x + projection) * float(self.x + projection) -
+			self.getEstimatedCumulativeQuality(self.x) * float(self.x))
+		#return 1.0 * self.getEstimatedQualityAtX(self.x) + 1.0 * (1 / self.er)
 	def addNoise(self, noise_mu, noise_sigma):
 		self.noise_mu = noise_mu
 		self.noise_sigma = noise_sigma

@@ -64,7 +64,7 @@ def randomK(tasks, outcomes, workers, k):
 				if votes[key] > max_vote:
 					max_vote = votes[key]
 					vote = answer
-		answers.append(vote)
+		answers.append((vote, k))
 	return answers
 
 def topKAverageWithTutorials(tasks, outcomes, workers, ps):
@@ -106,7 +106,7 @@ def topKAverageWithTutorials(tasks, outcomes, workers, ps):
 					max_vote = votes[key]
 					vote = answer
 			current += 1
-		answers.append(vote)
+		answers.append((vote, k))
 	return answers
 
 

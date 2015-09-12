@@ -18,6 +18,7 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 	total_cs = []
 	cs = []
 	qs = []
+	ws = []
 	for i in range(0, runs):
 		answers = algorithm(tasks, outcomes, workers, parameters)
 		#print tasks
@@ -26,7 +27,12 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 		#print tasks
 		#print answers
 		for i in range(0, len(tasks)):
-			if answers[i] == tasks[i]:
+			if i >= len(ws):
+				ws.append(answers[i][1])
+			else:
+				ws[i] += answers[i][1]
+
+			if answers[i][0] == tasks[i]:
 				if i >= len(cs):
 					cs.append(1)
 				else:
@@ -53,6 +59,7 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 		#total_ws.append(k * (i + 1))
 		cumulative = cs[i]
 		cs[i] = float(cs[i]) / (float(runs) * float(i + 1))
+		ws[i] = float(ws[i]) / float(runs)
 
 	#print cs
 	#print qs
@@ -61,6 +68,7 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 	graph[0].plot(xs, cs)
 	graph[0].plot(xs, qs)
 	#graph[1].plot(total_ws, total_cs)
+	graph[1].plot(xs, ws)
 
 
 if __name__ == '__main__':
@@ -68,10 +76,10 @@ if __name__ == '__main__':
 	p = {'mu': 20, 'sigma': 5}
 
 	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
-	tasks = simulate.createBinaryTasks(100)
+	tasks = simulate.createBinaryTasks(1)
 	outcomes = [True, False]
 
-	runs = 3
+	runs = 1
 	steps = 3
 
 
