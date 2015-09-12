@@ -20,6 +20,8 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 	qs = []
 	for i in range(0, runs):
 		answers = algorithm(tasks, outcomes, workers, parameters)
+		#print tasks
+		#print answers
 		resetWorkers(workers)
 		#print tasks
 		#print answers
@@ -48,7 +50,7 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 	for i in range(0, len(cs)):		
 		cs[i] = cs[i] + cumulative
 		total_cs.append(cs[i] / runs)
-		total_ws.append(k * (i + 1))
+		#total_ws.append(k * (i + 1))
 		cumulative = cs[i]
 		cs[i] = float(cs[i]) / (float(runs) * float(i + 1))
 
@@ -58,7 +60,7 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 	xs = np.arange(1, len(tasks) + 1, 1)
 	graph[0].plot(xs, cs)
 	graph[0].plot(xs, qs)
-	graph[1].plot(total_ws, total_cs)
+	#graph[1].plot(total_ws, total_cs)
 
 
 if __name__ == '__main__':
@@ -66,35 +68,35 @@ if __name__ == '__main__':
 	p = {'mu': 20, 'sigma': 5}
 
 	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
-	tasks = simulate.createBinaryTasks(1)
+	tasks = simulate.createBinaryTasks(100)
 	outcomes = [True, False]
 
-	runs = 5
+	runs = 3
 	steps = 3
 
 
 	f, ax = plot.subplots(3, 2)
 
 
-	#print 'Random K'
-	#k = 5
-	#analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
+	print 'Random K'
+	k = 5
+	analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
 
 
 
-	#print 'Top K'
-	#k = 5
-	#t = 10
-	#analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
+	print 'Top K'
+	k = 5
+	t = 10
+	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
 	print 'Dynamic Hiring'
-	system = System(outcomes, 10, {'belief' : 1, 'quality': 1})
-	horizon = 2
-	samples = 4
+	system = System(outcomes, 10, {'belief' : 5, 'quality': 0})
+	horizon = 5
+	samples = 512
 	tutorials = 10
-	system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
-	#analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
+	#system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
+	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 
 	plot.show()
 

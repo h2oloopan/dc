@@ -20,7 +20,7 @@ class State:
 	def __str__(self):
 		s = ''
 		#s += 'hired: ' + str(self.hired) + '\n'
-		s += 'to hire: ' + str(self.to_hire) + '\n'
+		s += 'to hire: ' + str(self.to_hire.uuid) + '\n'
 		s += 'answers: ' + str(self.answers) + '\n'
 		#s += 'hirings: ' + str(self.hirings) + '\n'
 		s += 'utility: ' + str(self.utility) + '\n'
@@ -101,7 +101,7 @@ class System:
 			#print answers, prediction
 			#update all hired workers
 			self.update(hired, answers, prediction)
-			result.append(prediction)
+			result.append(prediction[0])
 		return result
 
 	def pickOutcome(self, outcomes, probabilities):
@@ -248,6 +248,8 @@ class System:
 		else:
 			#update hire_pointer
 			key = str(lastHire.uuid) + '.' + str(lastAnswer)
+			#print self.hire_pointer
+			#print self.hire_pointer.children
 			self.hire_pointer = self.hire_pointer.children[key]
 			return self.hire_pointer.to_hire
 	def aggregate(self, workers, answers):
