@@ -148,14 +148,14 @@ class System:
 						if outcomes == truth:
 							p1 = worker.getEstimatedQualityAtX(worker.x)
 						else:
-							p1 = 1 - worker.getEstimatedQualityAtX(worker.x)
+							p1 = 1.0 - worker.getEstimatedQualityAtX(worker.x)
 						for j in range(0, len(cursor.answers)):
 							answer = cursor.answers[j]
 							hire = cursor.hirings[j]
 							if answer == truth:
 								p2 = p2 * hire.getEstimatedQualityAtX(hire.x)
 							else:
-								p2 = p2 * (1 - hire.getEstimatedQualityAtX(hire.x))
+								p2 = p2 * (1.0 - hire.getEstimatedQualityAtX(hire.x))
 						p3 = float(self.counts[str(truth)]) / float(self.total)
 					probabilities.append(p1 * p2 * p3)
 					#sum_prob += p1 * p2 * p3
@@ -230,8 +230,41 @@ class System:
 	def getAnswerUtility(self, hirings, answers):
 		if len(answers) == 0:
 			return 0
-		answer, count = self.aggregate(hirings, answers)
-		return self.w_belief * (float(count) / float(len(answers)))
+
+
+		prediction, count = self.aggregate(hirings, answers)
+
+
+		outcomes = []
+		for key, value in self.counts.items():
+			outcomes.append(key)
+
+
+		#print hirings, answers, prediction, outcomes
+
+		prob_sum = 0
+		prob_pick = 0
+		for outcome in outcomes:
+			p1 = 1.0
+			p2 = 1.0
+			for i in range(0, len(hirings)):
+				worker = hirings[i]
+				answer = answers[i]
+				if str(answer) == str(outcome):
+					p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
+				else:
+					p1 = p1 * (1.0 - worker.getEstimatedQualityAtX(worker.x))
+			p2 = float(self.counts[str(outcome)]) / float(self.total)
+			prob_sum += p1 * p2
+			if str(outcome) == str(prediction):
+				prob_pick = p1 * p2
+
+		prob = prob_pick / prob_sum
+		return self.w_belief * prob
+
+
+
+		#return self.w_belief * (float(count) / float(len(answers)))
 
 	def evaluate(self):
 		self.evaluateState(self.root)
