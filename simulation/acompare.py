@@ -79,7 +79,7 @@ if __name__ == '__main__':
 	r = {'mu': 50, 'sigma': 10}
 	p = {'mu': 20, 'sigma': 5}
 
-	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
+	workers = simulate.createHyperbolicWorker(100, r, p, None, 0.1)
 	tasks = simulate.createBinaryTasks(10)
 	outcomes = [True, False]
 
@@ -92,19 +92,19 @@ if __name__ == '__main__':
 
 	print 'Random K'
 	k = 5
-	#analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
+	analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
 
 
 
 	print 'Top K'
 	k = 5
 	t = 10
-	#analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
+	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
 	print 'Dynamic Hiring'
-	system = System(outcomes, 10, {'belief' : 10, 'quality': 0})
-	horizon = 5
+	system = System(outcomes, 10, {'belief' : 20.0, 'quality': 0})
+	horizon = 3
 	samples = 512
 	tutorials = 10
 	#system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])

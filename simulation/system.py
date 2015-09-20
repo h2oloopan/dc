@@ -22,6 +22,8 @@ class State:
 		#s += 'hired: ' + str(self.hired) + '\n'
 		if self.to_hire is not None:
 			s += 'to hire: ' + str(self.to_hire.uuid) + '\n'
+		if self.hired is not None:
+			s += 'hired: ' + str(self.hired.uuid)  + ' ' + str(self.hired.getEstimatedQualityAtX(self.hired.x)) + '\n'
 		s += 'answers: ' + str(self.answers) + '\n'
 		#s += 'hirings: ' + str(self.hirings) + '\n'
 		s += 'utility: ' + str(self.utility) + '\n'
@@ -205,10 +207,12 @@ class System:
 			worker = cl[0][1].hired
 			voi = self.getWorkerUtility(worker)
 			for key, child in cl:
+				print 'child ', child.visitation, total_visitation, child.utility
 				voi += (float(child.visitation) / float(total_visitation)) * child.utility
 			utility = voi
 			prediction, probability = self.aggregate(state.hirings, state.answers, outcomes)
 			voi -= probability * self.w_belief
+			print 'utility ', utility, 'voi ', voi, 'probability ', probability
 			if voi <= 0:
 				state.to_hire = None
 				state.utility = utility - voi
@@ -267,6 +271,9 @@ class System:
 			if p1 * p2 > prob_max:
 				prob_max = p1 * p2
 				prob_pick = outcome
+
+			print 'aggregate'
+			print outcome, p1 * p2
 
 
 		prob = prob_max / prob_sum
