@@ -56,7 +56,7 @@ class System:
 			if worker.isAvailable():
 				available.append(worker)
 
-		return sorted(available, key=lambda worker: worker.calculate(projection))
+		return sorted(available, key=lambda worker: worker.calculateProjection(projection))
 
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
