@@ -19,8 +19,12 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 	cs = []
 	qs = []
 	ws = []
+
+	#print tasks
+
 	for i in range(0, runs):
 		answers = algorithm(tasks, outcomes, workers, parameters)
+		#print answers
 		#print tasks
 		#print answers
 		resetWorkers(workers)
@@ -88,19 +92,19 @@ if __name__ == '__main__':
 
 	print 'Random K'
 	k = 5
-	analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
+	#analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
 
 
 
 	print 'Top K'
 	k = 5
 	t = 10
-	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
+	#analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
 	print 'Dynamic Hiring'
 	system = System(outcomes, 10, {'belief' : 10, 'quality': 0})
-	horizon = 3
+	horizon = 5
 	samples = 512
 	tutorials = 10
 	#system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])

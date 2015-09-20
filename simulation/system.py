@@ -84,7 +84,7 @@ class System:
 			self.reset()
 			self.sample(s, l, task, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
 			#continue
-			self.evaluate()
+			self.evaluate(outcomes)
 			#print 'Evaluation done'
 			last_hire = None
 			last_answer = None
@@ -101,11 +101,11 @@ class System:
 					last_hire = next_worker
 					last_answer = answer
 			#hiring is done
-			prediction = self.aggregate(hired, answers)
+			prediction, probability = self.aggregate(hired, answers, outcomes)
 			#print answers, prediction
 			#update all hired workers
 			self.update(hired, answers, prediction)
-			result.append((prediction[0], len(hired)))
+			result.append((prediction, len(hired)))
 			completed_tasks += 1
 		return result
 
@@ -185,20 +185,21 @@ class System:
 				#print str(cursor)
 
 
-	def evaluateState(self, state):
+	def evaluateState(self, state, outcomes):
 		cl = state.children.items()
 		#print 'evaluate'
 		#print state
 		#print cl
 		if len(cl) == 0:
 			#this is a leaf node
-			state.utility = self.getAnswerUtility(state.hirings, state.answers)
+			prediction, probability = self.aggregate(state.hirings, state.answers, outcomes)
+			state.utility = self.w_belief * probability
 			state.to_hire = None
 		else:
 			total_visitation = 0
 			#first loop
 			for key, child in cl:
-				self.evaluateState(child)
+				self.evaluateState(child, outcomes)
 				total_visitation += child.visitation
 			#second loop
 			worker = cl[0][1].hired
@@ -206,7 +207,8 @@ class System:
 			for key, child in cl:
 				voi += (float(child.visitation) / float(total_visitation)) * child.utility
 			utility = voi
-			voi -= self.getAnswerUtility(state.hirings, state.answers)
+			prediction, probability = self.aggregate(state.hirings, state.answers, outcomes)
+			voi -= probability * self.w_belief
 			if voi <= 0:
 				state.to_hire = None
 				state.utility = utility - voi
@@ -227,47 +229,8 @@ class System:
 		delta = worker.getEstimatedQualityAtX(worker.x + 1) - worker.getEstimatedQualityAtX(worker.x)
 		return self.w_quality * delta - float(worker.c)
 
-	def getAnswerUtility(self, hirings, answers):
-		if len(answers) == 0:
-			return 0
-
-
-		prediction, count = self.aggregate(hirings, answers)
-
-
-		outcomes = []
-		for key, value in self.counts.items():
-			outcomes.append(key)
-
-
-		#print hirings, answers, prediction, outcomes
-
-		prob_sum = 0
-		prob_pick = 0
-		for outcome in outcomes:
-			p1 = 1.0
-			p2 = 1.0
-			for i in range(0, len(hirings)):
-				worker = hirings[i]
-				answer = answers[i]
-				if str(answer) == str(outcome):
-					p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
-				else:
-					p1 = p1 * (1.0 - worker.getEstimatedQualityAtX(worker.x))
-			p2 = float(self.counts[str(outcome)]) / float(self.total)
-			prob_sum += p1 * p2
-			if str(outcome) == str(prediction):
-				prob_pick = p1 * p2
-
-		prob = prob_pick / prob_sum
-		return self.w_belief * prob
-
-
-
-		#return self.w_belief * (float(count) / float(len(answers)))
-
-	def evaluate(self):
-		self.evaluateState(self.root)
+	def evaluate(self, outcomes):
+		self.evaluateState(self.root, outcomes)
 	def hireNext(self, lastHire, lastAnswer):
 		if lastHire is None or lastAnswer is None:
 			#this is at root
@@ -279,23 +242,40 @@ class System:
 			#print self.hire_pointer.children
 			self.hire_pointer = self.hire_pointer.children[key]
 			return self.hire_pointer.to_hire
-	def aggregate(self, workers, answers):
-		max_vote_count = 0
-		max_vote_answer = None
-		votes = {}
-		for answer in answers:
-			if str(answer) not in votes.keys():
-				votes[str(answer)] = 1
-			else:
-				votes[str(answer)] += 1
-			if votes[str(answer)] > max_vote_count:
-				max_vote_count = votes[str(answer)]
-				max_vote_answer = answer
-		return max_vote_answer, max_vote_count
+	def aggregate(self, workers, answers, outcomes):
+		if len(answers) == 0:
+			return None, 0
+
+		#print hirings, answers, prediction, outcomes
+
+		prob_sum = 0
+		prob_pick = 0
+		prob_max = 0
+		for outcome in outcomes:
+			p1 = 1.0
+			p2 = 1.0
+			for i in range(0, len(workers)):
+				worker = workers[i]
+				answer = answers[i]
+				if str(answer) == str(outcome):
+					p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
+				else:
+					p1 = p1 * (1.0 - worker.getEstimatedQualityAtX(worker.x))
+			p2 = float(self.counts[str(outcome)]) / float(self.total)
+			prob_sum += p1 * p2
+
+			if p1 * p2 > prob_max:
+				prob_max = p1 * p2
+				prob_pick = outcome
+
+
+		prob = prob_max / prob_sum
+
+		#print prob_pick, prob
+		return prob_pick, prob
 	def update(self, workers, answers, outcome):
 		#print 'update system'
 		#print workers, answers, outcome
-		outcome = outcome[0]
 		if outcome is None:
 			pass
 			return #nothing to update
