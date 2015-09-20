@@ -80,7 +80,7 @@ if __name__ == '__main__':
 	p = {'mu': 20, 'sigma': 5}
 
 	workers = simulate.createHyperbolicWorker(100, r, p, None, 0.1)
-	tasks = simulate.createBinaryTasks(10)
+	tasks = simulate.createBinaryTasks(100)
 	outcomes = [True, False]
 
 	runs = 1
@@ -104,8 +104,8 @@ if __name__ == '__main__':
 
 	print 'Dynamic Hiring'
 	system = System(outcomes, 10, {'belief' : 20.0, 'quality': 0})
-	horizon = 3
-	samples = 512
+	horizon = 5
+	samples = 1024
 	tutorials = 10
 	#system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
 	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
