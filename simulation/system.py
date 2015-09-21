@@ -239,12 +239,17 @@ class System:
 		if lastHire is None or lastAnswer is None:
 			#this is at root
 			return self.hire_pointer.to_hire
+		elif self.hire_pointer is None:
+			return None
 		else:
 			#update hire_pointer
 			key = str(lastHire.uuid) + '.' + str(lastAnswer)
 			#print self.hire_pointer
 			#print self.hire_pointer.children
-			self.hire_pointer = self.hire_pointer.children[key]
+			if key in self.hire_pointer.children:
+				self.hire_pointer = self.hire_pointer.children[key]
+			else:
+				self.hire_pointer = None
 			return self.hire_pointer.to_hire
 	def aggregate(self, workers, answers, outcomes):
 		if len(answers) == 0:
