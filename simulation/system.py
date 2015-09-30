@@ -1,6 +1,7 @@
 import random
 import learn
 import simulate
+import math
 
 
 class State:
@@ -188,6 +189,8 @@ class System:
 
 				#print str(cursor)
 
+	def getAnswerUtility(self, probability):
+		return math.pow(2.0, probability) * self.w_belief
 
 	def evaluateState(self, state, outcomes):
 		cl = state.children.items()
@@ -213,7 +216,7 @@ class System:
 				voi += (float(child.visitation) / float(total_visitation)) * child.utility
 			utility = voi
 			prediction, probability = self.aggregate(state.hirings, state.answers, outcomes)
-			voi -= probability * self.w_belief
+			voi -= self.getAnswerUtility(probability)# * self.w_belief
 			print 'utility ', utility, 'voi ', voi, 'probability ', probability
 			if voi <= 0:
 				state.to_hire = None
