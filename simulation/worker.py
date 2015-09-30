@@ -25,6 +25,10 @@ class Worker:
 		self.c = c
 		self.a = a
 		#print x, p, r, c, a
+	def __str__(self):
+		s = ''
+		s += 'quality: ' + self.getEstimatedQualityAtX(self.x)
+		return s
 	def calculateProjection(self, projection):
 		#calculate the weights for ranking
 		projection = (self.getEstimatedCumulativeQuality(self.x + projection) * float(self.x + projection) -
@@ -32,7 +36,7 @@ class Worker:
 		#return 1.0 * self.getEstimatedQualityAtX(self.x) + 1.0 * (1 / self.er)
 
 		#the first term is short term while the second term is long term
-		return 5.0 * self.getEstimatedQualityAtX(self.x) #+ 1.0 * projection
+		return 5.0 * self.getEstimatedQualityAtX(self.x) + 1.0 * projection
 
 	def addNoise(self, noise_mu, noise_sigma):
 		self.noise_mu = noise_mu

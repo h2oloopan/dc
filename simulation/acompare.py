@@ -80,7 +80,7 @@ if __name__ == '__main__':
 	p = {'mu': 20, 'sigma': 5}
 
 	workers = simulate.createHyperbolicWorker(100, r, p, None, 0.1)
-	tasks = simulate.createBinaryTasks(1)
+	tasks = simulate.createBinaryTasks(100)
 	outcomes = [True, False]
 
 	runs = 1
