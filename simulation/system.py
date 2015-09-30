@@ -253,9 +253,10 @@ class System:
 			#print self.hire_pointer.children
 			if key in self.hire_pointer.children:
 				self.hire_pointer = self.hire_pointer.children[key]
+				return self.hire_pointer.to_hire
 			else:
 				self.hire_pointer = None
-			return self.hire_pointer.to_hire
+				return None
 	def aggregate(self, workers, answers, outcomes):
 		if len(answers) == 0:
 			return None, 0
