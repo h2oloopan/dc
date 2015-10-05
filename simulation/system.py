@@ -85,12 +85,16 @@ class System:
 					worker.updateLearning(False)
 			worker.learn()
 
+		self.reset()
+		self.sample(s, l, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
+		self.evaluate(outcomes)
 		for task in tasks:
-			self.reset()
-			self.sample(s, l, task, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
+			#self.reset()
+			#self.sample(s, l, task, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
 			#continue
-			self.evaluate(outcomes)
+			#self.evaluate(outcomes)
 			#print 'Evaluation done'
+			self.hire_pointer = self.root
 			last_hire = None
 			last_answer = None
 			hired = []
@@ -128,7 +132,7 @@ class System:
 				#print r, level
 				return outcomes[l]
 		return None
-	def sample(self, samples, horizon, task, outcomes, workers):
+	def sample(self, samples, horizon, outcomes, workers):
 		for i in range(0, samples):
 			cursor = self.root
 			number = 0
@@ -190,7 +194,8 @@ class System:
 				#print str(cursor)
 
 	def getAnswerUtility(self, probability):
-		return math.pow(2.0, probability) * self.w_belief
+		return (math.pow(2.0, probability) - 1.0) * self.w_belief
+		#return (1 - math.sqrt(1 - probability * probability)) * self.w_belief
 
 	def evaluateState(self, state, outcomes):
 		cl = state.children.items()
@@ -212,12 +217,12 @@ class System:
 			worker = cl[0][1].hired
 			voi = self.getWorkerUtility(worker)
 			for key, child in cl:
-				print 'child ', child.visitation, total_visitation, child.utility
+				#print 'child ', child.visitation, total_visitation, child.utility
 				voi += (float(child.visitation) / float(total_visitation)) * child.utility
 			utility = voi
 			prediction, probability = self.aggregate(state.hirings, state.answers, outcomes)
 			voi -= self.getAnswerUtility(probability)# * self.w_belief
-			print 'utility ', utility, 'voi ', voi, 'probability ', probability
+			#print 'utility ', utility, 'voi ', voi, 'probability ', probability
 			if voi <= 0:
 				state.to_hire = None
 				state.utility = utility - voi
@@ -226,8 +231,8 @@ class System:
 				state.utility = utility
 
 
-		print 'evaluated'
-		print state
+		#print 'evaluated'
+		#print state
 
 		#print 'evaluate state'
 		#print state
@@ -283,8 +288,8 @@ class System:
 				prob_max = p1 * p2
 				prob_pick = outcome
 
-			print 'aggregate'
-			print outcome, p1 * p2
+			#print 'aggregate'
+			#print outcome, p1 * p2
 
 
 		prob = prob_max / prob_sum
