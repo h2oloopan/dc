@@ -77,7 +77,7 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 
 if __name__ == '__main__':
 	r = {'mu': 50, 'sigma': 10}
-	p = {'mu': 60, 'sigma': 5}
+	p = {'mu': 60, 'sigma': 10}
 
 	workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
 	tasks = simulate.createBinaryTasks(1000)
