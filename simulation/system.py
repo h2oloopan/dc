@@ -28,8 +28,8 @@ class State:
 		s += 'answers: ' + str(self.answers) + '\n'
 		#s += 'hirings: ' + str(self.hirings) + '\n'
 		s += 'utility: ' + str(self.utility) + '\n'
-		s += 'visitation: ' + str(self.visitation) + '\n'
-		return s
+		s += 'visitation: ' + str(self.visitation)
+ 		return s
 
 class System:
 	counts = None
@@ -38,6 +38,9 @@ class System:
 	hire_pointer = None
 	w_belief = 1.0
 	w_quality = 1.0
+
+	belief_threshold = 0.6
+
 	def __init__(self, outcomes, start, weights):
 		self.counts = {}
 		for outcome in outcomes:
@@ -85,15 +88,20 @@ class System:
 					worker.updateLearning(False)
 			worker.learn()
 
+
 		self.reset()
 		self.sample(s, l, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
 		self.evaluate(outcomes)
+
 		for task in tasks:
 			#self.reset()
 			#self.sample(s, l, task, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
 			#continue
 			#self.evaluate(outcomes)
 			#print 'Evaluation done'
+
+
+
 			self.hire_pointer = self.root
 			last_hire = None
 			last_answer = None
@@ -194,7 +202,10 @@ class System:
 				#print str(cursor)
 
 	def getAnswerUtility(self, probability):
-		return (math.pow(2.0, probability) - 1.0) * self.w_belief
+		if probability > self.belief_threshold:
+			return (math.pow(2.0, probability) - 1.0) * self.w_belief
+		else:
+			return 0
 		#return (1 - math.sqrt(1 - probability * probability)) * self.w_belief
 
 	def evaluateState(self, state, outcomes):
@@ -231,8 +242,11 @@ class System:
 				state.utility = utility
 
 
-		#print 'evaluated'
-		#print state
+		print 'evaluated'
+		print state
+		print '-----opinion aggregation-----'
+		print prediction, probability
+		print ''
 
 		#print 'evaluate state'
 		#print state
