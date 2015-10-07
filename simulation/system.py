@@ -185,7 +185,7 @@ class System:
 							else:
 								p2 = p2 * (1.0 - hire.getEstimatedQualityAtX(hire.x))
 						p3 = float(self.counts[str(truth)]) / float(self.total)
-					print outcome, p1, p2, p3
+					#print outcome, p1, p2, p3
 					probabilities.append(p1 * p2 * p3)
 					#sum_prob += p1 * p2 * p3
 
@@ -254,11 +254,11 @@ class System:
 				state.utility = utility
 
 
-		print 'evaluated'
-		print state
-		print '-----opinion aggregation-----'
-		print prediction, probability
-		print ''
+		#print 'evaluated'
+		#print state
+		#print '-----opinion aggregation-----'
+		#print prediction, probability
+		#print ''
 
 		#print 'evaluate state'
 		#print state

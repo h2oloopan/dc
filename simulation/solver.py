@@ -10,7 +10,7 @@ def resetWorkers(workers):
 
 if __name__ == '__main__':
 	r = {'mu': 50, 'sigma': 10}
-	p = {'mu': 100, 'sigma': 5}
+	p = {'mu': 65, 'sigma': 5}
 
 	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
 	tasks = simulate.createBinaryTasks(1000)
