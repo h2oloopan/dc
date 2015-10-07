@@ -127,6 +127,9 @@ class System:
 		return result
 
 	def pickOutcome(self, outcomes, probabilities):
+		#print '*picking outcome'
+		#print outcomes
+		#print probabilities
 		levels = []
 		total = 0
 		#print probabilities
@@ -140,6 +143,14 @@ class System:
 				#print r, level
 				return outcomes[l]
 		return None
+	def normalize(self, probabilities):
+		result = []
+		total = 0.0
+		for probability in probabilities:
+			total += probability
+		for probability in probabilities:
+			result.append(probability / total)
+		return result
 	def sample(self, samples, horizon, outcomes, workers):
 		for i in range(0, samples):
 			cursor = self.root
@@ -162,7 +173,7 @@ class System:
 					p2 = 1.0
 					p3 = 1.0
 					for truth in outcomes:
-						if outcomes == truth:
+						if outcome == truth:
 							p1 = worker.getEstimatedQualityAtX(worker.x)
 						else:
 							p1 = 1.0 - worker.getEstimatedQualityAtX(worker.x)
@@ -174,6 +185,7 @@ class System:
 							else:
 								p2 = p2 * (1.0 - hire.getEstimatedQualityAtX(hire.x))
 						p3 = float(self.counts[str(truth)]) / float(self.total)
+					print outcome, p1, p2, p3
 					probabilities.append(p1 * p2 * p3)
 					#sum_prob += p1 * p2 * p3
 
@@ -181,7 +193,7 @@ class System:
 				#for o in range(0, len(outcomes)):
 				#	outcome = outcomes[o]
 				#	probabilities[o] = probabilities[o] / sum_prob
-				pick = self.pickOutcome(outcomes, probabilities)
+				pick = self.pickOutcome(outcomes, self.normalize(probabilities))
 
 				key = str(worker.uuid) + '.' + str(pick)
 				#print 'children', cursor.children.keys()

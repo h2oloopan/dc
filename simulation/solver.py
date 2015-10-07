@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
 
 	horizon = 2
-	samples = 1024
+	samples = 1
 	tutorials = 10
 
 
