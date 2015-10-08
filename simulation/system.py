@@ -39,7 +39,7 @@ class System:
 	w_belief = 1.0
 	w_quality = 1.0
 
-	belief_threshold = 0.6
+	belief_threshold = 0.65
 
 	def __init__(self, outcomes, start, weights):
 		self.counts = {}
@@ -254,11 +254,11 @@ class System:
 				state.utility = utility
 
 
-		#print 'evaluated'
-		#print state
-		#print '-----opinion aggregation-----'
-		#print prediction, probability
-		#print ''
+		print 'evaluated'
+		print state
+		print '-----opinion aggregation-----'
+		print prediction, probability
+		print ''
 
 		#print 'evaluate state'
 		#print state
