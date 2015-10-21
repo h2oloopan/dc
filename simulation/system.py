@@ -89,6 +89,9 @@ class System:
 			worker.learn()
 
 
+		step = 10
+		step_counter = 0
+
 		self.reset()
 		self.sample(s, l, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
 		self.evaluate(outcomes)
@@ -99,6 +102,12 @@ class System:
 			#continue
 			#self.evaluate(outcomes)
 			#print 'Evaluation done'
+
+			step_counter = (step_counter + 1) % step
+			if step_counter == 0:
+				self.reset()
+				self.sample(s, l, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
+				self.evaluate(outcomes)
 
 
 
@@ -254,11 +263,11 @@ class System:
 				state.utility = utility
 
 
-		print 'evaluated'
-		print state
-		print '-----opinion aggregation-----'
-		print prediction, probability
-		print ''
+		#print 'evaluated'
+		#print state
+		#print '-----opinion aggregation-----'
+		#print prediction, probability
+		#print ''
 
 		#print 'evaluate state'
 		#print state

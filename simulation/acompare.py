@@ -44,7 +44,7 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 			else:
 				if i >= len(cs):
 					cs.append(0)
-	cumulative = 0
+
 	#print cs
 	for i in range(0, len(cs)):
 		avg = cs[i]
@@ -57,22 +57,47 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 				avg += cs[i + j]
 				count += 1
 		qs.append(float(avg) / (float(runs) * float(count)))
+
+
+
+	cumulative = 0
+	cumulative_worker = 0
 	for i in range(0, len(cs)):		
 		cs[i] = cs[i] + cumulative
 		total_cs.append(cs[i] / runs)
 		#total_ws.append(k * (i + 1))
 		cumulative = cs[i]
+		cumulative_worker += ws[i]
+
+
+		if i == len(cs) - 1:
+			print cs[i] / runs
+			print cumulative_worker / runs
+
 		cs[i] = float(cs[i]) / (float(runs) * float(i + 1))
 		ws[i] = float(ws[i]) / float(runs)
 
 	#print cs
 	#print qs
 
+
+	#labels
+
+
 	xs = np.arange(1, len(tasks) + 1, 1)
-	graph[0].plot(xs, cs)
-	graph[0].plot(xs, qs)
+	graph[0].plot(xs, cs, label='cumulative quality')
+	graph[0].plot(xs, qs, label='quality')
 	#graph[1].plot(total_ws, total_cs)
-	graph[1].plot(xs, ws)
+	graph[1].plot(xs, ws, label='number of hired workers')
+
+	graph[0].legend(bbox_to_anchor=(1, 0.3))
+	graph[1].legend(bbox_to_anchor=(1, 0.3))
+
+	graph[0].set_xlabel('tasks')
+	graph[0].set_ylabel('accuracy')
+
+	graph[1].set_xlabel('tasks')
+	graph[1].set_ylabel('workers')
 
 
 if __name__ == '__main__':
@@ -103,7 +128,7 @@ if __name__ == '__main__':
 
 
 	print 'Dynamic Hiring'
-	system = System(outcomes, 10, {'belief' : 10.0, 'quality': 1.0})
+	system = System(outcomes, 10, {'belief' : 7.0, 'quality': 1.0})
 	horizon = 5
 	samples = 1024
 	tutorials = 10
