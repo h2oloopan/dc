@@ -38,7 +38,7 @@ class System:
 	hire_pointer = None
 	w_belief = 1.0
 	w_quality = 1.0
-
+	keep_hiring = True
 	belief_threshold = 0.65
 
 	def __init__(self, outcomes, start, weights):
@@ -92,8 +92,11 @@ class System:
 		step = 10
 		step_counter = 0
 
+
+		rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)
+
 		self.reset()
-		self.sample(s, l, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
+		self.sample(s, l, outcomes, rankedWorkers)
 		self.evaluate(outcomes)
 
 		for task in tasks:
@@ -105,8 +108,9 @@ class System:
 
 			step_counter = (step_counter + 1) % step
 			if step_counter == 0:
+				rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)
 				self.reset()
-				self.sample(s, l, outcomes, self.rankWorkers(workers, total_tasks - completed_tasks))
+				self.sample(s, l, outcomes, rankWorkers)
 				self.evaluate(outcomes)
 
 
@@ -117,12 +121,25 @@ class System:
 			hired = []
 			answers = []
 			while True:
+				if len(hired) >= l:
+					break
 				next_worker = self.hireNext(last_hire, last_answer)
 				if next_worker is None:
-					break
+					if self.keep_hiring:
+						prediction, probability = self.aggregate(hired, answers, outcomes)
+						if probability < self.belief_threshold:
+							#keep hiring workers
+							next_worker = rankWorkers[len(hired)]
+							answer = next_worker.doTask(task, outcomes, next_worker.c)
+							hired.append(next_worker)
+							answers.append(answer)
+							last_hire = next_worker
+							last_answer = answer
+					else:
+						break
 				else:
-					answer = next_worker.doTask(task, outcomes, worker.c)
-					hired.append(worker)
+					answer = next_worker.doTask(task, outcomes, next_worker.c)
+					hired.append(next_worker)
 					answers.append(answer)
 					last_hire = next_worker
 					last_answer = answer
