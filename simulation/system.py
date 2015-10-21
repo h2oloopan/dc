@@ -93,7 +93,7 @@ class System:
 		step_counter = 0
 
 
-		rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)
+		rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
 
 		self.reset()
 		self.sample(s, l, outcomes, rankedWorkers)
@@ -108,12 +108,10 @@ class System:
 
 			step_counter = (step_counter + 1) % step
 			if step_counter == 0:
-				rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)
+				rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
 				self.reset()
-				self.sample(s, l, outcomes, rankWorkers)
+				self.sample(s, l, outcomes, rankedWorkers)
 				self.evaluate(outcomes)
-
-
 
 			self.hire_pointer = self.root
 			last_hire = None
@@ -123,28 +121,39 @@ class System:
 			while True:
 				if len(hired) >= l:
 					break
-				next_worker = self.hireNext(last_hire, last_answer)
-				if next_worker is None:
-					if self.keep_hiring:
-						prediction, probability = self.aggregate(hired, answers, outcomes)
-						if probability < self.belief_threshold:
-							#keep hiring workers
-							next_worker = rankWorkers[len(hired)]
-							answer = next_worker.doTask(task, outcomes, next_worker.c)
-							hired.append(next_worker)
-							answers.append(answer)
-							last_hire = next_worker
-							last_answer = answer
-					else:
-						break
 				else:
-					answer = next_worker.doTask(task, outcomes, next_worker.c)
-					hired.append(next_worker)
-					answers.append(answer)
-					last_hire = next_worker
-					last_answer = answer
+					next_worker = self.hireNext(last_hire, last_answer)
+					if next_worker is None:
+						if self.keep_hiring:
+							prediction, probability = self.aggregate(hired, answers, outcomes)
+							if probability < self.belief_threshold:
+								#keep hiring workers
+								next_worker = rankedWorkers[len(hired)]
+								#print 'keep hiring worker', str(len(hired)), next_worker.uuid
+								answer = next_worker.doTask(task, outcomes, next_worker.c)
+								hired.append(next_worker)
+								answers.append(answer)
+								last_hire = next_worker
+								last_answer = answer
+								self.hire_pointer = None #we are in keep hiring mode
+								#print 'keep hiring', prediction, probability, answers
+							else:
+								break
+						else:
+							break
+					else:
+						answer = next_worker.doTask(task, outcomes, next_worker.c)
+						hired.append(next_worker)
+						answers.append(answer)
+						last_hire = next_worker
+						last_answer = answer
 			#hiring is done
 			prediction, probability = self.aggregate(hired, answers, outcomes)
+			#print '-----'
+			#print answers
+			#for w in hired:
+			#	print w.getEstimatedQualityAtX(w.x)
+			#print 'actual result', prediction, probability
 			#print answers, prediction
 			#update all hired workers
 			self.update(hired, answers, prediction)
@@ -315,10 +324,20 @@ class System:
 				self.hire_pointer = None
 				return None
 	def aggregate(self, workers, answers, outcomes):
+
+
+
+
 		if len(answers) == 0:
 			return None, 0
 
 		#print hirings, answers, prediction, outcomes
+
+		#for i in range(0, len(workers)):
+		#	worker = workers[i]
+		#	answer = answers[i]
+		#	print answer, worker.getEstimatedQualityAtX(worker.x)
+
 
 		prob_sum = 0
 		prob_pick = 0
@@ -333,7 +352,7 @@ class System:
 					p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
 				else:
 					p1 = p1 * (1.0 - worker.getEstimatedQualityAtX(worker.x))
-			p2 = float(self.counts[str(outcome)]) / float(self.total)
+			#p2 = float(self.counts[str(outcome)]) / float(self.total)
 			prob_sum += p1 * p2
 
 			if p1 * p2 > prob_max:

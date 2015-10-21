@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
 
 	print 'Dynamic Hiring'
-	system = System(outcomes, 10, {'belief' : 7.0, 'quality': 1.0})
+	system = System(outcomes, 100, {'belief' : 7.0, 'quality': 1.0})
 	horizon = 5
 	samples = 1024
 	tutorials = 10

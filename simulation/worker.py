@@ -36,7 +36,7 @@ class Worker:
 		#return 1.0 * self.getEstimatedQualityAtX(self.x) + 1.0 * (1 / self.er)
 
 		#the first term is short term while the second term is long term
-		return 2 * self.getEstimatedQualityAtX(self.x) + 1.0 * projection
+		return 2.0 * self.getEstimatedQualityAtX(self.x) + 10.0 * projection
 
 	def addNoise(self, noise_mu, noise_sigma):
 		self.noise_mu = noise_mu
