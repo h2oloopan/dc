@@ -58,11 +58,21 @@ class Worker:
 			else:
 				self.cs.append(lastC)
 	def learn(self):
+		#print self.cs, self.ts
 		learning = learn.learnCurve(self.cs, self.ts)
+		print learning
 		if not math.isnan(learning['r']):
-			self.er = learning['r']
+			#if it's too huge, just set it to 1000
+			if learning['r'] > 1000.0:
+				self.er = 1000.0
+			else:
+				self.er = learning['r']
+		else:
+			self.er = 1000.0
 		if not math.isnan(learning['p']):
 			self.ep = learning['p']
+		else:
+			self.ep = 0.0
 	def getEstimatedCumulativeQuality(self, x):
 		if self.er == 0:
 			#hasn't even be able to learn the quality
@@ -113,5 +123,9 @@ class Worker:
 	def reset(self):
 		self.x = 0
 		self.m = 0
+		self.er = 0
+		self.ep = 0
+		self.ts = []
+		self.cs = []
 
 

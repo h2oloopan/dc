@@ -63,6 +63,7 @@ class System:
 				available.append(worker)
 
 		result = sorted(available, key=lambda worker: worker.calculateProjection(projection))
+		#result = sorted(available, key=lambda worker: 1000.0 - worker.er)
 		#print result
 		return result
 
@@ -89,7 +90,7 @@ class System:
 			worker.learn()
 
 
-		step = 10
+		step = 1000
 		step_counter = 0
 
 
@@ -126,6 +127,9 @@ class System:
 					if next_worker is None:
 						if self.keep_hiring:
 							prediction, probability = self.aggregate(hired, answers, outcomes)
+							#print answers, prediction, probability
+							for worker in hired:
+								print worker.er, worker.x, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
 							if probability < self.belief_threshold:
 								#keep hiring workers
 								next_worker = rankedWorkers[len(hired)]
@@ -199,6 +203,7 @@ class System:
 				#worker = workers[rank] #next worker to hire
 				#ank += 1
 				worker = workers[rank]
+				print worker.er, worker.ep, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
 				rank += 1
 
 				probabilities = [] #probability for each outcome
@@ -324,9 +329,6 @@ class System:
 				self.hire_pointer = None
 				return None
 	def aggregate(self, workers, answers, outcomes):
-
-
-
 
 		if len(answers) == 0:
 			return None, 0

@@ -23,11 +23,11 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 	#print tasks
 
 	for i in range(0, runs):
+		resetWorkers(workers)
 		answers = algorithm(tasks, outcomes, workers, parameters)
 		#print answers
 		#print tasks
 		#print answers
-		resetWorkers(workers)
 		#print tasks
 		#print answers
 		for i in range(0, len(tasks)):
@@ -108,7 +108,7 @@ if __name__ == '__main__':
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
 
-	runs = 3
+	runs = 1
 	steps = 3
 
 
