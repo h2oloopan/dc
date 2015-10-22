@@ -128,8 +128,8 @@ class System:
 						if self.keep_hiring:
 							prediction, probability = self.aggregate(hired, answers, outcomes)
 							#print answers, prediction, probability
-							for worker in hired:
-								print worker.er, worker.x, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
+							#for worker in hired:
+								#print worker.er, worker.x, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
 							if probability < self.belief_threshold:
 								#keep hiring workers
 								next_worker = rankedWorkers[len(hired)]
@@ -203,7 +203,7 @@ class System:
 				#worker = workers[rank] #next worker to hire
 				#ank += 1
 				worker = workers[rank]
-				print worker.er, worker.ep, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
+				#print worker.er, worker.ep, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
 				rank += 1
 
 				probabilities = [] #probability for each outcome
@@ -370,6 +370,7 @@ class System:
 		#print prob_pick, prob
 		return prob_pick, prob
 	def update(self, workers, answers, outcome):
+		return None
 		#print 'update system'
 		#print workers, answers, outcome
 		if outcome is None:

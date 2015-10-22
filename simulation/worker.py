@@ -60,7 +60,7 @@ class Worker:
 	def learn(self):
 		#print self.cs, self.ts
 		learning = learn.learnCurve(self.cs, self.ts)
-		print learning
+		#print learning
 		if not math.isnan(learning['r']):
 			#if it's too huge, just set it to 1000
 			if learning['r'] > 1000.0:
@@ -70,9 +70,13 @@ class Worker:
 		else:
 			self.er = 1000.0
 		if not math.isnan(learning['p']):
-			self.ep = learning['p']
+			if learning['p'] < 0:
+				self.ep = 0.0
+			else:
+				self.ep = learning['p']
 		else:
 			self.ep = 0.0
+		print self.er, self.ep, self.r, self.p
 	def getEstimatedCumulativeQuality(self, x):
 		if self.er == 0:
 			#hasn't even be able to learn the quality

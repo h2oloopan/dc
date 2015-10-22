@@ -19,9 +19,13 @@ def learnCurve(cs, ts):
 
 	#print slope
 	#print intercept
+	#print ts
+	#print zs
+	#print slope
+	#print intercept
 
-	r = 1 / slope
-	p = (intercept - 1) * r
+	r = 1.0 / slope
+	p = (intercept - 1.0) * r
 
 	result = {'r': r, 'p': p, 'e': std_err, 'rv': r_value, 'pv': p_value}
 
