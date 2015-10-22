@@ -66,7 +66,10 @@ class Worker:
 			if learning['r'] > 1000.0:
 				self.er = 1000.0
 			else:
-				self.er = learning['r']
+				if learning['r'] <= 0:
+					self.er = 1000.0
+				else:
+					self.er = learning['r']
 		else:
 			self.er = 1000.0
 		if not math.isnan(learning['p']):

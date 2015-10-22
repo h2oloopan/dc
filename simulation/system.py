@@ -38,8 +38,9 @@ class System:
 	hire_pointer = None
 	w_belief = 1.0
 	w_quality = 1.0
-	keep_hiring = True
+	keep_hiring = False
 	belief_threshold = 0.65
+	dont_update = True
 
 	def __init__(self, outcomes, start, weights):
 		self.counts = {}
@@ -254,6 +255,7 @@ class System:
 				#print str(cursor)
 
 	def getAnswerUtility(self, probability):
+		print probability, self.w_belief
 		if probability > self.belief_threshold:
 			return (math.pow(2.0, probability) - 1.0) * self.w_belief
 		else:
@@ -341,9 +343,9 @@ class System:
 		#	print answer, worker.getEstimatedQualityAtX(worker.x)
 
 
-		prob_sum = 0
-		prob_pick = 0
-		prob_max = 0
+		prob_sum = 0.0
+		prob_pick = None
+		prob_max = 0.0
 		for outcome in outcomes:
 			p1 = 1.0
 			p2 = 1.0
@@ -354,7 +356,7 @@ class System:
 					p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
 				else:
 					p1 = p1 * (1.0 - worker.getEstimatedQualityAtX(worker.x))
-			#p2 = float(self.counts[str(outcome)]) / float(self.total)
+			p2 = float(self.counts[str(outcome)]) / float(self.total)
 			prob_sum += p1 * p2
 
 			if p1 * p2 > prob_max:
@@ -368,9 +370,13 @@ class System:
 		prob = prob_max / prob_sum
 
 		#print prob_pick, prob
+
+
+
 		return prob_pick, prob
 	def update(self, workers, answers, outcome):
-		return None
+		if self.dont_update:
+			return None
 		#print 'update system'
 		#print workers, answers, outcome
 		if outcome is None:
