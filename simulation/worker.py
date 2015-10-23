@@ -79,7 +79,7 @@ class Worker:
 				self.ep = learning['p']
 		else:
 			self.ep = 0.0
-		print self.er, self.ep, self.r, self.p
+		#print self.er, self.ep, self.r, self.p
 	def getEstimatedCumulativeQuality(self, x):
 		if self.er == 0:
 			#hasn't even be able to learn the quality

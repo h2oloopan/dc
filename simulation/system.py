@@ -38,7 +38,7 @@ class System:
 	hire_pointer = None
 	w_belief = 1.0
 	w_quality = 1.0
-	keep_hiring = False
+	keep_hiring = True
 	belief_threshold = 0.65
 	dont_update = True
 
@@ -91,7 +91,7 @@ class System:
 			worker.learn()
 
 
-		step = 1000
+		step = 10
 		step_counter = 0
 
 
@@ -255,7 +255,7 @@ class System:
 				#print str(cursor)
 
 	def getAnswerUtility(self, probability):
-		print probability, self.w_belief
+		#print probability, self.w_belief
 		if probability > self.belief_threshold:
 			return (math.pow(2.0, probability) - 1.0) * self.w_belief
 		else:
@@ -281,6 +281,7 @@ class System:
 			#second loop
 			worker = cl[0][1].hired
 			voi = self.getWorkerUtility(worker)
+			#print voi
 			for key, child in cl:
 				#print 'child ', child.visitation, total_visitation, child.utility
 				voi += (float(child.visitation) / float(total_visitation)) * child.utility

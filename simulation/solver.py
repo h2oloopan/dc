@@ -10,7 +10,7 @@ def resetWorkers(workers):
 
 if __name__ == '__main__':
 	r = {'mu': 50, 'sigma': 10}
-	p = {'mu': 40, 'sigma': 5}
+	p = {'mu': 65, 'sigma': 10}
 
 	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
 	tasks = simulate.createBinaryTasks(1000)
@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
 	horizon = 3
 	samples = 1024
-	tutorials = 10
+	tutorials = 30
 
 
 	for b in range(1, 20):
@@ -27,7 +27,7 @@ if __name__ == '__main__':
 		for q in range(1, 2):
 			quality = float(q)
 			resetWorkers(workers)
-			system = System(outcomes, 10, {'belief': belief, 'quality': quality})
+			system = System(outcomes, 1000, {'belief': belief, 'quality': quality})
 			answers = system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
 
 			count = 0
