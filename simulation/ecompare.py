@@ -17,10 +17,10 @@ if __name__ == '__main__':
 	r = {'mu': 50, 'sigma': 10}
 	p = {'mu': 65, 'sigma': 10}
 
-	workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
+	workers = simulate.createHyperbolicWorker(500, r, p, None, 1)
 	outcomes = [True, False]
 
-	max_length = 1000
+	max_length = 500
 	xs = np.arange(1, max_length + 1, 1)
 
 
@@ -68,14 +68,60 @@ if __name__ == '__main__':
 				totalDiffQ15 += 1
 			else:
 				totalDiffQOther += 1
+		totalDiffR15 += totalDiffR5
+		totalDiffQ15 += totalDiffQ5
 
 		avgDiffR.append(totalDiffR / float(len(workers)))
 		avgDiffQ.append(totalDiffQ / float(len(workers)))
 
-		diffR5.append(float(totaldiffR5) / float(len(workers)))
+		diffR5.append(float(totalDiffR5) / float(len(workers)))
 		diffR15.append(float(totalDiffR15) / float(len(workers)))
+		diffROther.append(float(totalDiffROther) / float(len(workers)))
 		diffQ5.append(float(totalDiffQ5) / float(len(workers)))
 		diffQ15.append(float(totalDiffQ15) / float(len(workers)))
+		diffQOther.append(float(totalDiffQOther) / float(len(workers)))
+
+
+	print len(xs), len(avgDiffR)
+
+	f, ax = plot.subplots(2, 4)
+	ax[0][0].plot(xs, avgDiffR, label='average r difference')
+	ax[0][1].plot(xs, diffR5, label='r difference <= 0.05')
+	ax[0][2].plot(xs, diffR15, label='r difference <= 0.15')
+	ax[0][3].plot(xs, diffROther, label='r difference > 0.15 ')
+	ax[1][0].plot(xs, avgDiffQ, label='average q difference')
+	ax[1][1].plot(xs, diffQ5, label='q difference <= 0.05')
+	ax[1][2].plot(xs, diffQ15, label='q difference <= 0.15')
+	ax[1][3].plot(xs, diffQOther, label='q difference > 0.15')
+
+	ax[0][0].set_xlabel('tasks')
+	ax[0][0].set_ylabel('percent')
+	ax[0][1].set_xlabel('tasks')
+	ax[0][1].set_ylabel('percent')
+	ax[0][2].set_xlabel('tasks')
+	ax[0][2].set_ylabel('percent')
+	ax[0][3].set_xlabel('tasks')
+	ax[0][3].set_ylabel('percent')
+	ax[1][0].set_xlabel('tasks')
+	ax[1][0].set_ylabel('percent')
+	ax[1][1].set_xlabel('tasks')
+	ax[1][1].set_ylabel('percent')
+	ax[1][2].set_xlabel('tasks')
+	ax[1][2].set_ylabel('percent')
+	ax[1][3].set_xlabel('tasks')
+	ax[1][3].set_ylabel('percent')
+
+	ax[0][0].legend(bbox_to_anchor=(1, 0.3))
+	ax[0][1].legend(bbox_to_anchor=(1, 0.3))
+	ax[0][2].legend(bbox_to_anchor=(1, 0.3))
+	ax[0][3].legend(bbox_to_anchor=(1, 0.6))
+	ax[1][0].legend(bbox_to_anchor=(1, 0.3))
+	ax[1][1].legend(bbox_to_anchor=(1, 0.3))
+	ax[1][2].legend(bbox_to_anchor=(1, 0.3))
+	ax[1][3].legend(bbox_to_anchor=(1, 0.6))
+
+	plot.show()
+
 
 
 

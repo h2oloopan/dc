@@ -108,7 +108,7 @@ if __name__ == '__main__':
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
 
-	runs = 3
+	runs = 1
 	steps = 3
 
 
@@ -132,7 +132,7 @@ if __name__ == '__main__':
 	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 1.0})
 	horizon = 5
 	samples = 2048
-	tutorials = 30
+	tutorials = 100
 	#system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
 	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 
