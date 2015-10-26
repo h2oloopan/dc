@@ -32,5 +32,5 @@ def learnCurve(cs, ts):
 	#print cs
 	#print ts
 	#print result
-	print result
+	#print result
 	return result

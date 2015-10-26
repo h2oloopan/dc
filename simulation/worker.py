@@ -13,6 +13,7 @@ class Worker:
 	m = 0 #money a worker has made
 	er = 0
 	ep = 0
+	epv = 0
 	ts = []
 	cs = []
 	noise_mu = None
@@ -31,12 +32,17 @@ class Worker:
 		return s
 	def calculateProjection(self, projection):
 		#calculate the weights for ranking
-		projection = (self.getEstimatedCumulativeQuality(self.x + projection) * float(self.x + projection) -
-			self.getEstimatedCumulativeQuality(self.x) * float(self.x))
+		#projection = (self.getEstimatedCumulativeQuality(self.x + projection) * float(self.x + projection) -
+			#self.getEstimatedCumulativeQuality(self.x) * float(self.x))
 		#return 1.0 * self.getEstimatedQualityAtX(self.x) + 1.0 * (1 / self.er)
 
 		#the first term is short term while the second term is long term
-		return 5.0 * self.getEstimatedQualityAtX(self.x) + 1.0 * projection
+
+		projection = self.getEstimatedCumulativeQuality(self.x + projection)
+		extra = 0.0
+		if self.epv < math.pow(10, -10):
+			extra = 3.0
+		return 2.0 * self.getEstimatedQualityAtX(self.x) + 1.0 * projection + extra
 
 	def addNoise(self, noise_mu, noise_sigma):
 		self.noise_mu = noise_mu
@@ -79,7 +85,10 @@ class Worker:
 				self.ep = learning['p']
 		else:
 			self.ep = 0.0
-		print self.er, self.ep, self.r, self.p
+		self.epv = learning['pv']
+		#print self.getEstimatedQualityAtX(self.x), self.getAveragedCumulativeQuality(), self.getQuality(), self.epv
+	def getAveragedCumulativeQuality(self):
+		return float(self.cs[-1]) / float(self.ts[-1])
 	def getEstimatedCumulativeQuality(self, x):
 		if self.er == 0:
 			#hasn't even be able to learn the quality
@@ -90,6 +99,13 @@ class Worker:
 			else:
 				return float(cs[-1]) / float(ts[-1])
 		return (float(x) + float(self.ep)) / (float(x) + float(self.ep) + float(self.er))
+	
+	def getEstimatedQualityWithFilter(self):
+		if self.er == 0 or self.epv > math.pow(10, -10):
+			return self.getAveragedCumulativeQuality()
+		else:
+			return self.getEstimatedQualityAtX(self.x)
+
 	def getEstimatedQualityAtX(self, x):
 		if self.er == 0:
 			return self.getEstimatedCumulativeQuality(x)
@@ -132,6 +148,7 @@ class Worker:
 		self.m = 0
 		self.er = 0
 		self.ep = 0
+		self.epv = 0
 		self.ts = []
 		self.cs = []
 

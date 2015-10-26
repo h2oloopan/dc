@@ -38,9 +38,9 @@ class System:
 	hire_pointer = None
 	w_belief = 1.0
 	w_quality = 1.0
-	keep_hiring = True
+	keep_hiring = False
 	belief_threshold = 0.65
-	dont_update = True
+	dont_update = False
 
 	def __init__(self, outcomes, start, weights):
 		self.counts = {}
@@ -354,9 +354,11 @@ class System:
 				worker = workers[i]
 				answer = answers[i]
 				if str(answer) == str(outcome):
-					p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
+					#p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
+					p1 = p1 * worker.getEstimatedQualityWithFilter()
 				else:
-					p1 = p1 * (1.0 - worker.getEstimatedQualityAtX(worker.x))
+					#p1 = p1 * (1.0 - worker.getEstimatedQualityAtX(worker.x))
+					p1 = p1 * (1.0 - worker.getEstimatedQualityWithFilter())
 			p2 = float(self.counts[str(outcome)]) / float(self.total)
 			prob_sum += p1 * p2
 
