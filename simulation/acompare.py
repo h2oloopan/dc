@@ -104,7 +104,7 @@ if __name__ == '__main__':
 	r = {'mu': 50, 'sigma': 10}
 	p = {'mu': 65, 'sigma': 5}
 
-	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
+	workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
 
