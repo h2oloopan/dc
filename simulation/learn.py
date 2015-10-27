@@ -1,5 +1,9 @@
 from scipy import stats
 
+import statsmodels.api as sm
+import pandas
+from pandas import DataFrame, Series
+
 #learning module
 def learnCurve(cs, ts):
 	#cs is a list of number of correct answers
@@ -17,6 +21,11 @@ def learnCurve(cs, ts):
 
 	slope, intercept, r_value, p_value, std_err = stats.linregress(ts, zs)
 
+	#different linear regression tool
+	#print slope, intercept, r_value, p_value, std_err
+	#temp = sm.OLS(zs, sm.add_constant(ts)).fit()
+	#print temp.summary()
+
 	#print slope
 	#print intercept
 	#print ts
@@ -31,6 +40,7 @@ def learnCurve(cs, ts):
 
 	#print cs
 	#print ts
+	#print result
 	#print result
 	#print result
 	return result

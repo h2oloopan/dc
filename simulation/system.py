@@ -40,7 +40,7 @@ class System:
 	w_quality = 1.0
 	keep_hiring = False
 	belief_threshold = 0.65
-	dont_update = False
+	dont_update = True
 
 	def __init__(self, outcomes, start, weights):
 		self.counts = {}

@@ -104,7 +104,7 @@ if __name__ == '__main__':
 	r = {'mu': 50, 'sigma': 10}
 	p = {'mu': 65, 'sigma': 5}
 
-	workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
+	workers = simulate.createHyperbolicWorker(1000 r, p, None, 1)
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
 
@@ -132,7 +132,7 @@ if __name__ == '__main__':
 	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 1.0})
 	horizon = 5
 	samples = 1024
-	tutorials = 20
+	tutorials = 30
 	#system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
 	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 
