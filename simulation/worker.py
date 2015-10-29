@@ -14,6 +14,7 @@ class Worker:
 	er = 0
 	ep = 0
 	epv = 0
+	erv = 0
 	ts = []
 	cs = []
 	noise_mu = None
@@ -76,8 +77,12 @@ class Worker:
 					self.er = 1000.0
 				else:
 					self.er = learning['r']
+			self.epv = learning['pv']
+			self.erv = learning['rv']
 		else:
 			self.er = 1000.0
+			self.epv = 1.0
+			self.erv = 1.0
 		if not math.isnan(learning['p']):
 			if learning['p'] < 0:
 				self.ep = 0.0
@@ -85,8 +90,8 @@ class Worker:
 				self.ep = learning['p']
 		else:
 			self.ep = 0.0
-		self.epv = learning['pv']
-		#print self.getEstimatedQualityAtX(self.x), self.getAveragedCumulativeQuality(), self.getQuality(), self.epv
+		#self.epv = learning['pv']
+		print self.getEstimatedQualityAtX(self.x), self.getAveragedCumulativeQuality(), self.getQuality(), self.epv
 	def getAveragedCumulativeQuality(self):
 		return float(self.cs[-1]) / float(self.ts[-1])
 	def getEstimatedCumulativeQuality(self, x):
@@ -149,6 +154,7 @@ class Worker:
 		self.er = 0
 		self.ep = 0
 		self.epv = 0
+		self.erv = 0
 		self.ts = []
 		self.cs = []
 
