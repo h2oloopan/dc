@@ -215,16 +215,16 @@ class System:
 					p3 = 1.0
 					for truth in outcomes:
 						if outcome == truth:
-							p1 = worker.getEstimatedQualityAtX(worker.x)
+							p1 = worker.getHybridQuality()
 						else:
-							p1 = 1.0 - worker.getEstimatedQualityAtX(worker.x)
+							p1 = 1.0 - worker.getHybridQuality(worker.x)
 						for j in range(0, len(cursor.answers)):
 							answer = cursor.answers[j]
 							hire = cursor.hirings[j]
 							if answer == truth:
-								p2 = p2 * hire.getEstimatedQualityAtX(hire.x)
+								p2 = p2 * hire.getHybridQuality(hire.x)
 							else:
-								p2 = p2 * (1.0 - hire.getEstimatedQualityAtX(hire.x))
+								p2 = p2 * (1.0 - hire.getHybridQuality(hire.x))
 						p3 = float(self.counts[str(truth)]) / float(self.total)
 					#print outcome, p1, p2, p3
 					probabilities.append(p1 * p2 * p3)
@@ -355,10 +355,10 @@ class System:
 				answer = answers[i]
 				if str(answer) == str(outcome):
 					#p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
-					p1 = p1 * worker.getEstimatedQualityWithFilter()
+					p1 = p1 * worker.getHybridQuality()
 				else:
 					#p1 = p1 * (1.0 - worker.getEstimatedQualityAtX(worker.x))
-					p1 = p1 * (1.0 - worker.getEstimatedQualityWithFilter())
+					p1 = p1 * (1.0 - worker.getHybridQuality())
 			p2 = float(self.counts[str(outcome)]) / float(self.total)
 			prob_sum += p1 * p2
 
