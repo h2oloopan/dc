@@ -91,7 +91,7 @@ class Worker:
 		else:
 			self.ep = 0.0
 		#self.epv = learning['pv']
-		print self.getEstimatedQualityAtX(self.x), self.getAveragedCumulativeQuality(), self.getQuality(), self.epv
+		print self.getEstimatedQualityAtX(self.x), self.getAveragedCumulativeQuality(), self.getQuality(), self.epv, self.erv
 	def getAveragedCumulativeQuality(self):
 		return float(self.cs[-1]) / float(self.ts[-1])
 	def getEstimatedCumulativeQuality(self, x):
@@ -108,6 +108,13 @@ class Worker:
 	def getEstimatedQualityWithFilter(self):
 		if self.er == 0 or self.epv > math.pow(10, -10):
 			return self.getAveragedCumulativeQuality()
+		else:
+			return self.getEstimatedQualityAtX(self.x)
+	def getHybridQuality(self):
+		if self.er == 0 or self.erv < 0:
+			return self.getAveragedCumulativeQuality()
+		elif self.erv > 0.7:
+			return (self.getAveragedCumulativeQuality() + self.getEstimatedQualityAtX(self.x)) / 2.0
 		else:
 			return self.getEstimatedQualityAtX(self.x)
 
