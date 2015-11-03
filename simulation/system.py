@@ -40,7 +40,7 @@ class System:
 	w_quality = 1.0
 	keep_hiring = False
 	belief_threshold = 0.65
-	dont_update = True
+	dont_update = False
 
 	def __init__(self, outcomes, start, weights):
 		self.counts = {}
@@ -63,9 +63,13 @@ class System:
 			if worker.isAvailable():
 				available.append(worker)
 
-		result = sorted(available, key=lambda worker: worker.calculateProjection(projection))
+		result = sorted(available, key=lambda worker: worker.calculateProjection(projection), reverse=True)
 		#result = sorted(available, key=lambda worker: 1000.0 - worker.er)
 		#print result
+
+		#for i in range(0, 10):
+		#	print result[i], str(result[i].calculateProjection(projection)), result[i].getHybridQuality(), result[i].getQuality(), result[i].erv
+
 		return result
 
 	def dh(self, tasks, outcomes, workers, ps):
@@ -91,7 +95,7 @@ class System:
 			worker.learn()
 
 
-		step = 10
+		step = 10000
 		step_counter = 0
 
 
@@ -154,6 +158,12 @@ class System:
 						last_answer = answer
 			#hiring is done
 			prediction, probability = self.aggregate(hired, answers, outcomes)
+			#print '----------'
+			#for i in range(0, len(hired)):
+			#	worker = hired[i]
+			#	answer = answers[i]
+			#	print answer, worker.getHybridQuality()
+			#print prediction, probability, '|', task
 			#print '-----'
 			#print answers
 			#for w in hired:
@@ -217,14 +227,14 @@ class System:
 						if outcome == truth:
 							p1 = worker.getHybridQuality()
 						else:
-							p1 = 1.0 - worker.getHybridQuality(worker.x)
+							p1 = 1.0 - worker.getHybridQuality()
 						for j in range(0, len(cursor.answers)):
 							answer = cursor.answers[j]
 							hire = cursor.hirings[j]
 							if answer == truth:
-								p2 = p2 * hire.getHybridQuality(hire.x)
+								p2 = p2 * hire.getHybridQuality()
 							else:
-								p2 = p2 * (1.0 - hire.getHybridQuality(hire.x))
+								p2 = p2 * (1.0 - hire.getHybridQuality())
 						p3 = float(self.counts[str(truth)]) / float(self.total)
 					#print outcome, p1, p2, p3
 					probabilities.append(p1 * p2 * p3)

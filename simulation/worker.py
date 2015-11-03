@@ -29,7 +29,7 @@ class Worker:
 		#print x, p, r, c, a
 	def __str__(self):
 		s = ''
-		s += 'quality: ' + self.getEstimatedQualityAtX(self.x)
+		s += 'quality: ' + str(self.getEstimatedQualityAtX(self.x))
 		return s
 	def calculateProjection(self, projection):
 		#calculate the weights for ranking
@@ -40,10 +40,7 @@ class Worker:
 		#the first term is short term while the second term is long term
 
 		projection = self.getEstimatedCumulativeQuality(self.x + projection)
-		extra = 0.0
-		if self.epv < math.pow(10, -10):
-			extra = 3.0
-		return 2.0 * self.getEstimatedQualityAtX(self.x) + 1.0 * projection + extra
+		return 1.0 * self.getHybridQuality()# + 1.0 * projection
 
 	def addNoise(self, noise_mu, noise_sigma):
 		self.noise_mu = noise_mu
@@ -91,7 +88,7 @@ class Worker:
 		else:
 			self.ep = 0.0
 		#self.epv = learning['pv']
-		print self.getEstimatedQualityAtX(self.x), self.getAveragedCumulativeQuality(), self.getQuality(), self.epv, self.erv
+		#print self.getEstimatedQualityAtX(self.x), self.getAveragedCumulativeQuality(), self.getQuality(), self.epv, self.erv
 	def getAveragedCumulativeQuality(self):
 		return float(self.cs[-1]) / float(self.ts[-1])
 	def getEstimatedCumulativeQuality(self, x):
@@ -113,7 +110,7 @@ class Worker:
 	def getHybridQuality(self):
 		if self.er == 0 or self.erv < 0:
 			return self.getAveragedCumulativeQuality()
-		elif self.erv > 0.7:
+		elif self.erv > 0.4:
 			return (self.getAveragedCumulativeQuality() + self.getEstimatedQualityAtX(self.x)) / 2.0
 		else:
 			return self.getEstimatedQualityAtX(self.x)

@@ -104,7 +104,7 @@ if __name__ == '__main__':
 	r = {'mu': 50, 'sigma': 10}
 	p = {'mu': 40, 'sigma': 5}
 
-	workers = simulate.createHyperbolicWorker(100, r, p, None, 1)
+	workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
 
@@ -129,7 +129,7 @@ if __name__ == '__main__':
 
 	print 'Dynamic Hiring'
 	#system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
-	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 1.0})
+	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
 	horizon = 7
 	samples = 2048
 	tutorials = 20
