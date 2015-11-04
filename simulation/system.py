@@ -64,6 +64,14 @@ class System:
 				available.append(worker)
 
 		result = sorted(available, key=lambda worker: worker.calculateProjection(projection), reverse=True)
+
+		total = 0.0
+		for worker in workers:
+			print worker.getHybridQuality()
+			total += worker.getHybridQuality()
+
+		print float(total / float(len(workers)))
+
 		#result = sorted(available, key=lambda worker: 1000.0 - worker.er)
 		#print result
 
