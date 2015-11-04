@@ -61,6 +61,9 @@ class System:
 
 	def getCappedQuality(self, quality, average_quality, x):
 		cap = 0.004 * x + 0.2
+		#print 'quality', quality
+		#print 'average', average_quality
+		#print 'x', x
 		return min(quality, average_quality * (1.0 + cap))
 
 	def rankWorkers(self, workers, projection=100):
@@ -71,12 +74,12 @@ class System:
 
 		result = sorted(available, key=lambda worker: worker.calculateProjection(projection), reverse=True)
 
-		total = 0.0
-		for worker in workers:
-			print worker.getHybridQuality()
-			total += worker.getHybridQuality()
+		#total = 0.0
+		#for worker in workers:
+		#	print worker.getHybridQuality()
+		#	total += worker.getHybridQuality()
 
-		print float(total / float(len(workers)))
+		#print float(total / float(len(workers)))
 
 		#result = sorted(available, key=lambda worker: 1000.0 - worker.er)
 		#print result
@@ -92,6 +95,7 @@ class System:
 		for worker in workers:
 			average += worker.getHybridQuality()
 		self.average_worker_quality = average / float(len(workers))
+		print self.average_worker_quality
 
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
@@ -115,7 +119,7 @@ class System:
 					worker.updateLearning(False)
 			worker.learn()
 
-		self.calculateAverageWorkerQuality()
+		self.calculateAverageWorkerQuality(workers)
 
 
 		step = 10000
@@ -137,6 +141,7 @@ class System:
 
 			step_counter = (step_counter + 1) % step
 			if step_counter == 0:
+				#this rerank workers and do sampling and evaluation again
 				rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
 				self.reset()
 				self.sample(s, l, outcomes, rankedWorkers)
@@ -386,12 +391,16 @@ class System:
 			for i in range(0, len(workers)):
 				worker = workers[i]
 				answer = answers[i]
+				print self.average_worker_quality
+				cappedQuality = self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x)
+				print cappedQuality
+
 				if str(answer) == str(outcome):
 					#p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
-					p1 = p1 * self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x)
+					p1 = p1 * cappedQuality
 				else:
 					#p1 = p1 * (1.0 - worker.getEstimatedQualityAtX(worker.x))
-					p1 = p1 * (1.0 - self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x))
+					p1 = p1 * (1.0 - cappedQuality)
 			p2 = float(self.counts[str(outcome)]) / float(self.total)
 			prob_sum += p1 * p2
 
@@ -433,7 +442,7 @@ class System:
 				worker.updateLearning(False)
 			worker.learn()
 
-		self.calculateAverageWorkerQuality()
+		self.calculateAverageWorkerQuality(workers)
 
 
 
