@@ -70,8 +70,9 @@ class System:
 		for worker in workers:
 			if worker.isAvailable():
 				available.append(worker)
+				print worker.getQuality(), self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x)
 
-		result = sorted(available, key=lambda worker: worker.calculateProjection(projection), reverse=True)
+		result = sorted(available, key=lambda worker: worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection), reverse=True)
 
 		#total = 0.0
 		#for worker in workers:
@@ -125,10 +126,11 @@ class System:
 		step_counter = 0
 
 
-		rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
+
 
 		self.reset()
 		self.calculateAverageWorkerQuality(workers)
+		rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
 		self.sample(s, l, outcomes, rankedWorkers)
 		self.evaluate(outcomes)
 		
@@ -143,9 +145,9 @@ class System:
 			step_counter = (step_counter + 1) % step
 			if step_counter == 0:
 				#this rerank workers and do sampling and evaluation again
-				rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
 				self.reset()
 				self.calculateAverageWorkerQuality(workers)
+				rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
 				self.sample(s, l, outcomes, rankedWorkers)
 				self.evaluate(outcomes)
 				

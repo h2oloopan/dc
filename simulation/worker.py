@@ -31,7 +31,7 @@ class Worker:
 		s = ''
 		s += 'quality: ' + str(self.getEstimatedQualityAtX(self.x))
 		return s
-	def calculateProjection(self, projection):
+	def calculateProjection(self, quality, projection):
 		#calculate the weights for ranking
 		#projection = (self.getEstimatedCumulativeQuality(self.x + projection) * float(self.x + projection) -
 			#self.getEstimatedCumulativeQuality(self.x) * float(self.x))
@@ -40,7 +40,7 @@ class Worker:
 		#the first term is short term while the second term is long term
 
 		projection = self.getEstimatedCumulativeQuality(self.x + projection)
-		return 1.0 * self.getHybridQuality() + 1.0 * projection
+		return 1.0 * quality + 1.0 * projection
 
 	def addNoise(self, noise_mu, noise_sigma):
 		self.noise_mu = noise_mu
