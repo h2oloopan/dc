@@ -32,18 +32,17 @@ class State:
  		return s
 
 class System:
-	counts = None
-	total = 0
-	root = State(None)
-	hire_pointer = None
-	w_belief = 1.0
-	w_quality = 1.0
 	keep_hiring = False
 	belief_threshold = 0.65
 	dont_update = False
-	average_worker_quality = 0.0
 
 	def __init__(self, outcomes, start, weights):
+		self.root = State(None)
+		self.hire_pointer = None
+		self.w_belief = 1.0
+		self.w_quality = 1.0
+		self.total = 0
+		self.average_worker_quality = 0.0
 		self.counts = {}
 		for outcome in outcomes:
 			self.counts[str(outcome)] = start
@@ -95,7 +94,7 @@ class System:
 		for worker in workers:
 			average += worker.getHybridQuality()
 		self.average_worker_quality = average / float(len(workers))
-		print self.average_worker_quality
+		#print self.average_worker_quality
 
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
@@ -119,7 +118,7 @@ class System:
 					worker.updateLearning(False)
 			worker.learn()
 
-		self.calculateAverageWorkerQuality(workers)
+		
 
 
 		step = 10000
@@ -129,8 +128,10 @@ class System:
 		rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
 
 		self.reset()
+		self.calculateAverageWorkerQuality(workers)
 		self.sample(s, l, outcomes, rankedWorkers)
 		self.evaluate(outcomes)
+		
 
 		for task in tasks:
 			#self.reset()
@@ -144,8 +145,10 @@ class System:
 				#this rerank workers and do sampling and evaluation again
 				rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
 				self.reset()
+				self.calculateAverageWorkerQuality(workers)
 				self.sample(s, l, outcomes, rankedWorkers)
 				self.evaluate(outcomes)
+				
 
 			self.hire_pointer = self.root
 			last_hire = None
@@ -381,6 +384,7 @@ class System:
 		#	answer = answers[i]
 		#	print answer, worker.getEstimatedQualityAtX(worker.x)
 
+		#print self.__dict__
 
 		prob_sum = 0.0
 		prob_pick = None
@@ -391,9 +395,9 @@ class System:
 			for i in range(0, len(workers)):
 				worker = workers[i]
 				answer = answers[i]
-				print self.average_worker_quality
+				#print self.average_worker_quality
 				cappedQuality = self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x)
-				print cappedQuality
+				#print cappedQuality
 
 				if str(answer) == str(outcome):
 					#p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
