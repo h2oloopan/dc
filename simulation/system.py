@@ -41,6 +41,7 @@ class System:
 	keep_hiring = False
 	belief_threshold = 0.65
 	dont_update = False
+	average_worker_quality = 0.0
 
 	def __init__(self, outcomes, start, weights):
 		self.counts = {}
@@ -56,6 +57,11 @@ class System:
 		self.root = State(None)
 		self.root.visitation = 0
 		self.hire_pointer = self.root
+		self.average_worker_quality = 0.0
+
+	def getCappedQuality(self, quality, average_quality, x):
+		cap = 0.004 * x + 0.2
+		return min(quality, average_quality * (1.0 + cap))
 
 	def rankWorkers(self, workers, projection=100):
 		available = []
@@ -80,6 +86,13 @@ class System:
 
 		return result
 
+
+	def calculateAverageWorkerQuality(self, workers):
+		average = 0.0
+		for worker in workers:
+			average += worker.getHybridQuality()
+		self.average_worker_quality = average / float(len(workers))
+
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
 		#s is the number of samples
@@ -101,6 +114,8 @@ class System:
 				else:
 					worker.updateLearning(False)
 			worker.learn()
+
+		self.calculateAverageWorkerQuality()
 
 
 		step = 10000
@@ -417,6 +432,8 @@ class System:
 			else:
 				worker.updateLearning(False)
 			worker.learn()
+
+		self.calculateAverageWorkerQuality()
 
 
 
