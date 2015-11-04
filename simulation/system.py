@@ -388,10 +388,10 @@ class System:
 				answer = answers[i]
 				if str(answer) == str(outcome):
 					#p1 = p1 * worker.getEstimatedQualityAtX(worker.x)
-					p1 = p1 * worker.getHybridQuality()
+					p1 = p1 * self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x)
 				else:
 					#p1 = p1 * (1.0 - worker.getEstimatedQualityAtX(worker.x))
-					p1 = p1 * (1.0 - worker.getHybridQuality())
+					p1 = p1 * (1.0 - self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x))
 			p2 = float(self.counts[str(outcome)]) / float(self.total)
 			prob_sum += p1 * p2
 
