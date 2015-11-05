@@ -33,7 +33,7 @@ class State:
 
 class System:
 	keep_hiring = False
-	belief_threshold = 0.65
+	belief_threshold = 0.9
 	dont_update = False
 
 	def __init__(self, outcomes, start, weights):
@@ -70,7 +70,7 @@ class System:
 		for worker in workers:
 			if worker.isAvailable():
 				available.append(worker)
-				print worker.getQuality(), self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x)
+				#print worker.getQuality(), self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x)
 
 		result = sorted(available, key=lambda worker: worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection), reverse=True)
 
