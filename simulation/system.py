@@ -33,7 +33,7 @@ class State:
 
 class System:
 	keep_hiring = False
-	belief_threshold = 0.9
+	belief_threshold = 0.85
 	dont_update = False
 
 	def __init__(self, outcomes, start, weights):
@@ -59,7 +59,7 @@ class System:
 		self.average_worker_quality = 0.0
 
 	def getCappedQuality(self, quality, average_quality, x):
-		cap = 0.004 * x + 0.2
+		cap = 0.0045 * x + 0.1
 		#print 'quality', quality
 		#print 'average', average_quality
 		#print 'x', x
