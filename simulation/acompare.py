@@ -108,33 +108,34 @@ if __name__ == '__main__':
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
 
-	runs = 5
+	runs = 3
 	steps = 3
 
 
-	f, ax = plot.subplots(3, 2)
+	#f, ax = plot.subplots(3, 2)
+	f, graphs = plot.subplots(1, 2)
 
 
-	print 'Random K'
-	k = 5
-	analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
+	#print 'Random K'
+	#k = 5
+	#analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
 
 
 
-	print 'Top K'
-	k = 5
-	t = 10
-	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
+	#print 'Top K'
+	#k = 5
+	#t = 10
+	#analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
 	print 'Dynamic Hiring'
 	#system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
-	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 1.0})
+	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 100.0})
 	horizon = 7
 	samples = 2048
 	tutorials = 20
 	#system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
-	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
+	analyze(graphs, runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 
 	plot.show()
 

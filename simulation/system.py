@@ -122,7 +122,7 @@ class System:
 		
 
 
-		step = 10000
+		step = 20
 		step_counter = 0
 
 
