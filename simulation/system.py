@@ -206,6 +206,11 @@ class System:
 			#update all hired workers
 			self.update(hired, answers, prediction)
 			result.append((prediction, len(hired)))
+
+
+			#if len(hired) == 1:
+				#print task, prediction, self.getCappedQuality(hired[0].getHybridQuality(), self.average_worker_quality, hired[0].x), hired[0].getHybridQuality(), hired[0].getQuality()
+
 			completed_tasks += 1
 		return result
 

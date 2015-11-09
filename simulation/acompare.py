@@ -91,7 +91,7 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 	graph[1].plot(xs, ws, label='number of hired workers')
 
 	graph[0].legend(bbox_to_anchor=(1, 0.3))
-	graph[1].legend(bbox_to_anchor=(1, 0.6))
+	graph[1].legend(bbox_to_anchor=(1, 0.8))
 
 	graph[0].set_xlabel('tasks')
 	graph[0].set_ylabel('accuracy')
