@@ -40,6 +40,9 @@ class Worker:
 		#the first term is short term while the second term is long term
 
 		projection = self.getEstimatedCumulativeQuality(self.x + projection)
+
+		print self.r, self.p, '|', self.er, self.ep, self.getHybridQuality(), projection
+
 		return 1.0 * quality + 1.0 * projection
 
 	def addNoise(self, noise_mu, noise_sigma):
@@ -67,17 +70,17 @@ class Worker:
 		#print learning
 		if not math.isnan(learning['r']):
 			#if it's too huge, just set it to 1000
-			if learning['r'] > 1000.0:
-				self.er = 1000.0
+			if learning['r'] > 5000.0:
+				self.er = 5000.0
 			else:
 				if learning['r'] <= 0:
-					self.er = 1000.0
+					self.er = 5000.0
 				else:
 					self.er = learning['r']
 			self.epv = learning['pv']
 			self.erv = learning['rv']
 		else:
-			self.er = 1000.0
+			self.er = 5000.0
 			self.epv = 1.0
 			self.erv = 1.0
 		if not math.isnan(learning['p']):
