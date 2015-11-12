@@ -75,15 +75,6 @@ def topKAverageWithTutorials(tasks, outcomes, workers, ps):
 	mapping = {}
 	#do tutorials
 	tutorials = simulate.createBinaryTasks(t)
-	for worker in workers:
-		correct.setdefault(worker.uuid, 0)
-		mapping.setdefault(worker.uuid, worker)
-		for tutorial in tutorials:
-			answer = worker.doTask(tutorial, outcomes)
-			if answer == tutorial:
-				correct[worker.uuid] += 1
-			else:
-				correct[worker.uuid] += 0
 
 	ranked = sorted(correct.items(), key=operator.itemgetter(1), reverse=True)
 	#do tasks
