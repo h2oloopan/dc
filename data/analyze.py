@@ -65,16 +65,20 @@ for worker in workers:
 xs = np.arange(1, maximum + 1, 1)
 
 skip = 10
-#for precision in precisions:
-#	plot.plot(precision[skip:])
+for precision in precisions:
+	plot.plot(precision[skip:])
 
-counter = 1
-for i in range(skip, maximum):
-	
+aggregate = []
+for i in range(0, 45):
+	total = 0.0
+	counter = 0
+	for precision in precisions:
+		if len(precision) > i:
+			total += precision[i]
+			counter += 1
+	aggregate.append(float(total) / float(counter))
 
-
-	counter += 1
-
+plot.plot(aggregate, linestyle='-')
 plot.show()
 
 
