@@ -67,6 +67,14 @@ def randomK(tasks, outcomes, workers, k):
 		answers.append((vote, k))
 	return answers
 
+def getKWorkers(workers, k, tutorials):
+	tops = []
+	for worker in workers:
+		if worker.x < len(tutorials):
+			#let worker work on tutorials
+			
+
+
 def topKAverageWithTutorials(tasks, outcomes, workers, ps):
 	k = ps[0]
 	t = ps[1]
@@ -76,7 +84,7 @@ def topKAverageWithTutorials(tasks, outcomes, workers, ps):
 	#do tutorials
 	tutorials = simulate.createBinaryTasks(t)
 
-	ranked = sorted(correct.items(), key=operator.itemgetter(1), reverse=True)
+	#ranked = sorted(correct.items(), key=operator.itemgetter(1), reverse=True)
 	#do tasks
 	for task in tasks:
 		availables = findAvailableWorkers(workers)
