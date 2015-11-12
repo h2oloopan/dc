@@ -11,6 +11,9 @@ import learn
 expert = []
 workers = []
 
+start = 280.0
+end = 1080.0
+step = 20.0
 
 def readData(fname):
 	result = []
@@ -32,7 +35,6 @@ def overlap(p1, p2):
 		return False
 
 
-
 #do actual work
 for f in os.listdir('.'):
 	if f.endswith('.csv'):
@@ -42,6 +44,18 @@ for f in os.listdir('.'):
 		else:
 			expert = readData(f)
 
-print expert
+#precision analysis
+precisions = []
+for worker in workers:
+	precision = []
+	for spindle in worker:
+		found = False
+		for truth in expert:
+			if overlap(spindle, truth):
+				found = True
+				break
 
-print workers[0]
+
+
+
+
