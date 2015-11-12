@@ -46,14 +46,38 @@ for f in os.listdir('.'):
 
 #precision analysis
 precisions = []
+maximum = 0
 for worker in workers:
 	precision = []
+	correctness = 0
+	counter = 0
 	for spindle in worker:
-		found = False
 		for truth in expert:
 			if overlap(spindle, truth):
-				found = True
+				correctness += 1
 				break
+		counter += 1
+		precision.append(float(correctness) / float(counter))
+	precisions.append(precision)
+	if len(precision) > maximum:
+		maximum = len(precision)
+
+xs = np.arange(1, maximum + 1, 1)
+
+skip = 10
+#for precision in precisions:
+#	plot.plot(precision[skip:])
+
+counter = 1
+for i in range(skip, maximum):
+	
+
+
+	counter += 1
+
+plot.show()
+
+
 
 
 
