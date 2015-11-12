@@ -130,7 +130,7 @@ class System:
 
 		self.reset()
 		self.calculateAverageWorkerQuality(workers)
-		rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
+		rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
 		self.sample(s, l, outcomes, rankedWorkers)
 		self.evaluate(outcomes)
 		
@@ -147,7 +147,7 @@ class System:
 				#this rerank workers and do sampling and evaluation again
 				self.reset()
 				self.calculateAverageWorkerQuality(workers)
-				rankedWorkers = self.rankWorkers(workers, total_tasks)# - completed_tasks)
+				rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
 				self.sample(s, l, outcomes, rankedWorkers)
 				self.evaluate(outcomes)
 				

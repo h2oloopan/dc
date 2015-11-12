@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
 	print 'Top K'
 	k = 5
-	t = 10
+	t = 30
 	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
@@ -139,7 +139,7 @@ if __name__ == '__main__':
 	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
 	horizon = 5
 	samples = 2048
-	tutorials = 50
+	tutorials = 30
 	#system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
 	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 

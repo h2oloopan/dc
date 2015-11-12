@@ -39,9 +39,9 @@ class Worker:
 
 		#the first term is short term while the second term is long term
 
-		projection = self.getEstimatedCumulativeQuality(self.x + projection)
-
-		print self.r, self.p, '|', self.er, self.ep, self.getHybridQuality(), projection
+		#projection = self.getEstimatedCumulativeQuality(self.x + projection)
+		projection = self.getEstimatedQualityAtX(self.x + projection)
+		#print self.r, self.p, '|', self.er, self.ep, self.getHybridQuality(), projection
 
 		return 1.0 * quality + 1.0 * projection
 
