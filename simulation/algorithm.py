@@ -67,11 +67,28 @@ def randomK(tasks, outcomes, workers, k):
 		answers.append((vote, k))
 	return answers
 
-def getKWorkers(workers, k, tutorials):
+def getKWorkers(workers, k, tutorials, outcomes):
 	tops = []
 	for worker in workers:
 		if worker.x < len(tutorials):
 			#let worker work on tutorials
+			for tutorial in tutorials:
+				answer = worker.doTask(tutorial, outcomes)
+				if answer == tutorial:
+					worker.updateLearning(True)
+				else:
+					worker.updateLearning(False)
+			if len(tops) < k:
+				tops.append(worker)
+				tops = sorted(tops, key=lambda worker: worker.getAveragedCumulativeQuality(), reverse=True)
+			elif worker.getAveragedCumulativeQuality() > tops[0].getAveragedCumulativeQuality():
+				tops.pop()
+				tops.append(worker)
+				tops = sorted(tops, key=lambda worker: worker.getAveragedCumulativeQuality(), reverse=True)
+			else:
+				pass
+				#do nothing
+	return tops
 			
 
 
@@ -88,23 +105,20 @@ def topKAverageWithTutorials(tasks, outcomes, workers, ps):
 	#do tasks
 	for task in tasks:
 		availables = findAvailableWorkers(workers)
+		tops = getKWorkers(availables, k, tutorials, outcomes)
 		votes = {}
 		vote = None
 		max_vote = 0
 		hired = []
 		current = 0
-		while len(hired) < k:
-			pick = mapping[ranked[current][0]]
-			if pick in availables:
-				hired.append(pick)
-				answer = pick.doTask(task, outcomes)
-				key = str(answer)
-				votes.setdefault(key, 0)
-				votes[key] += 1
-				if votes[key] > max_vote:
-					max_vote = votes[key]
-					vote = answer
-			current += 1
+		for pick in tops:
+			answer = pick.doTask(task, outcomes)
+			key = str(answer)
+			votes.setdefault(key, 0)
+			votes[key] += 1
+			if votes[key] > max_vote:
+				max_vote = votes[key]
+				vote = answer
 		answers.append((vote, k))
 	return answers
 
