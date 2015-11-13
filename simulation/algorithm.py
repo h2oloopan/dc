@@ -78,16 +78,16 @@ def getKWorkers(workers, k, tutorials, outcomes):
 					worker.updateLearning(True)
 				else:
 					worker.updateLearning(False)
-			if len(tops) < k:
-				tops.append(worker)
-				tops = sorted(tops, key=lambda worker: worker.getAveragedCumulativeQuality(), reverse=True)
-			elif worker.getAveragedCumulativeQuality() > tops[0].getAveragedCumulativeQuality():
-				tops.pop()
-				tops.append(worker)
-				tops = sorted(tops, key=lambda worker: worker.getAveragedCumulativeQuality(), reverse=True)
-			else:
-				pass
-				#do nothing
+		if len(tops) < k:
+			tops.append(worker)
+			tops = sorted(tops, key=lambda worker: worker.getAveragedCumulativeQuality(), reverse=True)
+		elif worker.getAveragedCumulativeQuality() > tops[0].getAveragedCumulativeQuality():
+			tops.pop()
+			tops.append(worker)
+			tops = sorted(tops, key=lambda worker: worker.getAveragedCumulativeQuality(), reverse=True)
+		else:
+			pass
+			#do nothing
 	return tops
 			
 
@@ -106,11 +106,10 @@ def topKAverageWithTutorials(tasks, outcomes, workers, ps):
 	for task in tasks:
 		availables = findAvailableWorkers(workers)
 		tops = getKWorkers(availables, k, tutorials, outcomes)
+		#print tops
 		votes = {}
 		vote = None
 		max_vote = 0
-		hired = []
-		current = 0
 		for pick in tops:
 			answer = pick.doTask(task, outcomes)
 			key = str(answer)
@@ -120,6 +119,12 @@ def topKAverageWithTutorials(tasks, outcomes, workers, ps):
 				max_vote = votes[key]
 				vote = answer
 		answers.append((vote, k))
+		#update
+		for worker in tops:
+			if worker.last_answer == vote:
+				worker.updateLearning(True)
+			else:
+				worker.updateLearning(False)
 	return answers
 
 

@@ -19,6 +19,7 @@ class Worker:
 	cs = []
 	noise_mu = None
 	noise_sigma = None
+	last_answer = None
 	def __init__(self, uuid, x, p, r, c, a):
 		self.uuid = uuid
 		self.x = x
@@ -151,8 +152,10 @@ class Worker:
 			others = list(outcomes)
 			others.pop(others.index(task))
 			pick = random.randint(0, len(others) - 1)
+			self.last_answer = pick
 			return others[pick]
 		else:
+			self.last_answer = task
 			return task
 
 	def reset(self):
