@@ -18,8 +18,8 @@ def learnCurve(cs, ts):
 			qs[i] = 0
 		zs.append(1.0 / (1.0 - float(qs[i])))
 
-
-	slope, intercept, r_value, p_value, std_err = stats.linregress(ts, zs)
+	#make sure we at least have more than 10 samples
+	slope, intercept, r_value, p_value, std_err = stats.linregress(ts[5:], zs[5:])
 
 	#different linear regression tool
 	#print slope, intercept, r_value, p_value, std_err

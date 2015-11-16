@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plot
 import os
 import sys
+import statsmodels.api as sm
 
 sys.path.append('../simulation')
 from worker import Worker
@@ -44,6 +45,8 @@ for f in os.listdir('.'):
 		else:
 			expert = readData(f)
 
+f, ax = plot.subplots(2)
+
 #precision analysis
 precisions = []
 maximum = 0
@@ -59,14 +62,15 @@ for worker in workers:
 		counter += 1
 		precision.append(float(correctness) / float(counter))
 	precisions.append(precision)
+	ax[0].plot(precision)
 	if len(precision) > maximum:
 		maximum = len(precision)
 
 xs = np.arange(1, maximum + 1, 1)
 
 skip = 10
-for precision in precisions:
-	plot.plot(precision[skip:])
+#for precision in precisions:
+#	plot.plot(precision[skip:])
 
 aggregate = []
 for i in range(0, 45):
@@ -78,8 +82,42 @@ for i in range(0, 45):
 			counter += 1
 	aggregate.append(float(total) / float(counter))
 
-plot.plot(aggregate, linestyle='-')
-plot.show()
+
+
+#recall analysis
+recalls = []
+for worker in workers:
+	recall = []
+	correctness = 0
+	counter = 0
+	for truth in expert:
+		for spindle in worker:
+			if overlap(spindle, truth):
+				correctness += 1
+				break
+		counter += 1
+		recall.append(float(correctness) / float(counter))
+	recalls.append(recall)
+	ax[1].plot(recall)
+
+ax[0].plot(aggregate, linestyle='--')
+
+
+xs = np.arange(6, 46, 1)
+ys = []
+for a in aggregate:
+	ys.append(1.0 / (1.0 - a))
+
+
+print xs
+print aggregate
+print ys
+
+temp = sm.OLS(ys[5:], sm.add_constant(xs)).fit()
+print temp.summary()
+
+
+#plot.show()
 
 
 

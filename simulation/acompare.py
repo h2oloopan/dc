@@ -134,14 +134,14 @@ if __name__ == '__main__':
 	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
-	#print 'Dynamic Hiring'
+	print 'Dynamic Hiring'
 	##system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
-	#system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
-	#horizon = 5
-	#samples = 2048
-	#tutorials = 30
-	#system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
-	#analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
+	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
+	horizon = 5
+	samples = 2048
+	tutorials = 30
+	system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
+	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 
 	plot.show()
 
