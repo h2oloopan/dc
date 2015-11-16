@@ -62,7 +62,7 @@ for worker in workers:
 		counter += 1
 		precision.append(float(correctness) / float(counter))
 	precisions.append(precision)
-	ax[0].plot(precision)
+	#ax[0].plot(precision)
 	if len(precision) > maximum:
 		maximum = len(precision)
 
@@ -117,7 +117,7 @@ temp = sm.OLS(ys[5:], sm.add_constant(xs)).fit()
 print temp.summary()
 
 
-#plot.show()
+plot.show()
 
 
 
