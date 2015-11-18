@@ -45,7 +45,23 @@ for f in os.listdir('.'):
 		else:
 			expert = readData(f)
 
-f, ax = plot.subplots(2)
+#f, ax = plot.subplots(2)
+cursor = 0
+step = 20
+end = 1080
+precisions = []
+correct = 0
+total = 0
+while cursor < end:
+	range_start = cursor
+	range_end = cursor + step
+	for worker in workers:
+		
+
+
+	cursor += step
+
+
 
 #precision analysis
 precisions = []
