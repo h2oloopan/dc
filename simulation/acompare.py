@@ -101,16 +101,19 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 
 
 if __name__ == '__main__':
-	r1 = {'mu': 2000, 'sigma': 10}
-	p1 = {'mu': 2000, 'sigma': 10}
+	#r1 = {'mu': 2000, 'sigma': 10}
+	#p1 = {'mu': 2000, 'sigma': 10}
 
-	r2 = {'mu': 50, 'sigma': 5}
-	p2 = {'mu': 20, 'sigma': 1}
+	#r2 = {'mu': 50, 'sigma': 5}
+	#p2 = {'mu': 20, 'sigma': 1}
 
-	#workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
-	workers = simulate.createHyperbolicWorker(900, r1, p1, None, 1)
-	fast_workers = simulate.createHyperbolicWorker(100, r2, p2, None, 2)
-	workers.extend(fast_workers)
+	r = {'mu': 100, 'sigma': 10}
+	p = {'mu': 100, 'sigma': 10}
+
+	workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
+	#workers = simulate.createHyperbolicWorker(900, r1, p1, None, 1)
+	#fast_workers = simulate.createHyperbolicWorker(100, r2, p2, None, 2)
+	#workers.extend(fast_workers)
 
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
