@@ -13,7 +13,7 @@ expert = []
 workers = []
 
 start = 280.0
-end = 1080.0
+end = 1060.0
 step = 20.0
 
 def readData(fname):
@@ -50,89 +50,42 @@ cursor = 0
 step = 20
 end = 1080
 precisions = []
+xs = []
 correct = 0
 total = 0
+cumulative_precision = 0.0
+x = 0
 while cursor < end:
 	range_start = cursor
 	range_end = cursor + step
+	cur_correct = 0
+	cur_total = 0
 	for worker in workers:
-		
-
-
-	cursor += step
-
-
-
-#precision analysis
-precisions = []
-maximum = 0
-for worker in workers:
-	precision = []
-	correctness = 0
-	counter = 0
-	for spindle in worker:
-		for truth in expert:
-			if overlap(spindle, truth):
-				correctness += 1
-				break
-		counter += 1
-		precision.append(float(correctness) / float(counter))
-	precisions.append(precision)
-	#ax[0].plot(precision)
-	if len(precision) > maximum:
-		maximum = len(precision)
-
-xs = np.arange(1, maximum + 1, 1)
-
-skip = 10
-#for precision in precisions:
-#	plot.plot(precision[skip:])
-
-aggregate = []
-for i in range(0, 45):
-	total = 0.0
-	counter = 0
-	for precision in precisions:
-		if len(precision) > i:
-			total += precision[i]
-			counter += 1
-	aggregate.append(float(total) / float(counter))
-
-
-
-#recall analysis
-recalls = []
-for worker in workers:
-	recall = []
-	correctness = 0
-	counter = 0
-	for truth in expert:
 		for spindle in worker:
-			if overlap(spindle, truth):
-				correctness += 1
-				break
-		counter += 1
-		recall.append(float(correctness) / float(counter))
-	recalls.append(recall)
-	ax[1].plot(recall)
+			if range_start <= spindle[0] and spindle[1] < range_end:
+				for truth in expert:
+					if overlap(truth, spindle):
+						correct += 1
+						cur_correct += 1
+						break
+				total += 1
+				cur_total += 1
 
-ax[0].plot(aggregate, linestyle='--')
+	#cur_precision = float(cur_correct) / float(cur_total)
+	#cumulative_precision = (float(x) * cumulative_precision + cur_precision) / float(x + 1)
 
-
-xs = np.arange(6, 46, 1)
-ys = []
-for a in aggregate:
-	ys.append(1.0 / (1.0 - a))
-
-
-print xs
-print aggregate
-print ys
-
-temp = sm.OLS(ys[5:], sm.add_constant(xs)).fit()
-print temp.summary()
+	if total == 0:
+		precisions.append(0.0)
+	else:
+		precisions.append(float(correct) / float(total))
+	
+	cursor += step
+	x += 1
+	xs.append(x)
 
 
+
+plot.plot(xs[10:], precisions[10:])
 plot.show()
 
 
