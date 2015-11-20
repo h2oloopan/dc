@@ -128,10 +128,45 @@ f, g = plot.subplots(1, 2)
 yF1 = fscores[10:]
 yF2 = f2scores[10:]
 
+zF1 = []
+zF2 = []
 
-g[0].plot(xs, yF1, label='actual f-score')
-g[1].plot(xs, yF2, label='actual f2-score')
+for y in yF1:
+	zF1.append(1.0 / (1.0 - float(y)))
+for y in yF2:
+	zF2.append(1.0 / (1.0 - float(y)))
 
+s1, i1, rv1, pv1, e1 = stats.linregress(xs, zF1)
+s2, i2, rv2, pv2, e2 = stats.linregress(xs, zF2)
+
+r1 = 1.0 / s1
+p1 = (i1 - 1.0) * r1
+
+r2 = 1.0 / s2
+p2 = (i2 - 1.0) * r2
+
+
+c1 = []
+c2 = []
+for x in xs:
+	c1.append(float(x + p1) / float(x + p1 + r1))
+	c2.append(float(x + p2) / float(x + p2 + r2))
+
+
+g[0].plot(xs, yF1, label='actual F1-score')
+g[0].plot(xs, c1, label='estimated F1-score')
+g[1].plot(xs, yF2, label='actual F2-score')
+g[1].plot(xs, c2, label='estimated F2-score')
+
+g[0].set_xlabel('windows')
+g[0].set_ylabel('cumulative F1-score')
+g[0].legend(bbox_to_anchor=(1, 0.3))
+g[1].set_xlabel('windows')
+g[1].set_ylabel('cumulative f2-score')
+g[1].legend(bbox_to_anchor=(1, 0.3))
+
+print r1, p1, pv1, e1
+print r2, p2, pv2, e2
 
 
 #plot.plot(xs, ys, label='actual recall')
