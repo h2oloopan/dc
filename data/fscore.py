@@ -104,24 +104,6 @@ while cursor < end:
 
 
 xs = xs[10:]
-#ys = recalls[10:]
-#zs = []
-#for y in ys:
-#	zs.append(1.0 / (1.0 - float(y)))
-
-
-#slope, intercept, r_value, p_value, std_err = stats.linregress(xs, zs)
-
-#r = 1.0 / slope
-#p = (intercept - 1.0) * r
-
-#print r, p, p_value, std_err
-
-#curve = []
-#for x in xs:
-#	curve.append(float(x + p) / float(x + p + r))
-
-
 
 f, g = plot.subplots(1, 2)
 
