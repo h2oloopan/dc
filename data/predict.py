@@ -59,14 +59,21 @@ for worker in workers:
 	end = 1080
 	x = 0
 
-	c_precision = 0
-	c_recall = 0
-	t_precision = 0
-	t_recall = 0
+
+	cumulative_precision = 0
+	cumulative_precision_total = 0
+	cumulative_recall = 0
+	cumulative_recall_total = 0
+
 
 	while cursor < end:
-		range_start = cursor
-		range_end = cursor + step
+		range_start = cursor - step
+		range_end = cursor + step + step
+
+		c_precision = 0
+		c_recall = 0
+		t_precision = 0
+		t_recall = 0
 
 		#precision
 		for spindle in worker:
@@ -74,11 +81,17 @@ for worker in workers:
 				for truth in expert:
 					if overlap(truth, spindle):
 						c_precision += 1
+						cumulative_precision += 1
 						break
 				t_precision += 1
+				cumulative_recall_total += 1
 		precision = 0.0
 		if t_precision != 0:
 			precision = float(c_precision) / float(t_precision)
+
+		cp = 0.0
+		if cumulative_precision_total != 0:
+			cp = float(cumulative_precision) / float(cumulative_precision_total)
 
 		#recall
 		for truth in expert:
@@ -108,12 +121,13 @@ for worker in workers:
 
 	#plot
 	xs = xs[10:]
+	#ys = fscores[10:]
 	ys = fscores[10:]
 	zs = []
 	for y in ys:
 		zs.append(1.0 / (1.0 - float(y)))
 
-	slope, intercept, rvalue, pvalue, evalue = stats.linregress(xs, zs)
+	slope, intercept, rvalue, pvalue, evalue = stats.linregress(xs[0:20], zs[0:20])
 
 	r = 1.0 / slope
 	p = (intercept - 1.0) * r
