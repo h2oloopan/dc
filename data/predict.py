@@ -65,6 +65,16 @@ for worker in workers:
 	cumulative_recall = 0
 	cumulative_recall_total = 0
 
+	cps = []
+	crs = []
+	cfs = []
+
+	#cumulative stuff
+
+
+
+	#actual stuff
+
 
 	while cursor < end:
 		range_start = cursor - step
@@ -99,21 +109,35 @@ for worker in workers:
 				for spindle in worker:
 					if overlap(truth, spindle):
 						c_recall += 1
+						cumulative_recall += 1
 						break
 				t_recall += 1
+				cumulative_recall_total += 1
 
 		recall = 0.0
 		if t_recall != 0:
 			recall = float(c_recall) / float(t_recall)
+
+		cr = 0.0
+		if cumulative_recall_total != 0:
+			cr = float(cumulative_recall) / float(cumulative_recall_total)
 
 		#fscore
 		fscore = 0.0
 		if precision + recall > 0:
 			fscore = 2.0 * precision * recall / (precision + recall)
 
+		cf = 0.0
+		if cp + cr > 0:
+			cf = 2.0 * cp * cr / (cp + cr)
+
 		precisions.append(precision)
 		recalls.append(recall)
 		fscores.append(fscore)
+
+		cps.append(cp)
+		crs.append(cr)
+		cfs.append(cf)
 
 		cursor += step
 		x += 1
@@ -122,7 +146,8 @@ for worker in workers:
 	#plot
 	xs = xs[10:]
 	#ys = fscores[10:]
-	ys = fscores[10:]
+	#ys = fscores[10:]
+	ys = cfs[10:]
 	zs = []
 	for y in ys:
 		zs.append(1.0 / (1.0 - float(y)))
@@ -137,7 +162,12 @@ for worker in workers:
 
 	cs = []
 	for x in xs:
-		cs.append(float(x + p) / float(x + p + r))
+		cq = float(x + p) / float(x + p + r)
+		q = cq
+		if x > 1:
+			q = float(x) * cq - float(x - 1) * (float(x - 1 + p) / float(x - 1 + p + r)) 
+		#cs.append(float(x + p) / float(x + p + r))
+		cs.append(q)
 
 
 	a = index / 5
