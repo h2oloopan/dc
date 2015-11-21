@@ -119,6 +119,8 @@ for worker in workers:
 	p = (intercept - 1.0) * r
 
 
+	print r, p, evalue, pvalue
+
 	cs = []
 	for x in xs:
 		cs.append(float(x + p) / float(x + p + r))
