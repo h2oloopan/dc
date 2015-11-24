@@ -192,7 +192,7 @@ for worker in workers:
 
 	print 'actual [45] ', cfs[44]
 	print 'average [45] ', cfs[39]
-	print 'projected [45] ', cs[24]
+	print 'projected [45] ', cs[34]
 
 	print 'actual [55]', cfs[-1]
 	print 'average [55]', cfs[39]
@@ -208,7 +208,7 @@ for worker in workers:
 
 	#ax[a][b].plot(xs, ys)
 	#ax[a][b].plot(xs, fscores[10:])
-	ax[a][b].plot(xs, cfs[10:])
+	ax[a][b].plot(xs, cps[10:])
 	ax[a][b].plot(xs, cs)
 	index += 1
 
