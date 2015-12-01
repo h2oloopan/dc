@@ -96,7 +96,9 @@ class System:
 		for worker in workers:
 			if worker.isAvailable():
 				#calculate weight
-				combined = worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection)
+				combined = worker.calculateDefaultProjection(projection)
+				if worker.x >= 10:
+					combined = worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection)
 				availability = float(worker.presence[0]) / float(worker.presence[1])
 				worker.w = availability * combined
 				total += worker.w
@@ -144,27 +146,21 @@ class System:
 
 		#running tutorials
 		tutorials = simulate.createBinaryTasks(t)
-		for worker in workers:
-			for tutorial in tutorials:
-				answer = worker.doTask(tutorial, outcomes)
-				if answer == tutorial:
-					worker.updateLearning(True)
-				else:
-					worker.updateLearning(False)
-			worker.learn()
-
-		
-
+		#for worker in workers:
+		#	for tutorial in tutorials:
+		#		answer = worker.doTask(tutorial, outcomes)
+		#		if answer == tutorial:
+		#			worker.updateLearning(True)
+		#		else:
+		#			worker.updateLearning(False)
+		#	worker.learn()
 
 		step = 20
 		step_counter = 0
 
-
-
-
 		self.reset()
 		self.calculateAverageWorkerQuality(workers)
-		rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
+		rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
 		self.sample(s, l, outcomes, rankedWorkers)
 		self.evaluate(outcomes)
 		
@@ -181,7 +177,7 @@ class System:
 				#this rerank workers and do sampling and evaluation again
 				self.reset()
 				self.calculateAverageWorkerQuality(workers)
-				rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
+				rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
 				self.sample(s, l, outcomes, rankedWorkers)
 				self.evaluate(outcomes)
 				
@@ -206,6 +202,17 @@ class System:
 								#keep hiring workers
 								next_worker = rankedWorkers[len(hired)]
 								#print 'keep hiring worker', str(len(hired)), next_worker.uuid
+
+								#do tutorials if not done
+								if next_worker.x < t:
+									for tutorial in tutorials:
+										answer = next_worker.doTask(tutorial, outcomes)
+										if answer == tutorial:
+											worker.updateLearning(True)
+										else:
+											worker.updateLearning(False)
+									next_worker.learn()
+
 								answer = next_worker.doTask(task, outcomes, next_worker.c)
 								hired.append(next_worker)
 								answers.append(answer)
