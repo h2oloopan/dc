@@ -90,6 +90,34 @@ class System:
 		return result
 
 
+	def randomRank(self, workers, projection=100, k):
+		available = []
+		total = 0.0
+		for worker in workers:
+			if worker.isAvailable():
+				#calculate weight
+				combined = worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection)
+				availability = float(worker.presence[0]) / float(worker.presence[1])
+				worker.w = availability * combined
+				total += worker.w
+				available.append(worker)
+
+		#randomly select k workers
+		result = []
+		for i in range(0, k):
+			cursor = 0.0
+			pick = random.uniform(0.0, total)
+			for j in range(0, len(available)):
+				worker = available[j]
+				cursor += worker.w
+				if cursor >= pick:
+					result.append(pick)
+					total -= worker.w
+					available.pop(j)
+					break
+		return result
+
+
 	def calculateAverageWorkerQuality(self, workers):
 		average = 0.0
 		for worker in workers:

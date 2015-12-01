@@ -11,12 +11,14 @@ class Worker:
 	c = 0 #cost to hire
 	a = 0 #availability
 	m = 0 #money a worker has made
+	w = 0
 	er = 0
 	ep = 0
 	epv = 0
 	erv = 0
 	ts = []
 	cs = []
+	presence = []
 	noise_mu = None
 	noise_sigma = None
 	last_answer = None
@@ -27,6 +29,8 @@ class Worker:
 		self.r = r
 		self.c = c
 		self.a = a
+		self.w = 0
+		self.presence = [10, 100]
 		#print x, p, r, c, a
 	def __str__(self):
 		s = ''
