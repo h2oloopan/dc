@@ -101,6 +101,12 @@ class System:
 				worker.w = availability * combined
 				total += worker.w
 				available.append(worker)
+				#update presence
+				worker.presence[0] += 1
+				worker.presence[1] += 1
+			else:
+				#update presence
+				worker.presence[1] += 1
 
 		#randomly select k workers
 		result = []

@@ -11,11 +11,13 @@ class Worker:
 	c = 0 #cost to hire
 	a = 0 #availability
 	m = 0 #money a worker has made
-	w = 0
+	w = 0.0
 	er = 0
 	ep = 0
 	epv = 0
 	erv = 0
+	dr = 50
+	dp = 80
 	ts = []
 	cs = []
 	presence = []
@@ -29,7 +31,7 @@ class Worker:
 		self.r = r
 		self.c = c
 		self.a = a
-		self.w = 0
+		self.w = 0.0
 		self.presence = [10, 100]
 		#print x, p, r, c, a
 	def __str__(self):
@@ -49,6 +51,9 @@ class Worker:
 		#print self.r, self.p, '|', self.er, self.ep, self.getHybridQuality(), projection
 
 		return 1.0 * quality + 1.0 * projection
+
+	def calculateDefaultProjection(self, projection):
+		return 1.0 * self.getDefaultQuality() + 1.0 * self.getDefaultQualityAtX(self.x + projection)
 
 	def addNoise(self, noise_mu, noise_sigma):
 		self.noise_mu = noise_mu
@@ -134,6 +139,13 @@ class Worker:
 		return float(self.x) * self.getCumulativeQuality(self.x) - (float(self.x) - 1.0) * self.getCumulativeQuality(self.x - 1)
 	def getQualityAtX(self, x):
 		return float(x) * self.getCumulativeQuality(x) - (float(x) - 1.0) * self.getCumulativeQuality(x - 1)
+	def getDefaultQualityAtX(self, x):
+		return float(x) * self.getDefaultCumulativeQuality(x) - (float(x) - 1.0) * self.getDefaultCumulativeQuality(x - 1)		
+	def getDefaultCumulativeQuality(self, x):
+		return (float(x) + float(self.dp)) / (float(x) + float(self.dp) + float(self.dr))
+	def getDefaultQuality(self):
+		return float(self.x) * self.getDefaultCumulativeQuality(self.x) - (float(self.x) - 1.0) * self.getDefaultCumulativeQuality(self.x - 1)
+
 	def isAvailable(self):
 		rand = random.random()
 		if rand >= self.a:
@@ -171,5 +183,7 @@ class Worker:
 		self.erv = 0
 		self.ts = []
 		self.cs = []
+		self.presence = [10, 100]
+		self.w = 0.0
 
 
