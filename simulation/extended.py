@@ -228,7 +228,7 @@ class System:
 									next_worker.updateLearning(True)
 								else:
 									next_worker.updateLearning(False)
-								next_worker.learn()
+							next_worker.learn()
 
 						answer = next_worker.doTask(task, outcomes, next_worker.c)
 						hired.append(next_worker)
