@@ -155,6 +155,12 @@ class System:
 			self.update(hired, answers, prediction)
 			result.append((prediction, len(hired)))
 			completed_tasks += 1
+
+			#print last selected worker
+			#if index == len(expert) - 1:
+
+
+
 		return result
 
 

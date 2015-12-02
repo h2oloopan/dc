@@ -17,9 +17,11 @@ class Worker:
 		self.myself = []
 	def isAvailable(self):
 		return True
-	def loadData(self, expert, myself):
-		self.expert = expert
+
+	def loadMyData(self, myself):
 		self.myself = myself
+	def loadExpertData(self, expert):
+		self.expert = expert
 	def calculateProjection(self, quality, projection):
 		projection = self.getEstimatedQualityAtX(self.x + projection)
 		return 1.0 * quality + 1.0 * projection

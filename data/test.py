@@ -12,7 +12,6 @@ from system import System
 from person import Worker
 
 expert = []
-workers = []
 
 def readData(fname):
 	result = []
@@ -38,20 +37,18 @@ def resetWorkers(workers):
 		worker.reset()
 
 #do actual work
+people = []
 for f in os.listdir('.'):
 	if f.endswith('.csv'):
 		if 'expert' not in f:
-			worker = readData(f)
-			workers.append(worker)
+			worker = Worker(str(f), 0, 1)
+			worker.loadMyData(readData(f))
+			people.append(worker)
 		else:
 			expert = readData(f)
 
-people = []
-for i in range(0, len(workers)):
-	worker = Worker(i, 0, 1)
-	worker.loadData(expert, workers[i])
-	people.append(worker)
-
+for worker in people:
+	worker.loadExpertData(expert)
 
 
 #analysis
