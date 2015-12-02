@@ -89,6 +89,12 @@ class System:
 
 		return result
 
+	def confidence(self, x):
+		return (float(x - 50) / 10.0) / (2.0 * math.sqrt(1.0 + math.pow(float(x - 50) / 10, 2))) + 0.5
+
+	def coverage(self, p):
+		p = float(p)
+		return min(1.0, (2.0 * p) / (p / 2 + 1))
 
 	def randomRank(self, workers, projection, k):
 		available = []

@@ -16,8 +16,8 @@ class Worker:
 	ep = 0
 	epv = 0
 	erv = 0
-	dr = 50
-	dp = 80
+	dr = 100
+	dp = 100
 	ts = []
 	cs = []
 	presence = []
