@@ -97,6 +97,14 @@ class System:
 		self.average_worker_quality = average / float(len(workers))
 		#print self.average_worker_quality
 
+
+	def dhReal(self, start, workers, ps):
+		l = ps[0]
+		s = ps[1]
+		t = ps[2]
+
+		
+
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
 		#s is the number of samples

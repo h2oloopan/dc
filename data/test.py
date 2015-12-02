@@ -126,7 +126,7 @@ answers = []
 cs = []
 qs = []
 ws = []
-t = 10 #number of tutorials
+t = 15 #number of tutorials
 
 for worker in people:
 	for index in range(0 ,t):
@@ -136,6 +136,7 @@ for worker in people:
 			worker.updateLearning(True)
 		else:
 			worker.updateLearning(False)
+
 
 ranked = sorted(people, key=lambda worker: worker.getAveragedCumulativeQuality(), reverse=True)
 
@@ -187,6 +188,29 @@ ax[1][0].plot(xs, qs)
 ax[1][1].plot(xs, ws)
 
 #dynamic hiring horizon 3
+resetWorkers(people)
+answers = []
+cs = []
+qs = []
+ws = []
+t = 15 #number of tutorials
+
+for worker in people:
+	for index in range(0 ,t):
+		task = True
+		answer = worker.doTask(index, task, outcomes)
+		if answer == task:
+			worker.updateLearning(True)
+		else:
+			worker.updateLearning(False)
+	worker.learn()
+
+system = System(outcomes, 1000, {'belief': 7.0, 'quality': 400.0})
+horizon = 3
+samples = 1024
+tutorials = 0
+
+answers = system.dhReal(t, people, [horizon, samples, tutorials])
 
 
 
