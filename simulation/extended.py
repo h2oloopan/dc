@@ -125,7 +125,8 @@ class System:
 					break
 
 		for w in result:
-			print w.uuid, w.er, w.ep, w.getHybridQuality()
+			print w.uuid, w.w, w.er, w.ep, w.getHybridQuality()
+		print '---'
 		return result
 
 
@@ -203,9 +204,9 @@ class System:
 									for tutorial in tutorials:
 										answer = next_worker.doTask(tutorial, outcomes)
 										if answer == tutorial:
-											worker.updateLearning(True)
+											next_worker.updateLearning(True)
 										else:
-											worker.updateLearning(False)
+											next_worker.updateLearning(False)
 									next_worker.learn()
 
 								answer = next_worker.doTask(task, outcomes, next_worker.c)
@@ -220,6 +221,15 @@ class System:
 						else:
 							break
 					else:
+						if next_worker.x < t:
+							for tutorial in tutorials:
+								answer = next_worker.doTask(tutorial, outcomes)
+								if answer == tutorial:
+									next_worker.updateLearning(True)
+								else:
+									next_worker.updateLearning(False)
+								next_worker.learn()
+
 						answer = next_worker.doTask(task, outcomes, next_worker.c)
 						hired.append(next_worker)
 						answers.append(answer)
