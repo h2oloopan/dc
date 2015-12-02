@@ -116,7 +116,7 @@ if __name__ == '__main__':
 	#fast_workers = simulate.createHyperbolicWorker(100, r2, p2, None, 2)
 	#workers.extend(fast_workers)
 
-	tasks = simulate.createBinaryTasks(5)
+	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
 	runs = 3
 	steps = 3

@@ -124,9 +124,9 @@ class System:
 					available.pop(j)
 					break
 
-		for w in result:
-			print w.uuid, w.w, w.er, w.ep, w.getHybridQuality()
-		print '---'
+		#for w in result:
+		#	print w.uuid, w.w, w.er, w.ep, w.getHybridQuality()
+		#print '---'
 		return result
 
 
@@ -151,7 +151,7 @@ class System:
 		#running tutorials
 		tutorials = simulate.createBinaryTasks(t)
 
-		step = 20
+		step = 10
 		step_counter = 0
 
 		self.reset()
