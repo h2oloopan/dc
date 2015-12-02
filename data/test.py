@@ -126,7 +126,7 @@ answers = []
 cs = []
 qs = []
 ws = []
-t = 15 #number of tutorials
+t = 20 #number of tutorials
 
 for worker in people:
 	for index in range(0 ,t):
@@ -193,7 +193,7 @@ answers = []
 cs = []
 qs = []
 ws = []
-t = 15 #number of tutorials
+t = 20 #number of tutorials
 
 for worker in people:
 	for index in range(0 ,t):
@@ -205,13 +205,42 @@ for worker in people:
 			worker.updateLearning(False)
 	worker.learn()
 
-system = System(outcomes, 1000, {'belief': 7.0, 'quality': 400.0})
+system = System(outcomes, 1000, {'belief': 7.0, 'quality': 100.0})
 horizon = 3
 samples = 1024
 tutorials = 0
 
 answers = system.dhReal(t, expert, outcomes, people, [horizon, samples, tutorials])
-print answers
+
+for index in range(t, len(expert)):
+	answer = answers[index - t]
+	if answer[0] == True:
+		cs.append(1)
+	else:
+		cs.append(0)
+	ws.append(answer[1])
+
+for i in range(0, len(cs)):
+	avg = cs[i]
+	count = 1
+	for j in range(1, steps + 1):
+		if i - j >= 0:
+			avg += cs[i - j]
+			count += 1
+		if i + j < len(cs):
+			avg += cs[i + j]
+			count += 1
+	qs.append(float(avg) / float(count))
+
+cumulative = 0
+for i in range(0, len(cs)):
+	cumulative += cs[i]
+	cs[i] = float(cumulative) / float(i + 1)
+
+ax[2][0].plot(xs, cs)
+ax[2][0].plot(xs, qs)
+ax[2][1].plot(xs, ws)
+
 
 
 
