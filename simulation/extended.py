@@ -123,6 +123,9 @@ class System:
 					total -= worker.w
 					available.pop(j)
 					break
+
+		for w in result:
+			print w.uuid, w.er, w.ep, w.getHybridQuality()
 		return result
 
 
