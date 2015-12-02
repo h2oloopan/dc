@@ -98,12 +98,69 @@ class System:
 		#print self.average_worker_quality
 
 
-	def dhReal(self, start, workers, ps):
+	def dhReal(self, start, expert, outcomes, workers, ps):
 		l = ps[0]
 		s = ps[1]
 		t = ps[2]
 
-		
+		result = []
+
+		total_tasks = len(expert) - start
+		completed_tasks = 0
+
+		for index in range(start, len(expert)):
+			task = True
+			self.reset()
+			self.calculateAverageWorkerQuality(workers)
+			rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
+			self.sample(s, l, outcomes, rankedWorkers)
+			self.evaluate(outcomes)
+
+			self.hire_pointer = self.root
+			last_hire = None
+			last_answer = None
+			hired = []
+			answers = []
+			while True:
+				if len(hired) >= l:
+					break
+				else:
+					next_worker = self.hireNext(last_hire, last_answer)
+					if next_worker is None:
+						if self.keep_hiring:
+							prediction, probability = self.aggregate(hired, answers, outcomes)
+							if probability < self.belief_threshold:
+								#keep hiring workers
+								next_worker = rankedWorkers[len(hired)]
+								#print 'keep hiring worker', str(len(hired)), next_worker.uuid
+								answer = next_worker.doTask(index, task, outcomes)
+								hired.append(next_worker)
+								answers.append(answer)
+								last_hire = next_worker
+								last_answer = answer
+								self.hire_pointer = None #we are in keep hiring mode
+								#print 'keep hiring', prediction, probability, answers
+							else:
+								break
+						else:
+							break
+					else:
+						answer = next_worker.doTask(index, task, outcomes)
+						hired.append(next_worker)
+						answers.append(answer)
+						last_hire = next_worker
+						last_answer = answer
+			#hiring is done
+			prediction, probability = self.aggregate(hired, answers, outcomes)
+			self.update(hired, answers, prediction)
+			result.append((prediction, len(hired)))
+			completed_tasks += 1
+		return result
+
+
+
+
+
 
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
@@ -127,14 +184,8 @@ class System:
 					worker.updateLearning(False)
 			worker.learn()
 
-		
-
-
 		step = 20
 		step_counter = 0
-
-
-
 
 		self.reset()
 		self.calculateAverageWorkerQuality(workers)

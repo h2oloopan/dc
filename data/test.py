@@ -210,8 +210,8 @@ horizon = 3
 samples = 1024
 tutorials = 0
 
-answers = system.dhReal(t, people, [horizon, samples, tutorials])
-
+answers = system.dhReal(t, expert, outcomes, people, [horizon, samples, tutorials])
+print answers
 
 
 

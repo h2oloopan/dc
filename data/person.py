@@ -15,6 +15,8 @@ class Worker:
 		self.cs = []
 		self.expert = []
 		self.myself = []
+	def isAvailable(self):
+		return True
 	def loadData(self, expert, myself):
 		self.expert = expert
 		self.myself = myself
