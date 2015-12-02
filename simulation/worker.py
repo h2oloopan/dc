@@ -121,6 +121,8 @@ class Worker:
 		else:
 			return self.getEstimatedQualityAtX(self.x)
 	def getHybridQuality(self):
+		if self.x == 0:
+			return self.getDefaultQuality()
 		if self.er == 0 or self.erv < 0:
 			return self.getAveragedCumulativeQuality()
 		elif self.erv > 0.4:

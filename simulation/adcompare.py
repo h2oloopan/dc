@@ -108,10 +108,10 @@ if __name__ == '__main__':
 	#p2 = {'mu': 20, 'sigma': 1}
 
 	r = {'mu': 100, 'sigma': 10}
-	p = {'mu': 100, 'sigma': 10}
+	p = {'mu': 80, 'sigma': 10}
 	a = {'mu': 0.1, 'sigma': 0.04}
 
-	workers = simulate.createHyperbolicWorker(1000, r, p, a, 1)
+	workers = simulate.createHyperbolicWorker(200, r, p, a, 1)
 	#workers = simulate.createHyperbolicWorker(900, r1, p1, None, 1)
 	#fast_workers = simulate.createHyperbolicWorker(100, r2, p2, None, 2)
 	#workers.extend(fast_workers)
@@ -144,7 +144,6 @@ if __name__ == '__main__':
 	horizon = 10
 	samples = 2048
 	tutorials = 10
-	system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
 	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 
 	plot.show()

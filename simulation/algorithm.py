@@ -51,19 +51,19 @@ def randomK(tasks, outcomes, workers, k):
 		votes = {}
 		vote = None
 		max_vote = 0
-		hired = []
-		while len(hired) < k:
+		hired = 0
+		while hired < k:
 			pick = random.randint(0, len(availables) - 1)
-			if pick not in hired:
-				hired.append(pick)
-				worker = availables[pick]
-				answer = worker.doTask(task, outcomes)
-				key = str(answer)
-				votes.setdefault(key, 0)
-				votes[key] += 1
-				if votes[key] > max_vote:
-					max_vote = votes[key]
-					vote = answer
+			worker = availables[pick]
+			answer = worker.doTask(task, outcomes)
+			key = str(answer)
+			votes.setdefault(key, 0)
+			votes[key] += 1
+			if votes[key] > max_vote:
+				max_vote = votes[key]
+				vote = answer
+			availables.pop(pick)
+			hired += 1
 		answers.append((vote, k))
 	return answers
 

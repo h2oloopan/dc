@@ -90,7 +90,7 @@ class System:
 		return result
 
 
-	def randomRank(self, workers, projection=100, k):
+	def randomRank(self, workers, projection, k):
 		available = []
 		total = 0.0
 		for worker in workers:
@@ -119,7 +119,7 @@ class System:
 				worker = available[j]
 				cursor += worker.w
 				if cursor >= pick:
-					result.append(pick)
+					result.append(worker)
 					total -= worker.w
 					available.pop(j)
 					break
@@ -146,14 +146,6 @@ class System:
 
 		#running tutorials
 		tutorials = simulate.createBinaryTasks(t)
-		#for worker in workers:
-		#	for tutorial in tutorials:
-		#		answer = worker.doTask(tutorial, outcomes)
-		#		if answer == tutorial:
-		#			worker.updateLearning(True)
-		#		else:
-		#			worker.updateLearning(False)
-		#	worker.learn()
 
 		step = 20
 		step_counter = 0
