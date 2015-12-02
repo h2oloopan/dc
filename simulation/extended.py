@@ -391,11 +391,11 @@ class System:
 				state.utility = utility
 
 
-		print 'evaluated'
-		print state
-		print '-----opinion aggregation-----'
-		print prediction, probability
-		print ''
+		#print 'evaluated'
+		#print state
+		#print '-----opinion aggregation-----'
+		#print prediction, probability
+		#print ''
 
 		#print 'evaluate state'
 		#print state

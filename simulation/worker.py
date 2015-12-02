@@ -131,6 +131,8 @@ class Worker:
 			return self.getEstimatedQualityAtX(self.x)
 
 	def getEstimatedQualityAtX(self, x):
+		if self.x == 0:
+			return self.getDefaultQualityAtX(x)
 		if self.er == 0:
 			return self.getEstimatedCumulativeQuality(x)
 		return float(x) * self.getEstimatedCumulativeQuality(x) - (float(x) - 1.0) * self.getEstimatedCumulativeQuality(x - 1)
