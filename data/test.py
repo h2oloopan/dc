@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plot
 import os
 import sys
-import algorithm
+import random
 
 
 sys.path.append('../simulation')
@@ -57,6 +57,8 @@ for i in range(0, len(workers)):
 #analysis
 f, ax = plot.subplots(3, 2)
 outcomes = [True, False]
+steps = 5
+xs = np.arange(1, len(expert) + 1, 1)
 
 #k random 3
 k = 3
@@ -84,10 +86,38 @@ for index in range(0, len(expert)):
 			vote = answer
 		availables.pop(pick)
 		hired += 1
-	answers.append(vote, k)
+	answers.append(vote)
+	
+	if vote == task:
+		cs.append(1)
+	else:
+		cs.append(0)
+	ws.append(k)
+
+for i in range(0, len(cs)):
+	avg = cs[i]
+	count = 1
+	for j in range(1, steps + 1):
+		if i - j >= 0:
+			avg += cs[i - j]
+			count += 1
+		if i + j < len(cs):
+			avg += cs[i + j]
+			count += 1
+	qs.append(float(avg) / float(count))
+
+cumulative = 0
+for i in range(0, len(cs)):
+	cumulative += cs[i]
+	cs[i] = float(cumulative) / float(i + 1)
 
 
 
+ax[0][0].plot(xs, cs)
+ax[0][0].plot(xs, qs)
+ax[0][1].plot(xs, ws)
+
+plot.show()
 
 #k top 3
 
