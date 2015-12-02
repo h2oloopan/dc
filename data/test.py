@@ -117,16 +117,81 @@ ax[0][0].plot(xs, cs)
 ax[0][0].plot(xs, qs)
 ax[0][1].plot(xs, ws)
 
-plot.show()
+
 
 #k top 3
+k = 3
+resetWorkers(people)
+answers = []
+cs = []
+qs = []
+ws = []
+t = 10 #number of tutorials
 
+for worker in people:
+	for index in range(0 ,t):
+		task = True
+		answer = worker.doTask(index, task, outcomes)
+		if answer == task:
+			worker.updateLearning(True)
+		else:
+			worker.updateLearning(False)
+
+ranked = sorted(people, key=lambda worker: worker.getAveragedCumulativeQuality(), reverse=True)
+
+for index in range(t, len(expert)):
+	task = True
+	hired = 0
+	votes = {}
+	vote = None
+	max_vote = 0
+	while hired < k:
+		worker = ranked[hired]
+		answer = worker.doTask(index, task, outcomes)
+		key = str(answer)
+		votes.setdefault(key, 0)
+		votes[key] += 1
+		if votes[key] > max_vote:
+			max_vote = votes[key]
+			vote = answer
+		hired += 1
+	answers.append(vote)
+	
+	if vote == task:
+		cs.append(1)
+	else:
+		cs.append(0)
+	ws.append(k)
+
+for i in range(0, len(cs)):
+	avg = cs[i]
+	count = 1
+	for j in range(1, steps + 1):
+		if i - j >= 0:
+			avg += cs[i - j]
+			count += 1
+		if i + j < len(cs):
+			avg += cs[i + j]
+			count += 1
+	qs.append(float(avg) / float(count))
+
+cumulative = 0
+for i in range(0, len(cs)):
+	cumulative += cs[i]
+	cs[i] = float(cumulative) / float(i + 1)
+
+
+xs = np.arange(1, len(expert) + 1 - t, 1)
+ax[1][0].plot(xs, cs)
+ax[1][0].plot(xs, qs)
+ax[1][1].plot(xs, ws)
 
 #dynamic hiring horizon 3
 
 
 
 
+plot.show()
 
 
 
