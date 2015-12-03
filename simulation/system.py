@@ -157,8 +157,8 @@ class System:
 			completed_tasks += 1
 
 			#print last selected worker
-			#if index == len(expert) - 1:
-
+			if index == len(expert) - 1:
+				print hired[0].uuid
 
 
 		return result

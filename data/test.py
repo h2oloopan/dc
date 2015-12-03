@@ -52,10 +52,12 @@ for worker in people:
 
 
 #analysis
+t = 15
+xs = np.arange(1, len(expert) + 1 - t, 1)
+
 f, ax = plot.subplots(3, 2)
 outcomes = [True, False]
 steps = 5
-xs = np.arange(1, len(expert) + 1, 1)
 
 #k random 3
 k = 3
@@ -64,7 +66,8 @@ answers = []
 cs = []
 qs = []
 ws = []
-for index in range(0, len(expert)):
+total_hired = 0
+for index in range(10, len(expert)):
 	task = True
 	availables = list(people)
 	hired = 0
@@ -90,6 +93,7 @@ for index in range(0, len(expert)):
 	else:
 		cs.append(0)
 	ws.append(k)
+	total_hired += k
 
 for i in range(0, len(cs)):
 	avg = cs[i]
@@ -110,9 +114,16 @@ for i in range(0, len(cs)):
 
 
 
-ax[0][0].plot(xs, cs)
-ax[0][0].plot(xs, qs)
-ax[0][1].plot(xs, ws)
+ax[0][0].plot(xs, cs, label='cumulative quality')
+ax[0][0].plot(xs, qs, label='quality')
+ax[0][1].plot(xs, ws, label='number of workers')
+ax[0][0].set_xlabel('tasks')
+ax[0][0].set_ylabel('recall')
+ax[0][0].legend(bbox_to_anchor=(1, 0.3))
+
+print cumulative
+print cs[-1]
+print total_hired
 
 
 
@@ -123,7 +134,7 @@ answers = []
 cs = []
 qs = []
 ws = []
-t = 20 #number of tutorials
+
 
 for worker in people:
 	for index in range(0 ,t):
@@ -136,6 +147,7 @@ for worker in people:
 
 
 ranked = sorted(people, key=lambda worker: worker.getAveragedCumulativeQuality(), reverse=True)
+total_hired = 0
 
 for index in range(t, len(expert)):
 	task = True
@@ -160,6 +172,7 @@ for index in range(t, len(expert)):
 	else:
 		cs.append(0)
 	ws.append(k)
+	total_hired += k
 
 for i in range(0, len(cs)):
 	avg = cs[i]
@@ -179,10 +192,19 @@ for i in range(0, len(cs)):
 	cs[i] = float(cumulative) / float(i + 1)
 
 
-xs = np.arange(1, len(expert) + 1 - t, 1)
-ax[1][0].plot(xs, cs)
-ax[1][0].plot(xs, qs)
-ax[1][1].plot(xs, ws)
+
+
+
+ax[1][0].plot(xs, cs, label='cumulative quality')
+ax[1][0].plot(xs, qs, label='quality')
+ax[1][1].plot(xs, ws, label='number of workers')
+ax[1][0].set_xlabel('tasks')
+ax[1][0].set_ylabel('recall')
+ax[1][0].legend(bbox_to_anchor=(1, 0.3))
+
+print cumulative
+print cs[-1]
+print total_hired
 
 #dynamic hiring horizon 3
 resetWorkers(people)
@@ -190,7 +212,6 @@ answers = []
 cs = []
 qs = []
 ws = []
-t = 20 #number of tutorials
 
 for worker in people:
 	for index in range(0 ,t):
@@ -209,6 +230,8 @@ tutorials = 0
 
 answers = system.dhReal(t, expert, outcomes, people, [horizon, samples, tutorials])
 
+total_hired = 0
+
 for index in range(t, len(expert)):
 	answer = answers[index - t]
 	if answer[0] == True:
@@ -216,6 +239,7 @@ for index in range(t, len(expert)):
 	else:
 		cs.append(0)
 	ws.append(answer[1])
+	total_hired += answer[1]
 
 for i in range(0, len(cs)):
 	avg = cs[i]
@@ -234,11 +258,17 @@ for i in range(0, len(cs)):
 	cumulative += cs[i]
 	cs[i] = float(cumulative) / float(i + 1)
 
-ax[2][0].plot(xs, cs)
-ax[2][0].plot(xs, qs)
-ax[2][1].plot(xs, ws)
 
+ax[2][0].plot(xs, cs, label='cumulative quality')
+ax[2][0].plot(xs, qs, label='quality')
+ax[2][1].plot(xs, ws, label='number of workers')
+ax[2][0].set_xlabel('tasks')
+ax[2][0].set_ylabel('recall')
+ax[2][0].legend(bbox_to_anchor=(1, 0.3))
 
+print cumulative
+print cs[-1]
+print total_hired
 
 
 plot.show()
