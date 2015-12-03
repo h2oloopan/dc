@@ -52,7 +52,7 @@ for worker in people:
 
 
 #analysis
-t = 15
+t = 20
 xs = np.arange(1, len(expert) + 1 - t, 1)
 
 f, ax = plot.subplots(3, 2)
@@ -67,7 +67,7 @@ cs = []
 qs = []
 ws = []
 total_hired = 0
-for index in range(10, len(expert)):
+for index in range(t, len(expert)):
 	task = True
 	availables = list(people)
 	hired = 0
@@ -119,7 +119,8 @@ ax[0][0].plot(xs, qs, label='quality')
 ax[0][1].plot(xs, ws, label='number of workers')
 ax[0][0].set_xlabel('tasks')
 ax[0][0].set_ylabel('recall')
-ax[0][0].legend(bbox_to_anchor=(1, 0.3))
+ax[0][0].legend(bbox_to_anchor=(0.5, 0.3))
+ax[0][1].legend(bbox_to_anchor=(1, 0.3))
 
 print cumulative
 print cs[-1]
@@ -200,7 +201,8 @@ ax[1][0].plot(xs, qs, label='quality')
 ax[1][1].plot(xs, ws, label='number of workers')
 ax[1][0].set_xlabel('tasks')
 ax[1][0].set_ylabel('recall')
-ax[1][0].legend(bbox_to_anchor=(1, 0.3))
+ax[1][0].legend(bbox_to_anchor=(0.5, 0.3))
+ax[1][1].legend(bbox_to_anchor=(1, 0.3))
 
 print cumulative
 print cs[-1]
@@ -264,7 +266,8 @@ ax[2][0].plot(xs, qs, label='quality')
 ax[2][1].plot(xs, ws, label='number of workers')
 ax[2][0].set_xlabel('tasks')
 ax[2][0].set_ylabel('recall')
-ax[2][0].legend(bbox_to_anchor=(1, 0.3))
+ax[2][0].legend(bbox_to_anchor=(0.5, 0.3))
+ax[2][1].legend(bbox_to_anchor=(1, 0.3))
 
 print cumulative
 print cs[-1]
