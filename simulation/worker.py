@@ -32,7 +32,7 @@ class Worker:
 		self.c = c
 		self.a = a
 		self.w = 0.0
-		self.presence = [10, 100]
+		self.presence = [1, 10]
 		#print x, p, r, c, a
 	def __str__(self):
 		s = ''
@@ -50,7 +50,7 @@ class Worker:
 		projection = self.getEstimatedQualityAtX(self.x + projection)
 		#print self.r, self.p, '|', self.er, self.ep, self.getHybridQuality(), projection
 
-		return 1.0 * quality + 1.0 * projection
+		return (1.0 * quality + 1.0 * projection) / 2.0
 
 	def calculateDefaultProjection(self, projection):
 		return 1.0 * self.getDefaultQuality() + 1.0 * self.getDefaultQualityAtX(self.x + projection)

@@ -44,6 +44,7 @@ class System:
 		self.total = 0
 		self.average_worker_quality = 0.0
 		self.counts = {}
+		self.workerpool = []
 		for outcome in outcomes:
 			self.counts[str(outcome)] = start
 			self.total += start
@@ -57,6 +58,7 @@ class System:
 		self.root.visitation = 0
 		self.hire_pointer = self.root
 		self.average_worker_quality = 0.0
+		self.workerpool = []
 
 	def getCappedQuality(self, quality, average_quality, x):
 		cap = 0.0045 * x + 0.1
@@ -135,6 +137,16 @@ class System:
 		#print '---'
 		return result
 
+	def getNextWorker(self, workers, hired):
+
+
+	def getAvailableWorkers(self, workers):
+		result = []
+		for worker in workers:
+			if worker.isAvailable():
+				result.append(worker)
+		return result
+
 
 	def calculateAverageWorkerQuality(self, workers):
 		average = 0.0
@@ -162,8 +174,9 @@ class System:
 
 		self.reset()
 		self.calculateAverageWorkerQuality(workers)
-		rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
-		self.sample(s, l, outcomes, rankedWorkers)
+		availables = getAvailableWorkers(workers)
+		#rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
+		self.sample(s, l, outcomes, availables)
 		self.evaluate(outcomes)
 		
 
@@ -179,8 +192,8 @@ class System:
 				#this rerank workers and do sampling and evaluation again
 				self.reset()
 				self.calculateAverageWorkerQuality(workers)
-				rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
-				self.sample(s, l, outcomes, rankedWorkers)
+				#rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
+				self.sample(s, l, outcomes, availables)#, rankedWorkers)
 				self.evaluate(outcomes)
 				
 
@@ -202,7 +215,7 @@ class System:
 								#print worker.er, worker.x, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
 							if probability < self.belief_threshold:
 								#keep hiring workers
-								next_worker = rankedWorkers[len(hired)]
+								next_worker = getNextWorker(availables, hired) #rankedWorkers[len(hired)]
 								#print 'keep hiring worker', str(len(hired)), next_worker.uuid
 
 								#do tutorials if not done
@@ -303,7 +316,7 @@ class System:
 				#print 'at', str(cursor)
 				#worker = workers[rank] #next worker to hire
 				#ank += 1
-				worker = workers[rank]
+				worker = self.getNextWorker(workers, [])#workers[rank]
 				#print worker.er, worker.ep, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
 				rank += 1
 
