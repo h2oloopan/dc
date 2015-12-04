@@ -44,7 +44,8 @@ class System:
 		self.total = 0
 		self.average_worker_quality = 0.0
 		self.counts = {}
-		self.workerpool = []
+		self.hworkers = []
+		self.lworkers = []
 		for outcome in outcomes:
 			self.counts[str(outcome)] = start
 			self.total += start
@@ -58,7 +59,8 @@ class System:
 		self.root.visitation = 0
 		self.hire_pointer = self.root
 		self.average_worker_quality = 0.0
-		self.workerpool = []
+		self.lworkers = []
+		self.hworkers = []
 
 	def getCappedQuality(self, quality, average_quality, x):
 		cap = 0.0045 * x + 0.1
@@ -98,46 +100,12 @@ class System:
 		p = float(p)
 		return min(1.0, (2.0 * p) / (p / 2 + 1))
 
-	def randomRank(self, workers, projection, k):
-		available = []
-		total = 0.0
+	def getNextWorker(self, workers, hired, projection=100):
 		for worker in workers:
-			if worker.isAvailable():
-				#calculate weight
-				combined = worker.calculateDefaultProjection(projection)
-				if worker.x >= 10:
-					combined = worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection)
-				availability = float(worker.presence[0]) / float(worker.presence[1])
-				worker.w = availability * combined
-				total += worker.w
-				available.append(worker)
-				#update presence
-				worker.presence[0] += 1
-				worker.presence[1] += 1
+			if worker.x > 0:
+				worker.w = worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection)
 			else:
-				#update presence
-				worker.presence[1] += 1
-
-		#randomly select k workers
-		result = []
-		for i in range(0, k):
-			cursor = 0.0
-			pick = random.uniform(0.0, total)
-			for j in range(0, len(available)):
-				worker = available[j]
-				cursor += worker.w
-				if cursor >= pick:
-					result.append(worker)
-					total -= worker.w
-					available.pop(j)
-					break
-
-		#for w in result:
-		#	print w.uuid, w.w, w.er, w.ep, w.getHybridQuality()
-		#print '---'
-		return result
-
-	def getNextWorker(self, workers, hired):
+				worker.w = worker.calculateDefaultProjection(projection)
 
 
 	def getAvailableWorkers(self, workers):
@@ -145,14 +113,20 @@ class System:
 		for worker in workers:
 			if worker.isAvailable():
 				result.append(worker)
+				worker.presence[0] += 1
+			worker.presence[1] += 1
 		return result
 
 
-	def calculateAverageWorkerQuality(self, workers):
+	def calculateAverageWorkerQuality(self):
+		if len(hworkers) == 0 and len(lworkers) == 0:
+			return 0.5
 		average = 0.0
-		for worker in workers:
+		for worker in self.hworkers:
 			average += worker.getHybridQuality()
-		self.average_worker_quality = average / float(len(workers))
+		for worker in self.lworkers:
+			average += worker.getHybridQuality()
+		self.average_worker_quality = average / float(len(hworkers) + len(lworkers))
 		#print self.average_worker_quality
 
 	def dh(self, tasks, outcomes, workers, ps):
@@ -169,15 +143,15 @@ class System:
 		#running tutorials
 		tutorials = simulate.createBinaryTasks(t)
 
-		step = 10
-		step_counter = 0
+		#step = 10
+		#step_counter = 0
 
-		self.reset()
-		self.calculateAverageWorkerQuality(workers)
-		availables = getAvailableWorkers(workers)
+		#self.reset()
+		#self.calculateAverageWorkerQuality(workers)
+		#availables = getAvailableWorkers(workers)
 		#rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
-		self.sample(s, l, outcomes, availables)
-		self.evaluate(outcomes)
+		#self.sample(s, l, outcomes, availables)
+		#self.evaluate(outcomes)
 		
 
 		for task in tasks:
@@ -187,14 +161,15 @@ class System:
 			#self.evaluate(outcomes)
 			#print 'Evaluation done'
 
-			step_counter = (step_counter + 1) % step
-			if step_counter == 0:
-				#this rerank workers and do sampling and evaluation again
-				self.reset()
-				self.calculateAverageWorkerQuality(workers)
-				#rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
-				self.sample(s, l, outcomes, availables)#, rankedWorkers)
-				self.evaluate(outcomes)
+			#step_counter = (step_counter + 1) % step
+			#if step_counter == 0:
+			#this rerank workers and do sampling and evaluation again
+			self.reset()
+			self.calculateAverageWorkerQuality()
+			#rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
+			availables = self.getAvailableWorkers(workers)
+			self.sample(s, l, outcomes, availables, total_tasks - completed_tasks)#, rankedWorkers)
+			self.evaluate(outcomes)
 				
 
 			self.hire_pointer = self.root
@@ -207,38 +182,8 @@ class System:
 					break
 				else:
 					next_worker = self.hireNext(last_hire, last_answer)
-					if next_worker is None:
-						if self.keep_hiring:
-							prediction, probability = self.aggregate(hired, answers, outcomes)
-							#print answers, prediction, probability
-							#for worker in hired:
-								#print worker.er, worker.x, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
-							if probability < self.belief_threshold:
-								#keep hiring workers
-								next_worker = getNextWorker(availables, hired) #rankedWorkers[len(hired)]
-								#print 'keep hiring worker', str(len(hired)), next_worker.uuid
-
-								#do tutorials if not done
-								if next_worker.x < t:
-									for tutorial in tutorials:
-										answer = next_worker.doTask(tutorial, outcomes)
-										if answer == tutorial:
-											next_worker.updateLearning(True)
-										else:
-											next_worker.updateLearning(False)
-									next_worker.learn()
-
-								answer = next_worker.doTask(task, outcomes, next_worker.c)
-								hired.append(next_worker)
-								answers.append(answer)
-								last_hire = next_worker
-								last_answer = answer
-								self.hire_pointer = None #we are in keep hiring mode
-								#print 'keep hiring', prediction, probability, answers
-							else:
-								break
-						else:
-							break
+					if next_worker is None:						
+						break
 					else:
 						if next_worker.x < t:
 							for tutorial in tutorials:
@@ -304,7 +249,7 @@ class System:
 		for probability in probabilities:
 			result.append(probability / total)
 		return result
-	def sample(self, samples, horizon, outcomes, workers):
+	def sample(self, samples, horizon, outcomes, workers, projection):
 		for i in range(0, samples):
 			cursor = self.root
 			number = 0
@@ -312,11 +257,13 @@ class System:
 
 			cursor.visitation += 1
 			#print str(cursor)
+			hired = []
 			while number < horizon:
 				#print 'at', str(cursor)
 				#worker = workers[rank] #next worker to hire
 				#ank += 1
-				worker = self.getNextWorker(workers, [])#workers[rank]
+				worker = self.getNextWorker(workers, hired, projection)#workers[rank]
+				hired.append(worker)
 				#print worker.er, worker.ep, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
 				rank += 1
 
@@ -518,7 +465,7 @@ class System:
 				worker.updateLearning(False)
 			worker.learn()
 
-		self.calculateAverageWorkerQuality(workers)
+		self.calculateAverageWorkerQuality()
 
 
 

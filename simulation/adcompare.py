@@ -107,8 +107,8 @@ if __name__ == '__main__':
 	#r2 = {'mu': 50, 'sigma': 5}
 	#p2 = {'mu': 20, 'sigma': 1}
 
-	r = {'mu': 100, 'sigma': 10}
-	p = {'mu': 80, 'sigma': 10}
+	r = {'mu': 80, 'sigma': 10}
+	p = {'mu': 60, 'sigma': 10}
 	a = {'mu': 0.1, 'sigma': 0.04}
 
 	workers = simulate.createHyperbolicWorker(200, r, p, a, 1)

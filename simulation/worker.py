@@ -53,7 +53,7 @@ class Worker:
 		projection = self.getEstimatedQualityAtX(self.x + projection) * self.getEstimatedAvailability()
 		#print self.r, self.p, '|', self.er, self.ep, self.getHybridQuality(), projection
 
-		return (1.0 * quality + 1.0 * projection) / 2.0
+		return (1.0 * quality + 1.0 * projection) / 1.0
 
 	def calculateDefaultProjection(self, projection):
 		return 1.0 * self.getDefaultQuality() + 1.0 * self.getDefaultQualityAtX(self.x + projection)
