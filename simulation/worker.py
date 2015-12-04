@@ -38,6 +38,9 @@ class Worker:
 		s = ''
 		s += 'quality: ' + str(self.getEstimatedQualityAtX(self.x))
 		return s
+
+	def getEstimatedAvailability(self):
+		return float(presence[0]) / float(presence[1])
 	def calculateProjection(self, quality, projection):
 		#calculate the weights for ranking
 		#projection = (self.getEstimatedCumulativeQuality(self.x + projection) * float(self.x + projection) -
@@ -47,7 +50,7 @@ class Worker:
 		#the first term is short term while the second term is long term
 
 		#projection = self.getEstimatedCumulativeQuality(self.x + projection)
-		projection = self.getEstimatedQualityAtX(self.x + projection)
+		projection = self.getEstimatedQualityAtX(self.x + projection) * self.getEstimatedAvailability()
 		#print self.r, self.p, '|', self.er, self.ep, self.getHybridQuality(), projection
 
 		return (1.0 * quality + 1.0 * projection) / 2.0
