@@ -81,7 +81,8 @@ class System:
 		return result
 
 	def confidence(self, x):
-		return (float(x - 50) / 10.0) / (2.0 * math.sqrt(1.0 + math.pow(float(x - 50) / 10, 2))) + 0.5
+		x = int(x)
+		return float(x - 50) / (50.0 * math.sqrt(1.0 + math.pow(float(x - 50) / 10, 2))) + 0.8
 
 	def coverage(self, p):
 		p = float(p)
@@ -128,7 +129,14 @@ class System:
 
 
 		result = []
-		for worker in existingWorkers:
+		cursor_existing = 0
+		cursor_newcomer = 0
+		for i in range(0, horizon):
+			if cursor_existing >= len(existingWorkers):
+				#no existing workers
+				result.append(newcomers[cursor_newcomer])
+				cursor_newcomer += 1
+			else:
 
 
 

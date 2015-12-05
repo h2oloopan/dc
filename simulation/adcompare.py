@@ -111,7 +111,7 @@ if __name__ == '__main__':
 	p = {'mu': 60, 'sigma': 10}
 	a = {'mu': 0.1, 'sigma': 0.04}
 
-	workers = simulate.createHyperbolicWorker(200, r, p, a, 1)
+	workers = simulate.createHyperbolicWorker(400, r, p, a, 1)
 	#workers = simulate.createHyperbolicWorker(900, r1, p1, None, 1)
 	#fast_workers = simulate.createHyperbolicWorker(100, r2, p2, None, 2)
 	#workers.extend(fast_workers)
