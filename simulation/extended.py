@@ -78,19 +78,6 @@ class System:
 
 		result = sorted(available, key=lambda worker: worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection), reverse=True)
 
-		#total = 0.0
-		#for worker in workers:
-		#	print worker.getHybridQuality()
-		#	total += worker.getHybridQuality()
-
-		#print float(total / float(len(workers)))
-
-		#result = sorted(available, key=lambda worker: 1000.0 - worker.er)
-		#print result
-
-		#for i in range(0, 10):
-		#	print result[i], str(result[i].calculateProjection(projection)), result[i].getHybridQuality(), result[i].getQuality(), result[i].erv
-
 		return result
 
 	def confidence(self, x):
@@ -99,13 +86,6 @@ class System:
 	def coverage(self, p):
 		p = float(p)
 		return min(1.0, (2.0 * p) / (p / 2 + 1))
-
-	def getNextWorker(self, workers, hired, projection=100):
-		for worker in workers:
-			if worker.x > 0:
-				worker.w = worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection)
-			else:
-				worker.w = worker.calculateDefaultProjection(projection)
 
 
 	def getAvailableWorkers(self, workers):
@@ -128,6 +108,34 @@ class System:
 			average += worker.getHybridQuality()
 		self.average_worker_quality = average / float(len(hworkers) + len(lworkers))
 		#print self.average_worker_quality
+
+	def getRankedWorkers(self, workers, horizon, projection=100):
+		existingWorkers = []
+		newcomers = []
+
+		for worker in workers:
+			if worker.x > 0:
+				worker.w = worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection)
+			else:
+				worker.w = worker.calculateDefaultProjection(projection)
+			if worker.x > 0:
+				existingWorkers.append(worker)
+			else:
+				newcomers.append(worker)
+
+		existingWorkers = sorted(existingWorkers, key=lambda worker: worker.w, reverse=True)
+		threshold = workers[0].calculateDefaultProjection(projection)
+
+
+		result = []
+		for worker in existingWorkers:
+
+
+
+		return result
+
+
+
 
 	def dh(self, tasks, outcomes, workers, ps):
 		#l is the horizon -> maximum number of workers to hire
@@ -168,7 +176,8 @@ class System:
 			self.calculateAverageWorkerQuality()
 			#rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #rankedWorkers = self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
 			availables = self.getAvailableWorkers(workers)
-			self.sample(s, l, outcomes, availables, total_tasks - completed_tasks)#, rankedWorkers)
+			rankedWorkers = self.getRankedWorkers(availables, l, total_tasks - completed_tasks)
+			self.sample(s, l, outcomes, rankedWorkers)#, rankedWorkers)
 			self.evaluate(outcomes)
 				
 
@@ -249,7 +258,7 @@ class System:
 		for probability in probabilities:
 			result.append(probability / total)
 		return result
-	def sample(self, samples, horizon, outcomes, workers, projection):
+	def sample(self, samples, horizon, outcomes, workers):
 		for i in range(0, samples):
 			cursor = self.root
 			number = 0
@@ -262,7 +271,8 @@ class System:
 				#print 'at', str(cursor)
 				#worker = workers[rank] #next worker to hire
 				#ank += 1
-				worker = self.getNextWorker(workers, hired, projection)#workers[rank]
+				#worker = self.getNextWorker(workers, hired, projection)#workers[rank]
+				worker = workers[number]
 				hired.append(worker)
 				#print worker.er, worker.ep, worker.getEstimatedQualityAtX(worker.x), worker.getQuality()
 				rank += 1
