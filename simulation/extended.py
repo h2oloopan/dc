@@ -58,8 +58,6 @@ class System:
 		self.root = State(None)
 		self.root.visitation = 0
 		self.hire_pointer = self.root
-		self.average_worker_quality = 0.0
-		self.workerpool = {}
 
 	def getCappedQuality(self, quality, average_quality, x):
 		cap = 0.0045 * x + 0.1
@@ -123,6 +121,10 @@ class System:
 		result = []
 
 		existings = sorted(existings, key=lambda worker: worker.w, reverse=True)
+		#print 'default', self.default_worker_projection
+		#print 'average', self.average_worker_quality
+		#for worker in existings:
+		#	print worker.w, worker.getHybridQuality(), self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x)
 		cursor_existing = 0
 		cursor_newcomer = 0
 		while len(result) < horizon:
@@ -139,7 +141,8 @@ class System:
 						result.append(newcomers[cursor_newcomer])
 						cursor_newcomer += 1
 				else:
-					score = self.confidence(candidate.w * 100.0)
+					#score = self.confidence(candidate.w * 100.0)
+					score = 1
 					#print 'candidate', candidate.w, score
 					temp = random.random()
 					if temp < score:
@@ -506,6 +509,17 @@ class System:
 				worker.updateLearning(False)
 			worker.learn()
 			self.workerpool[worker.uuid] = worker
+
+		#print 'worker pool', len(self.workerpool)
+
+		#update default projection
+		if len(self.workerpool) > 0:
+			avg = 0.0
+			for key in self.workerpool:
+				avg += self.workerpool[key].w
+			projection = avg / float(len(self.workerpool))
+			self.default_worker_projection = 0.5 * self.default_worker_projection + 0.5 * projection
+
 
 		self.calculateAverageWorkerQuality()
 

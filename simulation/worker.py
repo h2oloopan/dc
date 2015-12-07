@@ -45,10 +45,11 @@ class Worker:
 		projection = self.getEstimatedQualityAtX(self.x + int(projection * self.getEstimatedAvailability()))
 		#print self.r, self.p, '|', self.er, self.ep, self.getHybridQuality(), projection
 
-		return (1.0 * quality + 1.0 * projection) / 2.0
+		return (1.0 - self.getEstimatedAvailability()) * quality + self.getEstimatedAvailability() * projection
 
 	def calculateDefaultProjection(self, projection):
-		return (1.0 * self.getDefaultQuality() + 1.0 * self.getDefaultQualityAtX(self.x + int(projection * self.getEstimatedAvailability()))) / 2.0
+		projection = self.getDefaultQualityAtX(self.x + int(projection * self.getEstimatedAvailability()))
+		return (1.0 - self.getEstimatedAvailability()) * self.getDefaultQuality() + self.getEstimatedAvailability() * projection
 	def addNoise(self, noise_mu, noise_sigma):
 		self.noise_mu = noise_mu
 		self.noise_sigma = noise_sigma
