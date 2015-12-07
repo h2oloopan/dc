@@ -40,24 +40,15 @@ class Worker:
 		return s
 
 	def getEstimatedAvailability(self):
-		return float(presence[0]) / float(presence[1])
+		return float(self.presence[0]) / float(self.presence[1])
 	def calculateProjection(self, quality, projection):
-		#calculate the weights for ranking
-		#projection = (self.getEstimatedCumulativeQuality(self.x + projection) * float(self.x + projection) -
-			#self.getEstimatedCumulativeQuality(self.x) * float(self.x))
-		#return 1.0 * self.getEstimatedQualityAtX(self.x) + 1.0 * (1 / self.er)
-
-		#the first term is short term while the second term is long term
-
-		#projection = self.getEstimatedCumulativeQuality(self.x + projection)
-		projection = self.getEstimatedQualityAtX(self.x + projection) * self.getEstimatedAvailability()
+		projection = self.getEstimatedQualityAtX(self.x + int(projection * self.getEstimatedAvailability()))
 		#print self.r, self.p, '|', self.er, self.ep, self.getHybridQuality(), projection
 
-		return (1.0 * quality + 1.0 * projection) / 1.0
+		return (1.0 * quality + 1.0 * projection) / 2.0
 
 	def calculateDefaultProjection(self, projection):
-		return 1.0 * self.getDefaultQuality() + 1.0 * self.getDefaultQualityAtX(self.x + projection) * self.getEstimatedAvailability()
-
+		return (1.0 * self.getDefaultQuality() + 1.0 * self.getDefaultQualityAtX(self.x + int(projection * self.getEstimatedAvailability()))) / 2.0
 	def addNoise(self, noise_mu, noise_sigma):
 		self.noise_mu = noise_mu
 		self.noise_sigma = noise_sigma

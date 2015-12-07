@@ -69,9 +69,11 @@ def randomK(tasks, outcomes, workers, k):
 
 def getKWorkers(workers, k, tutorials, outcomes):
 	tops = []
+	stuff = 0
 	for worker in workers:
 		if worker.x < len(tutorials):
 			#let worker work on tutorials
+			stuff += len(tutorials)
 			for tutorial in tutorials:
 				answer = worker.doTask(tutorial, outcomes)
 				if answer == tutorial:
@@ -88,7 +90,7 @@ def getKWorkers(workers, k, tutorials, outcomes):
 		else:
 			pass
 			#do nothing
-	return tops
+	return tops, stuff
 			
 
 
@@ -103,9 +105,11 @@ def topKAverageWithTutorials(tasks, outcomes, workers, ps):
 
 	#ranked = sorted(correct.items(), key=operator.itemgetter(1), reverse=True)
 	#do tasks
+	totalTutorials = 0
 	for task in tasks:
 		availables = findAvailableWorkers(workers)
-		tops = getKWorkers(availables, k, tutorials, outcomes)
+		tops, currentTutorials = getKWorkers(availables, k, tutorials, outcomes)
+		totalTutorials += currentTutorials
 		#print tops
 		votes = {}
 		vote = None
@@ -125,6 +129,7 @@ def topKAverageWithTutorials(tasks, outcomes, workers, ps):
 				worker.updateLearning(True)
 			else:
 				worker.updateLearning(False)
+	print totalTutorials, ' tutorials'
 	return answers
 
 

@@ -44,8 +44,8 @@ class System:
 		self.total = 0
 		self.average_worker_quality = 0.0
 		self.counts = {}
-		self.hworkers = []
-		self.lworkers = []
+		self.workerpool = {}
+		self.default_worker_projection = 0
 		for outcome in outcomes:
 			self.counts[str(outcome)] = start
 			self.total += start
@@ -59,8 +59,7 @@ class System:
 		self.root.visitation = 0
 		self.hire_pointer = self.root
 		self.average_worker_quality = 0.0
-		self.lworkers = []
-		self.hworkers = []
+		self.workerpool = {}
 
 	def getCappedQuality(self, quality, average_quality, x):
 		cap = 0.0045 * x + 0.1
@@ -82,7 +81,7 @@ class System:
 
 	def confidence(self, x):
 		x = int(x)
-		return float(x - 50) / (50.0 * math.sqrt(1.0 + math.pow(float(x - 50) / 10, 2))) + 0.8
+		return float(x - 50) / (25.0 * math.sqrt(1.0 + math.pow(float(x - 50) / 10, 2))) + 0.6
 
 	def coverage(self, p):
 		p = float(p)
@@ -100,49 +99,66 @@ class System:
 
 
 	def calculateAverageWorkerQuality(self):
-		if len(hworkers) == 0 and len(lworkers) == 0:
-			return 0.5
-		average = 0.0
-		for worker in self.hworkers:
-			average += worker.getHybridQuality()
-		for worker in self.lworkers:
-			average += worker.getHybridQuality()
-		self.average_worker_quality = average / float(len(hworkers) + len(lworkers))
-		#print self.average_worker_quality
+		if len(self.workerpool) == 0:
+			self.average_worker_quality = 0.5
+		else:
+			average = 0.0
+			for uuid in self.workerpool:
+				average += self.workerpool[uuid].getHybridQuality()
+			self.average_worker_quality = float(average) / float(len(self.workerpool))
 
 	def getRankedWorkers(self, workers, horizon, projection=100):
-		existingWorkers = []
+		existings = []
 		newcomers = []
-
 		for worker in workers:
 			if worker.x > 0:
 				worker.w = worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection)
+				existings.append(worker)
 			else:
 				worker.w = worker.calculateDefaultProjection(projection)
-			if worker.x > 0:
-				existingWorkers.append(worker)
-			else:
+				if self.default_worker_projection == 0:
+					self.default_worker_projection = worker.w
 				newcomers.append(worker)
 
-		existingWorkers = sorted(existingWorkers, key=lambda worker: worker.w, reverse=True)
-		threshold = workers[0].calculateDefaultProjection(projection)
-
-
 		result = []
+
+		existings = sorted(existings, key=lambda worker: worker.w, reverse=True)
 		cursor_existing = 0
 		cursor_newcomer = 0
-		for i in range(0, horizon):
-			if cursor_existing >= len(existingWorkers):
-				#no existing workers
+		while len(result) < horizon:
+			if cursor_existing >= len(existings):
 				result.append(newcomers[cursor_newcomer])
 				cursor_newcomer += 1
 			else:
+				candidate = existings[cursor_existing]
+				if candidate.w <= self.default_worker_projection:
+					if cursor_newcomer >= len(newcomers):
+						result.append(existings[cursor_existing])
+						cursor_existing += 1
+					else:
+						result.append(newcomers[cursor_newcomer])
+						cursor_newcomer += 1
+				else:
+					score = self.confidence(candidate.w * 100.0)
+					#print 'candidate', candidate.w, score
+					temp = random.random()
+					if temp < score:
+						result.append(existings[cursor_existing])
+						cursor_existing += 1
+					else:
+						if cursor_newcomer >= len(newcomers):
+							result.append(existings[cursor_existing])
+							cursor_existing += 1
+						else:
+							result.append(newcomers[cursor_newcomer])
+							cursor_newcomer += 1
 
 
+		#print 'workers:'
+		#for worker in result:
+		#	print worker.getHybridQuality(), self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x)
 
 		return result
-
-
 
 
 	def dh(self, tasks, outcomes, workers, ps):
@@ -168,6 +184,8 @@ class System:
 		#rankedWorkers = self.randomRank(workers, total_tasks - completed_tasks, l) #self.rankWorkers(workers, total_tasks - completed_tasks)# - completed_tasks)
 		#self.sample(s, l, outcomes, availables)
 		#self.evaluate(outcomes)
+
+		totalTutorials = 0
 		
 
 		for task in tasks:
@@ -210,6 +228,7 @@ class System:
 								else:
 									next_worker.updateLearning(False)
 							next_worker.learn()
+							totalTutorials += t
 
 						answer = next_worker.doTask(task, outcomes, next_worker.c)
 						hired.append(next_worker)
@@ -239,6 +258,8 @@ class System:
 				#print task, prediction, self.getCappedQuality(hired[0].getHybridQuality(), self.average_worker_quality, hired[0].x), hired[0].getHybridQuality(), hired[0].getQuality()
 
 			completed_tasks += 1
+
+		print totalTutorials, ' tutorials'
 		return result
 
 	def pickOutcome(self, outcomes, probabilities):
@@ -267,6 +288,7 @@ class System:
 			result.append(probability / total)
 		return result
 	def sample(self, samples, horizon, outcomes, workers):
+		
 		for i in range(0, samples):
 			cursor = self.root
 			number = 0
@@ -433,6 +455,7 @@ class System:
 				worker = workers[i]
 				answer = answers[i]
 				#print self.average_worker_quality
+				#print worker.getHybridQuality(), self.average_worker_quality, worker.x
 				cappedQuality = self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x)
 				#print cappedQuality
 
@@ -482,6 +505,7 @@ class System:
 			else:
 				worker.updateLearning(False)
 			worker.learn()
+			self.workerpool[worker.uuid] = worker
 
 		self.calculateAverageWorkerQuality()
 
