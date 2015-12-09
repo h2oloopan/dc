@@ -108,15 +108,39 @@ if __name__ == '__main__':
 	#p2 = {'mu': 20, 'sigma': 1}
 
 	r = {'mu': 80, 'sigma': 10}
-	p = {'mu': 80, 'sigma': 10}
-	a = {'mu': 0.1, 'sigma': 0.04}
+	p = {'mu': 70, 'sigma': 10}
+	a = {'mu': 0.05, 'sigma': 0.04}
 
-	workers = simulate.createHyperbolicWorker(500, r, p, a, 1)
+	workers = simulate.createHyperbolicWorker(450, r, p, a, 1)
+
+	r2 = {'mu': 80, 'sigma': 10}
+	p2 = {'mu': 70, 'sigma': 10}
+	a2 = {'mu': 0.5, 'sigma': 0.05}
+
+	r3 = {'mu': 50, 'sigma': 10}
+	p3 = {'mu': 60, 'sigma': 10}
+	a3 = {'mu': 0.05, 'sigma': 0.04}
+
+	r4 = {'mu': 100, 'sigma': 10}
+	p4 = {'mu': 70, 'sigma': 10}
+	a4 = {'mu': 0.5, 'sigma': 0.05}
+
 	#workers = simulate.createHyperbolicWorker(900, r1, p1, None, 1)
 	#fast_workers = simulate.createHyperbolicWorker(100, r2, p2, None, 2)
 	#workers.extend(fast_workers)
 
-	tasks = simulate.createBinaryTasks(500)
+	#available_workers = simulate.createHyperbolicWorker(100, r2, p2, a2, 1)
+	#workers.extend(available_workers)
+
+	#extra2 = simulate.createHyperbolicWorker(33, r2, p2, a2, 1)
+	extra3 = simulate.createHyperbolicWorker(50, r3, p3, a3, 1)
+	#extra4 = simulate.createHyperbolicWorker(33, r4, p4, a4, 1)
+
+	#workers.extend(extra2)
+	workers.extend(extra3)
+	#workers.extend(extra4)
+
+	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
 	runs = 1
 	steps = 3

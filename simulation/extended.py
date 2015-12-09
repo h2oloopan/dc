@@ -108,6 +108,7 @@ class System:
 	def getRankedWorkers(self, workers, horizon, projection=100):
 		existings = []
 		newcomers = []
+		workers = random.sample(workers, len(workers))
 		for worker in workers:
 			if worker.x > 0:
 				worker.w = worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection)
@@ -141,8 +142,8 @@ class System:
 						result.append(newcomers[cursor_newcomer])
 						cursor_newcomer += 1
 				else:
-					#score = self.confidence(candidate.w * 100.0)
-					score = 1
+					score = self.confidence(candidate.w * 100.0)
+					#score = 1
 					#print 'candidate', candidate.w, score
 					temp = random.random()
 					if temp < score:
