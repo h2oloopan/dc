@@ -40,10 +40,10 @@ def overlap(p1, p2):
 #do actual work
 for f in os.listdir('.'):
 	if f.endswith('.csv'):
-		if 'expert' not in f:
+		if 'expert' not in f and 'notime' not in f:
 			worker = readData(f)
 			workers.append(worker)
-		else:
+		elif 'expert' in f:
 			expert = readData(f)
 
 #f, ax = plot.subplots(2)
@@ -102,7 +102,7 @@ while cursor < end:
 	xs.append(x)
 
 
-
+x2s = list(xs)
 xs = xs[10:]
 recalls = recalls[10:]
 precisions = precisions[10:]
@@ -117,16 +117,17 @@ zs = []
 for y in precisions:
 	zs.append(1.0 / (1.0 - float(y)))
 slope, intercept, rvalue, pvalue, evalue = stats.linregress(xs, zs)
-print pvalue, evalue
+print xs, zs
+
 r = 1.0 / slope
 p = (intercept - 1.0) * r
-
+print r, p, pvalue, evalue
 cPrecisions = []
-for x in xs:
+for x in x2s:
 	cPrecisions.append(float(x + p) / float(x + p + r))
 
 g[0][0].plot(xs, precisions, label='actual value')
-g[0][0].plot(xs, cPrecisions, label='estimated value')
+g[0][0].plot(x2s, cPrecisions, label='estimated value')
 g[0][0].set_xlabel('windows')
 g[0][0].set_ylabel('cumulative precision')
 g[0][0].legend(bbox_to_anchor=(1, 0.3))
@@ -136,16 +137,15 @@ zs = []
 for y in recalls:
 	zs.append(1.0 / (1.0 - float(y)))
 slope, intercept, rvalue, pvalue, evalue = stats.linregress(xs, zs)
-print pvalue, evalue
 r = 1.0 / slope
 p = (intercept - 1.0) * r
-
+print r, p, pvalue, evalue
 cRecalls = []
-for x in xs:
+for x in x2s:
 	cRecalls.append(float(x + p) / float(x + p + r))
 
 g[0][1].plot(xs, recalls, label='actual value')
-g[0][1].plot(xs, cRecalls, label='estimated value')
+g[0][1].plot(x2s, cRecalls, label='estimated value')
 g[0][1].set_xlabel('windows')
 g[0][1].set_ylabel('cumulative recall')
 g[0][1].legend(bbox_to_anchor=(1, 0.3))
@@ -155,16 +155,15 @@ zs = []
 for y in f1s:
 	zs.append(1.0 / (1.0 - float(y)))
 slope, intercept, rvalue, pvalue, evalue = stats.linregress(xs, zs)
-print pvalue, evalue
 r = 1.0 / slope
 p = (intercept - 1.0) * r
-
+print r, p, pvalue, evalue
 cF1s = []
-for x in xs:
+for x in x2s:
 	cF1s.append(float(x + p) / float(x + p + r))
 
 g[1][0].plot(xs, f1s, label='actual value')
-g[1][0].plot(xs, cF1s, label='estimated value')
+g[1][0].plot(x2s, cF1s, label='estimated value')
 g[1][0].set_xlabel('windows')
 g[1][0].set_ylabel('cumulative F1 score')
 g[1][0].legend(bbox_to_anchor=(1, 0.3))
@@ -174,16 +173,15 @@ zs = []
 for y in f2s:
 	zs.append(1.0 / (1.0 - float(y)))
 slope, intercept, rvalue, pvalue, evalue = stats.linregress(xs, zs)
-print pvalue, evalue
 r = 1.0 / slope
 p = (intercept - 1.0) * r
-
+print r, p, pvalue, evalue
 cF2s = []
-for x in xs:
+for x in x2s:
 	cF2s.append(float(x + p) / float(x + p + r))
 
 g[1][1].plot(xs, f2s, label='actual value')
-g[1][1].plot(xs, cF2s, label='estimated value')
+g[1][1].plot(x2s, cF2s, label='estimated value')
 g[1][1].set_xlabel('windows')
 g[1][1].set_ylabel('cumulative F2 score')
 g[1][1].legend(bbox_to_anchor=(1, 0.3))
