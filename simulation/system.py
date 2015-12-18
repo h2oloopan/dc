@@ -422,6 +422,11 @@ class System:
 
 
 	def getWorkerUtility(self, worker):
+		future = worker.getEstimatedQualityAtX(worker.x + 1)
+		current = worker.getEstimatedQualityAtX(worker.x)
+
+		delta = (math.pow(2.0, future) - 1.0) - (math.pow(2.0, current) - 1.0)
+
 		delta = worker.getEstimatedQualityAtX(worker.x + 1) - worker.getEstimatedQualityAtX(worker.x)
 		return self.w_quality * delta - float(worker.c)
 
