@@ -120,7 +120,7 @@ class Worker:
 			return self.getDefaultQuality()
 		if self.er == 0 or self.erv < 0:
 			return self.getAveragedCumulativeQuality()
-		elif self.erv > 0.4:
+		elif self.epv > 0.01:
 			return (self.getAveragedCumulativeQuality() + self.getEstimatedQualityAtX(self.x)) / 2.0
 		else:
 			return self.getEstimatedQualityAtX(self.x)

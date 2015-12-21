@@ -95,9 +95,12 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 
 	graph[0].set_xlabel('tasks')
 	graph[0].set_ylabel('accuracy')
+	graph[0].axis([0, 1000, 0.0, 1.0])
+	graph[0].set_autoscale_on(False)
 
 	graph[1].set_xlabel('tasks')
 	graph[1].set_ylabel('workers')
+	graph[1].axis([0, 1000, 0.0, 5.0])
 
 
 if __name__ == '__main__':
@@ -107,8 +110,8 @@ if __name__ == '__main__':
 	#r2 = {'mu': 50, 'sigma': 5}
 	#p2 = {'mu': 20, 'sigma': 1}
 
-	r = {'mu': 100, 'sigma': 10}
-	p = {'mu': 100, 'sigma': 10}
+	r = {'mu': 50, 'sigma': 10}
+	p = {'mu': 40, 'sigma': 5}
 
 	workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
 	#workers = simulate.createHyperbolicWorker(900, r1, p1, None, 1)
@@ -117,8 +120,8 @@ if __name__ == '__main__':
 
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
-	runs = 3
-	steps = 3
+	runs = 10
+	steps = 4
 
 
 	f, ax = plot.subplots(3, 2)
@@ -126,23 +129,23 @@ if __name__ == '__main__':
 
 
 	print 'Random K'
-	k = 5
+	k = 3
 	analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
 
 
 
 	print 'Top K'
-	k = 5
-	t = 30
+	k = 3
+	t = 10
 	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
 	print 'Dynamic Hiring'
 	##system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
-	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
+	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 100.0})
 	horizon = 5
-	samples = 2048
-	tutorials = 30
+	samples = 1024
+	tutorials = 10
 	system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
 	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 

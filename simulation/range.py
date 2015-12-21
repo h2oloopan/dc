@@ -9,7 +9,7 @@ import matplotlib.pyplot as plot
 r = {'mu': 50, 'sigma': 10}
 p = {'mu': 65, 'sigma': 10}
 
-length = 200
+length = 1000
 outcomes = [True, False]
 tasks = simulate.createBinaryTasks(length)
 
