@@ -95,9 +95,13 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 
 	graph[0].set_xlabel('tasks')
 	graph[0].set_ylabel('accuracy')
+	graph[0].axis([0, 1000, 0.0, 1.0])
+	graph[0].set_autoscale_on(False)
 
 	graph[1].set_xlabel('tasks')
-	graph[1].set_ylabel('workers')
+	graph[1].set_ylabel('workers')	
+	graph[1].axis([0, 1000, 0.0, 5.0])
+	graph[1].set_autoscale_on(False)
 
 
 if __name__ == '__main__':
@@ -111,7 +115,7 @@ if __name__ == '__main__':
 	p = {'mu': 70, 'sigma': 10}
 	a = {'mu': 0.05, 'sigma': 0.04}
 
-	workers = simulate.createHyperbolicWorker(450, r, p, a, 1)
+	workers = simulate.createHyperbolicWorker(300, r, p, a, 1)
 
 	r2 = {'mu': 80, 'sigma': 10}
 	p2 = {'mu': 70, 'sigma': 10}
@@ -142,7 +146,11 @@ if __name__ == '__main__':
 
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
+<<<<<<< HEAD
 	runs = 1
+=======
+	runs = 5
+>>>>>>> 877061379be11ceaa61cc43cfe0593cc71fca8b7
 	steps = 4
 
 
@@ -166,7 +174,7 @@ if __name__ == '__main__':
 	##system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
 	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 60.0})
 	horizon = 5
-	samples = 1024
+	samples = 512
 	tutorials = 20
 	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 

@@ -101,6 +101,7 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 	graph[1].set_xlabel('tasks')
 	graph[1].set_ylabel('workers')
 	graph[1].axis([0, 1000, 0.0, 5.0])
+	graph[1].set_autoscale_on(False)
 
 
 if __name__ == '__main__':
