@@ -133,17 +133,17 @@ if __name__ == '__main__':
 	#workers.extend(available_workers)
 
 	#extra2 = simulate.createHyperbolicWorker(33, r2, p2, a2, 1)
-	extra3 = simulate.createHyperbolicWorker(50, r3, p3, a3, 1)
+	#extra3 = simulate.createHyperbolicWorker(50, r3, p3, a3, 1)
 	#extra4 = simulate.createHyperbolicWorker(33, r4, p4, a4, 1)
 
 	#workers.extend(extra2)
-	workers.extend(extra3)
+	#workers.extend(extra3)
 	#workers.extend(extra4)
 
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
 	runs = 1
-	steps = 3
+	steps = 4
 
 
 	f, ax = plot.subplots(3, 2)
@@ -151,13 +151,13 @@ if __name__ == '__main__':
 
 
 	print 'Random K'
-	k = 5
+	k = 3
 	analyze(ax[0], runs, steps, algorithm.randomK, tasks, outcomes, workers, k)
 
 
 
 	print 'Top K'
-	k = 5
+	k = 3
 	t = 20
 	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 

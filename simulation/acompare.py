@@ -104,19 +104,19 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 
 
 if __name__ == '__main__':
-	#r1 = {'mu': 2000, 'sigma': 10}
-	#p1 = {'mu': 2000, 'sigma': 10}
+	r1 = {'mu': 2000, 'sigma': 10}
+	p1 = {'mu': 2000, 'sigma': 10}
 
-	#r2 = {'mu': 50, 'sigma': 5}
-	#p2 = {'mu': 20, 'sigma': 1}
+	r2 = {'mu': 80, 'sigma': 5}
+	p2 = {'mu': 20, 'sigma': 5}
 
-	r = {'mu': 50, 'sigma': 10}
-	p = {'mu': 40, 'sigma': 5}
+	#r = {'mu': 2000, 'sigma': 10}
+	#p = {'mu': 100, 'sigma': 5}
 
-	workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
-	#workers = simulate.createHyperbolicWorker(900, r1, p1, None, 1)
-	#fast_workers = simulate.createHyperbolicWorker(100, r2, p2, None, 2)
-	#workers.extend(fast_workers)
+	#workers = simulate.createHyperbolicWorker(1000, r, p, None, 1)
+	workers = simulate.createHyperbolicWorker(900, r1, p1, None, 1)
+	fast_workers = simulate.createHyperbolicWorker(100, r2, p2, None, 1)
+	workers.extend(fast_workers)
 
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
@@ -136,16 +136,16 @@ if __name__ == '__main__':
 
 	print 'Top K'
 	k = 3
-	t = 10
+	t = 30
 	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
 	print 'Dynamic Hiring'
 	##system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 400.0})
-	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 100.0})
+	system = System(outcomes, 1000, {'belief' : 7.0, 'quality': 200.0})
 	horizon = 5
 	samples = 1024
-	tutorials = 10
+	tutorials = 50
 	system.dh(tasks, outcomes, workers, [horizon, samples, tutorials])
 	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 

@@ -74,6 +74,7 @@ class System:
 
 		result = sorted(available, key=lambda worker: worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection), reverse=True)
 
+
 		#total = 0.0
 		#for worker in workers:
 		#	print worker.getHybridQuality()
@@ -86,6 +87,10 @@ class System:
 
 		#for i in range(0, 10):
 		#	print result[i], str(result[i].calculateProjection(projection)), result[i].getHybridQuality(), result[i].getQuality(), result[i].erv
+
+		#for worker in result:
+		#worker = result[0]
+		#print worker.calculateProjection(self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), projection), self.getCappedQuality(worker.getHybridQuality(), self.average_worker_quality, worker.x), worker.er, worker.ep, worker.r, worker.p
 
 		return result
 
@@ -190,7 +195,7 @@ class System:
 					worker.updateLearning(False)
 			worker.learn()
 
-		step = 20
+		step = 10
 		step_counter = 0
 
 		self.reset()
