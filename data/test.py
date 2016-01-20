@@ -8,7 +8,7 @@ import random
 
 sys.path.append('../simulation')
 import learn
-from system import System
+from hybrid import System
 from person import Worker
 
 expert = []
@@ -41,7 +41,7 @@ people = []
 for f in os.listdir('.'):
 	if f.endswith('.csv'):
 		if 'expert' not in f:
-			worker = Worker(str(f), 0, 1)
+			worker = Worker(str(f), 0, 0, 0, 1, 1)
 			worker.loadMyData(readData(f))
 			people.append(worker)
 		else:
@@ -219,22 +219,12 @@ cs = []
 qs = []
 ws = []
 
-for worker in people:
-	for index in range(0 ,t):
-		task = True
-		answer = worker.doTask(index, task, outcomes)
-		if answer == task:
-			worker.updateLearning(True)
-		else:
-			worker.updateLearning(False)
-	worker.learn()
-
 system = System(outcomes, 1000, {'belief': 7.0, 'quality': 100.0})
-horizon = 3
+horizon = 5
 samples = 1024
-tutorials = 0
+tutorials = t
 
-answers = system.dhReal(t, expert, outcomes, people, [horizon, samples, tutorials])
+answers = system.dh(t, expert, outcomes, people, [horizon, samples, tutorials])
 
 total_hired = 0
 

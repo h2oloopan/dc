@@ -1,9 +1,5 @@
 from scipy import stats
 
-import statsmodels.api as sm
-import pandas
-from pandas import DataFrame, Series
-
 #learning module
 def learnCurve(cs, ts):
 	#cs is a list of number of correct answers
