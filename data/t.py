@@ -36,21 +36,8 @@ def resetWorkers(workers):
 	for worker in workers:
 		worker.reset()
 
-#do actual work
-people = []
-for f in os.listdir('.'):
-	if f.endswith('.csv'):
-		if 'expert' not in f:
-			worker = Worker(str(f), 0, 0, 0, 1, 1)
-			worker.loadMyData(readData(f))
-			people.append(worker)
-		else:
-			expert = readData(f)
 
-for worker in people:
-	worker.loadExpertData(expert)
-
-def randomK(k, people):
+def randomK(k, t, steps, people):
 	resetWorkers(people)
 	answers = []
 	cs = []
@@ -104,7 +91,7 @@ def randomK(k, people):
 
 	return cs, qs, ws, cumulative, cs[-1], total_hired
 
-def topK(k, people):
+def topK(k, t, steps, people):
 	resetWorkers(people)
 	answers = []
 	cs = []
@@ -168,4 +155,87 @@ def topK(k, people):
 		cs[i] = float(cumulative) / float(i + 1)
 
 	return cs, qs, ws, cumulative, cs[-1], total_hired
+
+def dynamic(h, t, steps, people):
+	resetWorkers(people)
+	answers = []
+	cs = []
+	qs = []
+	ws = []
+
+	system = System(outcomes, 1000, {'belief': 7.0, 'quality': 100.0})
+	horizon = h
+	samples = 1024
+	tutorials = t
+
+	answers = system.dh(t, expert, outcomes, people, [horizon, samples, tutorials])
+
+	total_hired = 0
+
+	for index in range(t, len(expert)):
+		answer = answers[index - t]
+		if answer[0] == True:
+			cs.append(1)
+		else:
+			cs.append(0)
+		ws.append(answer[1])
+		total_hired += answer[1]
+
+	for i in range(0, len(cs)):
+		avg = cs[i]
+		count = 1
+		for j in range(1, steps + 1):
+			if i - j >= 0:
+				avg += cs[i - j]
+				count += 1
+			if i + j < len(cs):
+				avg += cs[i + j]
+				count += 1
+		qs.append(float(avg) / float(count))
+
+	cumulative = 0
+	for i in range(0, len(cs)):
+		cumulative += cs[i]
+		cs[i] = float(cumulative) / float(i + 1)
+
+	return cs, qs, ws, cumulative, cs[-1], total_hired
+
+#plot
+#do actual work
+people = []
+for f in os.listdir('.'):
+	if f.endswith('.csv'):
+		if 'expert' not in f:
+			worker = Worker(str(f), 0, 0, 0, 1, 1)
+			worker.loadMyData(readData(f))
+			people.append(worker)
+		else:
+			expert = readData(f)
+
+for worker in people:
+	worker.loadExpertData(expert)
+
+#analysis
+t = 20
+xs = np.arange(1, len(expert) + 1 - t, 1)
+
+f, ax = plot.subplots(3, 2)
+outcomes = [True, False]
+steps = 5
+
+runs = 30
+k = 3
+h = 5
+
+#random k
+
+
+#top k
+
+
+#dynamic hiring
+
+
+
+
 
