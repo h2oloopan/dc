@@ -42,15 +42,19 @@ class Worker:
 	def getEstimatedAvailability(self):
 		return float(self.presence[0]) / float(self.presence[1])
 	def calculateProjection(self, quality, projection):
-		projection = self.getEstimatedQualityAtX(self.x + int(projection * self.getEstimatedAvailability()))
+		#projection = self.getEstimatedQualityAtX(self.x + int(projection * self.getEstimatedAvailability()))
 		#print self.r, self.p, '|', self.er, self.ep, self.getHybridQuality(), projection
 
 		#return 0.3 * quality + 0.7 * projection
-		return (1.0 - self.getEstimatedAvailability()) * quality + self.getEstimatedAvailability() * projection
+		#return (1.0 - self.getEstimatedAvailability()) * quality + self.getEstimatedAvailability() * projection
+		projection = self.getEstimatedQualityAtX(self.x + projection)
+		return 0.3 * quality + 0.7 * projection
 
 	def calculateDefaultProjection(self, projection):
-		projection = self.getDefaultQualityAtX(self.x + int(projection * self.getEstimatedAvailability()))
-		return (1.0 - self.getEstimatedAvailability()) * self.getDefaultQuality() + self.getEstimatedAvailability() * projection
+		#projection = self.getDefaultQualityAtX(self.x + int(projection * self.getEstimatedAvailability()))
+		#return (1.0 - self.getEstimatedAvailability()) * self.getDefaultQuality() + self.getEstimatedAvailability() * projection
+		projection = self.getDefaultQualityAtX(self.x + projection)
+		return 0.5 * self.getDefaultQuality() + 0.5 * projection
 	def addNoise(self, noise_mu, noise_sigma):
 		self.noise_mu = noise_mu
 		self.noise_sigma = noise_sigma

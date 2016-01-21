@@ -163,7 +163,7 @@ def dynamic(h, t, steps, people):
 	qs = []
 	ws = []
 
-	system = System(outcomes, 1000, {'belief': 7.0, 'quality': 100.0})
+	system = System(outcomes, 1000, {'belief': 7.0, 'quality': 60.0})
 	horizon = h
 	samples = 1024
 	tutorials = t
@@ -228,14 +228,119 @@ k = 3
 h = 5
 
 #random k
+#
+
+cs, qs, ws, cumulative, correct, hired = randomK(k, t, steps, people)
+for i in range(0, runs - 1):
+	cs_, qs_, ws_, cumulative_, correct_, hired_ = randomK(k, t, steps, people)
+	for j in range(0, len(cs)):
+		cs[j] += cs_[j]
+		qs[j] += qs_[j]
+		ws[j] += ws_[j]
+	cumulative += cumulative_
+	correct += correct_
+	hired += hired_
+
+for j in range(0, len(cs)):
+	cs[j] = cs[j] / float(runs)
+	qs[j] = qs[j] / float(runs)
+	ws[j] = ws[j] / float(runs)
+cumulative = cumulative / float(runs)
+correct = float(correct) / float(runs)
+hired = float(hired) / float(runs)
+
+ax[0][0].plot(xs, cs, label='cumulative quality')
+ax[0][0].plot(xs, qs, label='quality')
+ax[0][1].plot(xs, ws, label='number of workers')
+ax[0][0].set_xlabel('tasks')
+ax[0][0].set_ylabel('recall')
+ax[0][1].set_xlabel('tasks')
+ax[0][1].set_ylabel('workers')
+ax[0][0].legend(bbox_to_anchor=(0.5, 0.3))
+ax[0][1].legend(bbox_to_anchor=(1, 0.3))
+
+print cumulative
+print correct
+print hired
 
 
 #top k
+cs, qs, ws, cumulative, correct, hired = topK(k, t, steps, people)
+for i in range(0, runs - 1):
+	cs_, qs_, ws_, cumulative_, correct_, hired_ = topK(k, t, steps, people)
+	for j in range(0, len(cs)):
+		cs[j] += cs_[j]
+		qs[j] += qs_[j]
+		ws[j] += ws_[j]
+	cumulative += cumulative_
+	correct += correct_
+	hired += hired_
 
+for j in range(0, len(cs)):
+	cs[j] = cs[j] / float(runs)
+	qs[j] = qs[j] / float(runs)
+	ws[j] = ws[j] / float(runs)
+cumulative = cumulative / float(runs)
+correct = float(correct) / float(runs)
+hired = float(hired) / float(runs)
+
+ax[1][0].plot(xs, cs, label='cumulative quality')
+ax[1][0].plot(xs, qs, label='quality')
+ax[1][1].plot(xs, ws, label='number of workers')
+ax[1][0].set_xlabel('tasks')
+ax[1][0].set_ylabel('recall')
+ax[1][1].set_xlabel('tasks')
+ax[1][1].set_ylabel('workers')
+ax[1][0].legend(bbox_to_anchor=(0.5, 0.3))
+ax[1][1].legend(bbox_to_anchor=(1, 0.3))
+
+print cumulative
+print correct
+print hired
+
+
+runs = 30
 
 #dynamic hiring
+cs, qs, ws, cumulative, correct, hired = dynamic(k + 2, t, steps, people)
 
+print len(cs)
 
+for i in range(0, runs - 1):
+	cs_, qs_, ws_, cumulative_, correct_, hired_ = dynamic(k + 2, t, steps, people)
+	for j in range(0, len(cs)):
+		cs[j] += cs_[j]
+		qs[j] += qs_[j]
+		ws[j] += ws_[j]
+	cumulative += cumulative_
+	correct += correct_
+	hired += hired_
 
+for j in range(0, len(cs)):
+	cs[j] = cs[j] / float(runs)
+	qs[j] = qs[j] / float(runs)
+	ws[j] = ws[j] / float(runs)
+cumulative = cumulative / float(runs)
+correct = float(correct) / float(runs)
+hired = float(hired) / float(runs)
+
+print len(xs)
+print len(cs)
+
+ax[2][0].plot(xs, cs, label='cumulative quality')
+ax[2][0].plot(xs, qs, label='quality')
+ax[2][1].plot(xs, ws, label='number of workers')
+ax[2][0].set_xlabel('tasks')
+ax[2][0].set_ylabel('recall')
+ax[2][1].set_xlabel('tasks')
+ax[2][1].set_ylabel('workers')
+ax[2][0].legend(bbox_to_anchor=(0.5, 0.3))
+ax[2][1].legend(bbox_to_anchor=(1, 0.3))
+
+print cumulative
+print correct
+print hired
+
+plot.show()
 
 
