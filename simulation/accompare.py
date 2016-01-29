@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
 	print 'Top K'
 	k = 3
-	t = 30
+	t = 20
 	analyze(ax[1], runs, steps, algorithm.topKAverageWithTutorials, tasks, outcomes, workers, [k, t])
 
 
