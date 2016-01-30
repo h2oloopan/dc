@@ -105,23 +105,22 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 
 
 	xs = np.arange(1, len(tasks) + 1, 1)
-	graph[0].plot(xs, cs, label='cumulative quality')
-	graph[0].plot(xs, qs, label='quality')
+	#graph[0].plot(xs, cs, label='cumulative quality')
 	#graph[1].plot(total_ws, total_cs)
-	graph[1].plot(xs, ws, label='number of hired workers')
+	#graph[1].plot(xs, ws, label='number of hired workers')
 
-	graph[0].legend(bbox_to_anchor=(1, 0.3))
-	graph[1].legend(bbox_to_anchor=(1, 0.8))
+	#graph[0].legend(bbox_to_anchor=(1, 0.3))
+	#graph[1].legend(bbox_to_anchor=(1, 0.8))
 
-	graph[0].set_xlabel('tasks')
-	graph[0].set_ylabel('accuracy')
-	graph[0].axis([0, 1000, 0.0, 1.0])
-	graph[0].set_autoscale_on(False)
+	#graph[0].set_xlabel('tasks')
+	#graph[0].set_ylabel('accuracy')
+	#graph[0].axis([0, 1000, 0.0, 1.0])
+	#graph[0].set_autoscale_on(False)
 
-	graph[1].set_xlabel('tasks')
-	graph[1].set_ylabel('workers')	
-	graph[1].axis([0, 1000, 0.0, 5.0])
-	graph[1].set_autoscale_on(False)
+	#graph[1].set_xlabel('tasks')
+	#graph[1].set_ylabel('workers')	
+	#graph[1].axis([0, 1000, 0.0, 5.0])
+	#graph[1].set_autoscale_on(False)
 
 
 if __name__ == '__main__':
@@ -194,7 +193,7 @@ if __name__ == '__main__':
 	tutorials = 20
 	analyze(ax[2], runs, steps, system.dh, tasks, outcomes, workers, [horizon, samples, tutorials])
 
-	plot.show()
+	#plot.show()
 
 
 
