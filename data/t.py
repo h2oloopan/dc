@@ -232,7 +232,7 @@ f, ax = plot.subplots(3, 2)
 outcomes = [True, False]
 steps = 5
 
-runs = 1
+runs = 20
 k = 3
 h = 5
 
@@ -258,15 +258,15 @@ cumulative = cumulative / float(runs)
 correct = float(correct) / float(runs)
 hired = float(hired) / float(runs)
 
-ax[0][0].plot(xs, cs, label='cumulative quality')
-ax[0][0].plot(xs, qs, label='quality', linestyle='dashed')
-ax[0][1].plot(xs, ws, label='number of workers')
-ax[0][0].set_xlabel('tasks')
-ax[0][0].set_ylabel('recall')
-ax[0][1].set_xlabel('tasks')
-ax[0][1].set_ylabel('workers')
-ax[0][0].legend(bbox_to_anchor=(0.5, 0.3))
-ax[0][1].legend(bbox_to_anchor=(1, 0.3))
+#ax[0][0].plot(xs, cs, label='cumulative quality')
+#ax[0][0].plot(xs, qs, label='quality', linestyle='dashed')
+#ax[0][1].plot(xs, ws, label='number of workers')
+#ax[0][0].set_xlabel('tasks')
+#ax[0][0].set_ylabel('recall')
+#ax[0][1].set_xlabel('tasks')
+#ax[0][1].set_ylabel('workers')
+#ax[0][0].legend(bbox_to_anchor=(0.5, 0.3))
+#ax[0][1].legend(bbox_to_anchor=(1, 0.3))
 
 print cumulative
 print correct
@@ -305,15 +305,15 @@ cumulative = cumulative / float(runs)
 correct = float(correct) / float(runs)
 hired = float(hired) / float(runs)
 
-ax[1][0].plot(xs, cs, label='cumulative quality')
-ax[1][0].plot(xs, qs, label='quality', linestyle='dashed')
-ax[1][1].plot(xs, ws, label='number of workers')
-ax[1][0].set_xlabel('tasks')
-ax[1][0].set_ylabel('recall')
-ax[1][1].set_xlabel('tasks')
-ax[1][1].set_ylabel('workers')
-ax[1][0].legend(bbox_to_anchor=(0.5, 0.3))
-ax[1][1].legend(bbox_to_anchor=(1, 0.3))
+#ax[1][0].plot(xs, cs, label='cumulative quality')
+#ax[1][0].plot(xs, qs, label='quality', linestyle='dashed')
+#ax[1][1].plot(xs, ws, label='number of workers')
+#ax[1][0].set_xlabel('tasks')
+#ax[1][0].set_ylabel('recall')
+#ax[1][1].set_xlabel('tasks')
+#ax[1][1].set_ylabel('workers')
+#ax[1][0].legend(bbox_to_anchor=(0.5, 0.3))
+#ax[1][1].legend(bbox_to_anchor=(1, 0.3))
 
 print cumulative
 print correct
@@ -355,18 +355,18 @@ cumulative = cumulative / float(runs)
 correct = float(correct) / float(runs)
 hired = float(hired) / float(runs)
 
-print len(xs)
-print len(cs)
+#print len(xs)
+#print len(cs)
 
-ax[2][0].plot(xs, cs, label='cumulative quality')
-ax[2][0].plot(xs, qs, label='quality', linestyle='dashed')
-ax[2][1].plot(xs, ws, label='number of workers')
-ax[2][0].set_xlabel('tasks')
-ax[2][0].set_ylabel('recall')
-ax[2][1].set_xlabel('tasks')
-ax[2][1].set_ylabel('workers')
-ax[2][0].legend(bbox_to_anchor=(0.5, 0.3))
-ax[2][1].legend(bbox_to_anchor=(1, 0.3))
+#ax[2][0].plot(xs, cs, label='cumulative quality')
+#ax[2][0].plot(xs, qs, label='quality', linestyle='dashed')
+#ax[2][1].plot(xs, ws, label='number of workers')
+#ax[2][0].set_xlabel('tasks')
+#ax[2][0].set_ylabel('recall')
+#ax[2][1].set_xlabel('tasks')
+#ax[2][1].set_ylabel('workers')
+#ax[2][0].legend(bbox_to_anchor=(0.5, 0.3))
+#ax[2][1].legend(bbox_to_anchor=(1, 0.3))
 
 print cumulative
 print correct
@@ -383,6 +383,6 @@ dh_result['hired'] = hired
 with open('dh.json', 'w') as outfile:
 	json.dump(dh_result, outfile)
 
-plot.show()
+#plot.show()
 
 
