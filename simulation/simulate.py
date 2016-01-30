@@ -1,4 +1,3 @@
-import matplotlib.pyplot as pyplot
 import scipy.stats as stats
 import random
 import uuid
