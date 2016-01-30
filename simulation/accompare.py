@@ -5,9 +5,11 @@ import simulate
 import learn
 import random
 import algorithm
+import json
 from another import System
 
 
+flag = 0
 
 def resetWorkers(workers):
 	for worker in workers:
@@ -83,6 +85,24 @@ def analyze(graph, runs, steps, algorithm, tasks, outcomes, workers, parameters)
 
 	#labels
 
+	result = {}
+	result['cs'] = cs
+	result['qs'] = qs
+	result['ws'] = ws
+
+	global flag
+	print 'flag', flag
+	if flag == 0:
+		with open('rk.json', 'w') as outfile:
+			json.dump(result, outfile)
+	elif flag == 1:
+		with open('tk.json', 'w') as outfile:
+			json.dump(result, outfile)
+	elif flag == 2:
+		with open('dh.json', 'w') as outfile:
+			json.dump(result, outfile)
+	flag += 1
+
 
 	xs = np.arange(1, len(tasks) + 1, 1)
 	graph[0].plot(xs, cs, label='cumulative quality')
@@ -147,7 +167,7 @@ if __name__ == '__main__':
 	tasks = simulate.createBinaryTasks(1000)
 	outcomes = [True, False]
 	steps = 4
-	runs = 30
+	runs = 20
 
 
 	f, ax = plot.subplots(3, 2)

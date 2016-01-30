@@ -221,6 +221,8 @@ for worker in people:
 t = 20
 xs = np.arange(1, len(expert) + 1 - t, 1)
 
+print len(xs)
+
 
 font = {
 	'size': 18
