@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-import matplotlib.pyplot as plot
+#import matplotlib.pyplot as plot
 import simulate
 import learn
 import random
@@ -169,8 +169,9 @@ if __name__ == '__main__':
 	runs = 20
 
 
-	f, ax = plot.subplots(3, 2)
+	#f, ax = plot.subplots(3, 2)
 	#f, graphs = plot.subplots(1, 2)
+	ax = [1, 2, 3]
 
 
 	print 'Random K'
