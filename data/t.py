@@ -1,9 +1,11 @@
 import csv
 import numpy as np
 import matplotlib.pyplot as plot
+import matplotlib
 import os
 import sys
 import random
+import json
 
 
 sys.path.append('../simulation')
@@ -219,11 +221,18 @@ for worker in people:
 t = 20
 xs = np.arange(1, len(expert) + 1 - t, 1)
 
+
+font = {
+	'size': 18
+}
+
+matplotlib.rc('font', **font)
+
 f, ax = plot.subplots(3, 2)
 outcomes = [True, False]
 steps = 5
 
-runs = 30
+runs = 1
 k = 3
 h = 5
 
@@ -250,7 +259,7 @@ correct = float(correct) / float(runs)
 hired = float(hired) / float(runs)
 
 ax[0][0].plot(xs, cs, label='cumulative quality')
-ax[0][0].plot(xs, qs, label='quality')
+ax[0][0].plot(xs, qs, label='quality', linestyle='dashed')
 ax[0][1].plot(xs, ws, label='number of workers')
 ax[0][0].set_xlabel('tasks')
 ax[0][0].set_ylabel('recall')
@@ -262,6 +271,18 @@ ax[0][1].legend(bbox_to_anchor=(1, 0.3))
 print cumulative
 print correct
 print hired
+
+rk_result = {}
+rk_result['cs'] = cs
+rk_result['qs'] = qs
+rk_result['ws'] = ws
+rk_result['cumulative'] = cumulative
+rk_result['correct'] = correct
+rk_result['hired'] = hired
+
+with open('rk.json', 'w') as outfile:
+	json.dump(rk_result, outfile)
+
 
 
 #top k
@@ -285,7 +306,7 @@ correct = float(correct) / float(runs)
 hired = float(hired) / float(runs)
 
 ax[1][0].plot(xs, cs, label='cumulative quality')
-ax[1][0].plot(xs, qs, label='quality')
+ax[1][0].plot(xs, qs, label='quality', linestyle='dashed')
 ax[1][1].plot(xs, ws, label='number of workers')
 ax[1][0].set_xlabel('tasks')
 ax[1][0].set_ylabel('recall')
@@ -298,8 +319,18 @@ print cumulative
 print correct
 print hired
 
+tk_result = {}
+tk_result['cs'] = cs
+tk_result['qs'] = qs
+tk_result['ws'] = ws
+tk_result['cumulative'] = cumulative
+tk_result['correct'] = correct
+tk_result['hired'] = hired
 
-runs = 30
+with open('tk.json', 'w') as outfile:
+	json.dump(tk_result, outfile)
+
+
 
 #dynamic hiring
 cs, qs, ws, cumulative, correct, hired = dynamic(k + 2, t, steps, people)
@@ -328,7 +359,7 @@ print len(xs)
 print len(cs)
 
 ax[2][0].plot(xs, cs, label='cumulative quality')
-ax[2][0].plot(xs, qs, label='quality')
+ax[2][0].plot(xs, qs, label='quality', linestyle='dashed')
 ax[2][1].plot(xs, ws, label='number of workers')
 ax[2][0].set_xlabel('tasks')
 ax[2][0].set_ylabel('recall')
@@ -340,6 +371,17 @@ ax[2][1].legend(bbox_to_anchor=(1, 0.3))
 print cumulative
 print correct
 print hired
+
+dh_result = {}
+dh_result['cs'] = cs
+dh_result['qs'] = qs
+dh_result['ws'] = ws
+dh_result['cumulative'] = cumulative
+dh_result['correct'] = correct
+dh_result['hired'] = hired
+
+with open('dh.json', 'w') as outfile:
+	json.dump(dh_result, outfile)
 
 plot.show()
 
