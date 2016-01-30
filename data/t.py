@@ -1,7 +1,7 @@
 import csv
 import numpy as np
-import matplotlib.pyplot as plot
-import matplotlib
+#import matplotlib.pyplot as plot
+#import matplotlib
 import os
 import sys
 import random
@@ -226,9 +226,9 @@ font = {
 	'size': 18
 }
 
-matplotlib.rc('font', **font)
+#matplotlib.rc('font', **font)
 
-f, ax = plot.subplots(3, 2)
+#f, ax = plot.subplots(3, 2)
 outcomes = [True, False]
 steps = 5
 
