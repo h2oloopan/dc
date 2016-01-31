@@ -3,11 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plot
 import os
 import sys
-import statsmodels.api as sm
 from scipy import stats
-from dateutil import parser
-import time
-import datetime
 
 sys.path.append('../simulation')
 from worker import Worker
@@ -25,7 +21,7 @@ def readData(fname):
 	with open(fname) as csvFile:
 		reader = csv.DictReader(csvFile)
 		for row in reader:
-			pair = [float(row['start']), float(row['end']), str(row['annotation_time'])]
+			pair = [float(row['start']), float(row['end'])]
 			result.append(pair)
 	return result
 
@@ -39,24 +35,20 @@ def overlap(p1, p2):
 	else:
 		return False
 
-names = []
 
 #do actual work
 for f in os.listdir('.'):
 	if f.endswith('.csv'):
-		if 'expert' not in f and 'notime' not in f: 
+		if 'expert' not in f and '_' in f:
 			worker = readData(f)
 			workers.append(worker)
-			names.append(f)
-		elif 'expert' in f:
+		else:
 			expert = readData(f)
 
 
-f, ax = plot.subplots(4, 3)
+f, ax = plot.subplots(2, 5)
 index = 0
-for i in range(0, len(workers)):
-	worker = workers[i]
-	name = names[i]
+for worker in workers:
 	xs = []
 	precisions = []
 	recalls = []
@@ -71,25 +63,13 @@ for i in range(0, len(workers)):
 	t_precision = 0
 	t_recall = 0
 
-	times = []
-	timer = 0
-
-	print name
 	while cursor < end:
 		range_start = cursor
 		range_end = cursor + step
 
-		#time
-		previous_time = timer
 		#precision
 		for spindle in worker:
 			if range_start <= spindle[0] and spindle[1] < range_end:
-				#timestamp
-				curTime = parser.parse(spindle[2])
-				epoch = (curTime - datetime.datetime(1970, 1, 1)).total_seconds()
-				if epoch > timer:
-					timer = epoch
-
 				for truth in expert:
 					if overlap(truth, spindle):
 						c_precision += 1
@@ -98,10 +78,6 @@ for i in range(0, len(workers)):
 		precision = 0.0
 		if t_precision != 0:
 			precision = float(c_precision) / float(t_precision)
-
-		times.append(timer - previous_time)
-		previous_time = timer
-		#print times[-1]
 
 		#recall
 		for truth in expert:
@@ -129,58 +105,32 @@ for i in range(0, len(workers)):
 		x += 1
 		xs.append(x)
 
-
 	#plot
-	#size = 25
 	xs = xs[10:]
 	ys = fscores[10:]
+	zs = []
+	for y in ys:
+		zs.append(1.0 / (1.0 - float(y)))
+
+	slope, intercept, rvalue, pvalue, evalue = stats.linregress(xs, zs)
+
+	r = 1.0 / slope
+	p = (intercept - 1.0) * r
 
 
-	max_estimated = 0
-	min_estimated = 1
-
-	max_average = 0
-	min_average = 1
-
-	last = ys[-1]
-
-	for size in range(25, 44):
-		x2l = list(xs)[0:size]
-		y2l = list(ys)[0:size]
-		zs = []
-		for y in y2l:
-			zs.append(1.0 / (1.0 - float(y)))
-
-		slope, intercept, rvalue, pvalue, evalue = stats.linregress(x2l, zs)
-
-		r = 1.0 / slope
-		p = (intercept - 1.0) * r
-
-		predict = float(xs[-1] + p) / float(xs[-1] + p + r)
-
-		if predict > max_estimated:
-			max_estimated = predict
-
-		if predict < min_estimated:
-			min_estimated = predict
-
-		#print len(ys), size
-		predict = ys[size]
-		#print predict
-
-		if predict > max_average:
-			max_average = predict
-
-		if predict < min_average:
-			min_average = predict
+	cs = []
+	for x in xs:
+		cs.append(float(x + p) / float(x + p + r))
 
 
-	print last
-	print min_estimated, max_estimated, (max_estimated - min_estimated) / last
-	print min_average, max_average, (max_average - min_average) / last
+	a = index / 5
+	b = index % 5
 
-#plot.show()
+	ax[a][b].plot(xs, ys)
+	ax[a][b].plot(xs, cs)
+	index += 1
 
+plot.show()
 
 
 

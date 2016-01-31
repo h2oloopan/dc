@@ -1,14 +1,20 @@
 import csv
 import numpy as np
 import matplotlib.pyplot as plot
+import matplotlib
 import os
 import sys
-import statsmodels.api as sm
 from scipy import stats
 
 sys.path.append('../simulation')
 from worker import Worker
 import learn
+
+font = {
+	'size': 18
+}
+
+matplotlib.rc('font', **font)
 
 expert = []
 workers = []
@@ -40,7 +46,7 @@ def overlap(p1, p2):
 #do actual work
 for f in os.listdir('.'):
 	if f.endswith('.csv'):
-		if 'expert' not in f and 'notime' not in f:
+		if 'expert' not in f and '_' in f:
 			worker = readData(f)
 			workers.append(worker)
 		elif 'expert' in f:
@@ -112,6 +118,8 @@ f2s = f2scores[10:]
 
 f, g = plot.subplots(2, 2)
 
+
+
 #precision
 zs = []
 for y in precisions:
@@ -127,7 +135,7 @@ for x in x2s:
 	cPrecisions.append(float(x + p) / float(x + p + r))
 
 g[0][0].plot(xs, precisions, label='actual value')
-g[0][0].plot(x2s, cPrecisions, label='estimated value')
+g[0][0].plot(x2s, cPrecisions, 'b--', label='estimated value')
 g[0][0].set_xlabel('windows')
 g[0][0].set_ylabel('cumulative precision')
 g[0][0].legend(bbox_to_anchor=(1, 0.3))
@@ -145,7 +153,7 @@ for x in x2s:
 	cRecalls.append(float(x + p) / float(x + p + r))
 
 g[0][1].plot(xs, recalls, label='actual value')
-g[0][1].plot(x2s, cRecalls, label='estimated value')
+g[0][1].plot(x2s, cRecalls, 'b--', label='estimated value')
 g[0][1].set_xlabel('windows')
 g[0][1].set_ylabel('cumulative recall')
 g[0][1].legend(bbox_to_anchor=(1, 0.3))
@@ -163,7 +171,7 @@ for x in x2s:
 	cF1s.append(float(x + p) / float(x + p + r))
 
 g[1][0].plot(xs, f1s, label='actual value')
-g[1][0].plot(x2s, cF1s, label='estimated value')
+g[1][0].plot(x2s, cF1s, 'b--', label='estimated value')
 g[1][0].set_xlabel('windows')
 g[1][0].set_ylabel('cumulative F1 score')
 g[1][0].legend(bbox_to_anchor=(1, 0.3))
@@ -181,7 +189,7 @@ for x in x2s:
 	cF2s.append(float(x + p) / float(x + p + r))
 
 g[1][1].plot(xs, f2s, label='actual value')
-g[1][1].plot(x2s, cF2s, label='estimated value')
+g[1][1].plot(x2s, cF2s, 'b--', label='estimated value')
 g[1][1].set_xlabel('windows')
 g[1][1].set_ylabel('cumulative F2 score')
 g[1][1].legend(bbox_to_anchor=(1, 0.3))

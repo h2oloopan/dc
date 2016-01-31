@@ -1,14 +1,21 @@
 import csv
 import numpy as np
 import matplotlib.pyplot as plot
+import matplotlib
 import os
 import sys
-import statsmodels.api as sm
 from scipy import stats
 
 sys.path.append('../simulation')
 from worker import Worker
 import learn
+
+font = {
+	'size': 18
+}
+
+matplotlib.rc('font', **font)
+matplotlib.rc('legend', fontsize=14)
 
 expert = []
 workers = []
@@ -40,7 +47,7 @@ def overlap(p1, p2):
 #do actual work
 for f in os.listdir('.'):
 	if f.endswith('.csv'):
-		if 'expert' not in f:
+		if 'expert' not in f and '_' in f:
 			worker = readData(f)
 			workers.append(worker)
 		else:
@@ -208,8 +215,9 @@ for worker in workers:
 
 	#ax[a][b].plot(xs, ys)
 	#ax[a][b].plot(xs, fscores[10:])
-	ax[a][b].plot(xs, cps[10:])
-	ax[a][b].plot(xs, cs)
+	ax[a][b].plot(xs, cfs[10:], label='actual F1')
+	ax[a][b].plot(xs, cs, 'b--', label='estimated F1')
+	ax[a][b].legend(bbox_to_anchor=(1, 0.2))
 	index += 1
 
 
